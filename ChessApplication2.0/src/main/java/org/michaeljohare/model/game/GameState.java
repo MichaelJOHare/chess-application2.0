@@ -14,10 +14,6 @@ public class GameState {
     private Player player1;
     private Player player2;
     private final ChessBoard board;
-    private boolean isPlayer1AbleToCastleShort;
-    private boolean isPlayer1AbleToCastleLong;
-    private boolean isPlayer2AbleToCastleShort;
-    private boolean isPlayer2AbleToCastleLong;
     private boolean isCheck;
     private boolean isCheckmate;
     private int moveNumber;
@@ -35,15 +31,40 @@ public class GameState {
         board.init(player1, player2);
         currentPlayer = player1;
         opposingPlayer = player2;
-        isPlayer1AbleToCastleLong = true;
-        isPlayer1AbleToCastleShort = true;
-        isPlayer2AbleToCastleLong = true;
-        isPlayer2AbleToCastleShort = true;
         player1CapturedPieces = new ArrayList<>();
         player2CapturedPieces = new ArrayList<>();
         isCheck = false;
         isCheckmate = false;
         moveNumber = 1;
+    }
+
+    public GameStateMemento createMemento() {
+        return new GameStateMemento(
+                currentPlayer, opposingPlayer,
+                player1, player2,
+                isCheck, isCheckmate,
+                moveNumber,
+                player1CapturedPieces,
+                player2CapturedPieces
+        );
+    }
+
+    public void restoreFromMemento(GameStateMemento memento) {
+        currentPlayer = memento.getCurrentPlayer();
+        opposingPlayer = memento.getOpposingPlayer();
+        player1 = memento.getPlayer1();
+        player2 = memento.getPlayer2();
+        isCheck = memento.isCheck();
+        isCheckmate = memento.isCheckmate();
+        moveNumber = memento.getMoveNumber();
+        player1CapturedPieces = new ArrayList<>(memento.getPlayer1CapturedPieces());
+        player2CapturedPieces = new ArrayList<>(memento.getPlayer2CapturedPieces());
+    }
+
+    public void swapPlayers() {
+        Player temp = currentPlayer;
+        currentPlayer = opposingPlayer;
+        opposingPlayer = temp;
     }
 
     public int getMoveNumber() {
@@ -66,22 +87,6 @@ public class GameState {
         return player2;
     }
 
-    public boolean isPlayer1AbleToCastleShort() {
-        return isPlayer1AbleToCastleShort;
-    }
-
-    public boolean isPlayer1AbleToCastleLong() {
-        return isPlayer1AbleToCastleLong;
-    }
-
-    public boolean isPlayer2AbleToCastleShort() {
-        return isPlayer2AbleToCastleShort;
-    }
-
-    public boolean isPlayer2AbleToCastleLong() {
-        return isPlayer2AbleToCastleLong;
-    }
-
     public boolean isCheck() {
         return isCheck;
     }
@@ -96,28 +101,6 @@ public class GameState {
 
     public List<ChessPiece> getPlayer2CapturedPieces() {
         return player2CapturedPieces;
-    }
-
-    public void swapPlayers() {
-        Player temp = currentPlayer;
-        currentPlayer = opposingPlayer;
-        opposingPlayer = temp;
-    }
-
-    public void setPlayer1AbleToCastleShort(boolean player1AbleToCastleShort) {
-        isPlayer1AbleToCastleShort = player1AbleToCastleShort;
-    }
-
-    public void setPlayer1AbleToCastleLong(boolean player1AbleToCastleLong) {
-        isPlayer1AbleToCastleLong = player1AbleToCastleLong;
-    }
-
-    public void setPlayer2AbleToCastleShort(boolean player2AbleToCastleShort) {
-        isPlayer2AbleToCastleShort = player2AbleToCastleShort;
-    }
-
-    public void setPlayer2AbleToCastleLong(boolean player2AbleToCastleLong) {
-        isPlayer2AbleToCastleLong = player2AbleToCastleLong;
     }
 
     public void setCheck(boolean check) {

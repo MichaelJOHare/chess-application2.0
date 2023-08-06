@@ -12,20 +12,20 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 public class ChessBoard {
-    private static final int ROW_LENGTH = 8;
-    private static final int COLUMN_LENGTH = 8;
-    private static final int WHITE_PAWN_ROW = 6;
-    private static final int BLACK_PAWN_ROW = 1;
-    private static final int WHITE_MAJOR_PIECE_ROW = 7;
-    private static final int BLACK_MAJOR_PIECE_ROW = 0;
-    private static final int ROOK_COLUMN_1 = 0;
-    private static final int ROOK_COLUMN_2 = 7;
-    private static final int KNIGHT_COLUMN_1 = 1;
-    private static final int KNIGHT_COLUMN_2 = 6;
-    private static final int BISHOP_COLUMN_1 = 2;
-    private static final int BISHOP_COLUMN_2 = 5;
-    private static final int QUEEN_COLUMN = 3;
-    private static final int KING_COLUMN = 4;
+    public static final int ROW_LENGTH = 8;
+    public static final int COLUMN_LENGTH = 8;
+    public static final int WHITE_PAWN_ROW = 6;
+    public static final int BLACK_PAWN_ROW = 1;
+    public static final int WHITE_MAJOR_PIECE_ROW = 7;
+    public static final int BLACK_MAJOR_PIECE_ROW = 0;
+    public static final int ROOK_COLUMN_1 = 0;
+    public static final int ROOK_COLUMN_2 = 7;
+    public static final int KNIGHT_COLUMN_1 = 1;
+    public static final int KNIGHT_COLUMN_2 = 6;
+    public static final int BISHOP_COLUMN_1 = 2;
+    public static final int BISHOP_COLUMN_2 = 5;
+    public static final int QUEEN_COLUMN = 3;
+    public static final int KING_COLUMN = 4;
     private ChessPiece[][] board;
     private PieceManager pieceManager;
 
@@ -114,9 +114,24 @@ public class ChessBoard {
     public boolean isKingInCheck(Player player, MoveHistory move) {
         Square kingSquare = pieceManager.findKingSquare(player);
         for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
+            if (piece.getCurrentSquare() == null) {
+                continue;
+            }
             List<Move> pieceMoves = piece.calculateRawLegalMoves(this, move);
             for (Move m : pieceMoves) {
                 if (m.getEndSquare().equals(kingSquare)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isSquareAttackedByOpponent(int row, int col, Player player) {
+        for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
+            List<Move> pieceMoves = piece.calculateRawLegalMoves(this, new MoveHistory());
+            for (Move m : pieceMoves) {
+                if (m.getEndSquare().getRow() == row && m.getEndSquare().getCol() == col) {
                     return true;
                 }
             }
@@ -130,6 +145,11 @@ public class ChessBoard {
 
     public PieceManager getPieceManager() {
         return pieceManager;
+    }
+
+    public boolean isOccupied(int row, int col) {
+        ChessPiece piece = getPieceAt(row, col);
+        return piece != null;
     }
 
     public boolean isOccupiedByOpponent(int row, int col, Player player) {

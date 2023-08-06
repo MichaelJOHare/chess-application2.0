@@ -20,7 +20,8 @@ public class GameLogPanel extends JPanel {
     private ChessController controller;
     private final List<ChessPiece> player1CapturedPieces = new ArrayList<>();
     private final List<ChessPiece> player2CapturedPieces = new ArrayList<>();
-    private JPanel rightPanel;
+    private final JPanel rightPanel;
+    private final String lineBreaks = "\n\n\n\n\n";
 
 
     public GameLogPanel() {
@@ -100,6 +101,18 @@ public class GameLogPanel extends JPanel {
     public void updateLogTextArea(String string) {
         logTextArea.setText(string);
     }
+    public void noLegalMoveLogText() {
+        logTextArea.setText(lineBreaks + " The piece you selected does not\n have any legal moves");
+    }
+
+    public void moveIsNotLegalLogText() {
+        logTextArea.setText(lineBreaks + " The square you chose to move to is\n not a legal move, choose a " +
+                "piece\n and try again.");
+    }
+
+    public void nothingLeftToUndoLogText() {
+        logTextArea.setText(lineBreaks + " There are no previous moves left\n to undo!");
+    }
 
     public void updateCapturedPiecesDisplay() {
         player1CapturedArea.removeAll();
@@ -147,7 +160,7 @@ public class GameLogPanel extends JPanel {
         playAgainButton.setForeground(null);
         controller.clearHighlightedSquares();
         updateCapturedPiecesDisplay();
-        //updateGUI();
+        controller.updateGUI();
     }
 
     public void setController(ChessController controller) {
@@ -155,6 +168,6 @@ public class GameLogPanel extends JPanel {
     }
 
     private void onUndoButtonClick() {
-
+        controller.handleUndoButtonClick();
     }
 }

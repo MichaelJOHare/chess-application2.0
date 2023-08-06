@@ -28,8 +28,12 @@ public class ChessController {
         gm.handleSquareClick(row, col);
     }
 
-    public void handlePlayAgainButtonClick() {
+    public void handleUndoButtonClick() {
+        gm.handleUndoButtonClick();
+    }
 
+    public void handlePlayAgainButtonClick() {
+        gm.handlePlayAgainButtonClick();
     }
 
     public void setHighlightedSquares(List<Move> moves) {
@@ -38,5 +42,24 @@ public class ChessController {
 
     public void clearHighlightedSquares() {
         gui.getChessBoardPanel().clearHighlightedSquares();
+    }
+
+    public void updateLogTextArea(String message) {
+        gui.getGameLogPanel().updateLogTextArea(message);
+    }
+
+    public void updatePlayAgainButton() {
+    }
+
+    public void noLegalMoveLogText() {
+        gui.getGameLogPanel().noLegalMoveLogText();
+    }
+
+    public void moveIsNotLegalLogText() {
+        gui.getGameLogPanel().moveIsNotLegalLogText();
+    }
+
+    public void nothingLeftToUndoLogText() {
+        gui.getGameLogPanel().nothingLeftToUndoLogText();
     }
 }
