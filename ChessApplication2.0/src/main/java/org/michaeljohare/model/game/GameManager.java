@@ -35,42 +35,62 @@ public class GameManager {
 
     public void handleSquareClick(int row, int col) {
         if (isFirstClick) {
-            selectedPiece = board.getPieceAt(row, col);
-            if (selectedPiece.getPlayer().equals(gs.getCurrentPlayer())) {
-                moves = selectedPiece.calculateLegalMoves(board, move);
-                if (moves.size() > 0) {
-                    controller.setHighlightedSquares(moves);
-                } else {
-                    controller.noLegalMoveLogText();
-                    isFirstClick = true;
-                    return;
-                }
+            handleFirstClick(row, col);
+        } else {
+            handleSecondClick(row, col);
+        }
+    }
+
+    public void handleFirstClick(int row, int col) {
+        selectedPiece = board.getPieceAt(row, col);
+
+        if (selectedPiece == null || selectedPiece.getPlayer() != gs.getCurrentPlayer()) {
+            tryAgainPrompt(controller::invalidPieceSelectionLogText);
+            return;
+        }
+
+        if (selectedPiece.getPlayer().equals(gs.getCurrentPlayer())) {
+            moves = selectedPiece.calculateLegalMoves(board, move);
+            if (moves.size() > 0) {
+                controller.setHighlightedSquares(moves);
+            } else {
+                tryAgainPrompt(controller::noLegalMoveLogText);
+                return;
             }
             isFirstClick = false;
-        } else {
-            Square targetSquare = new Square(row, col);
-            Move legalMove = null;
-            for (Move m : moves) {
-                if (m.getEndSquare().equals(targetSquare)) {
-                    legalMove = m;
-                    break;
-                }
-            }
-            if (legalMove != null) {
-                mementos.push(gs.createMemento());
-                if (selectedPiece instanceof PieceWithMoveStatus) {
-                    ((PieceWithMoveStatus) selectedPiece).setHasMoved(true);
-                }
-                move.makeMove(legalMove);
-                updateGUI();
-                isFirstClick = true;
-                gs.swapPlayers();
-            } else {
-                controller.moveIsNotLegalLogText();
-                isFirstClick = true;
-            }
-            controller.clearHighlightedSquares();
         }
+    }
+
+    public void handleSecondClick(int row, int col) {
+        Square targetSquare = new Square(row, col);
+        Move legalMove = null;
+        for (Move m : moves) {
+            if (m.getEndSquare().equals(targetSquare)) {
+                legalMove = m;
+                break;
+            }
+        }
+        if (legalMove != null) {
+            mementos.push(gs.createMemento());
+            if (selectedPiece instanceof PieceWithMoveStatus) {
+                ((PieceWithMoveStatus) selectedPiece).setHasMoved(true);
+            }
+            move.makeMove(legalMove);
+            updateGUI();
+            isFirstClick = true;
+            gs.swapPlayers();
+        } else {
+            tryAgainPrompt(controller::moveIsNotLegalLogText);
+        }
+        controller.currentPlayerLogText(gs.getCurrentPlayer());
+
+        if (board.isKingInCheck(gs.getCurrentPlayer(), move)) {
+            controller.checkLogText();
+            gs.setCheck(true);
+        } else {
+            gs.setCheck(false);
+        }
+        controller.clearHighlightedSquares();
     }
 
     public void handleUndoButtonClick() {
@@ -85,13 +105,18 @@ public class GameManager {
     }
 
     public void handlePlayAgainButtonClick() {
-        this.board = new ChessBoard();
-        this.gs = new GameState(board);
+        gs.init();
+        board.init(gs.getPlayer1(), gs.getPlayer2());
         this.pm = board.getPieceManager();
-        this.controller = new ChessController(board, this);
         isFirstClick = true;
-        move = new MoveHistory();
-        mementos = new Stack<>();
+        move.resetMoveHistory();
+        mementos.clear();
+        updateGUI();
+    }
+
+    public void tryAgainPrompt(Runnable logTextMethod) {
+        logTextMethod.run();
+        isFirstClick = true;
     }
 
     private void updateGUI() {

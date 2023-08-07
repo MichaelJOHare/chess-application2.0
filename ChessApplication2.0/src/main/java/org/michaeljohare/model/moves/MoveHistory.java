@@ -50,4 +50,13 @@ public class MoveHistory {
             ((PieceWithMoveStatus) piece).setHasMoved(true);
         }
     }
+
+    public void resetMoveHistory() {
+        if (history.size() > 0) {
+            history.clear();
+        }
+        if (undone.size() > 0) {
+            undone.clear();
+        }
+    }
 }

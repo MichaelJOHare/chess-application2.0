@@ -23,8 +23,8 @@ public class Move implements Movable{
     @Override
     public void execute() {
         if (capturedPiece != null) {
+            capturedPiece.kill();
             board.removePiece(capturedPiece);
-            capturedPiece.setCurrentSquare(null);
         }
         board.removePiece(piece);
         piece.setCurrentSquare(endSquare);
@@ -37,6 +37,7 @@ public class Move implements Movable{
         piece.setCurrentSquare(startSquare);
         board.addPiece(piece);
         if (capturedPiece != null) {
+            capturedPiece.revive();
          capturedPiece.setCurrentSquare(endSquare);
          board.addPiece(capturedPiece);
         }

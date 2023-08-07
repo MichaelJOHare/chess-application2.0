@@ -2,6 +2,7 @@ package org.michaeljohare.view;
 
 import org.michaeljohare.controller.ChessController;
 import org.michaeljohare.model.pieces.ChessPiece;
+import org.michaeljohare.model.player.Player;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -98,9 +99,13 @@ public class GameLogPanel extends JPanel {
         playAgainButton.setForeground(foregroundColor);
     }
 
-    public void updateLogTextArea(String string) {
-        logTextArea.setText(string);
+    public void currentPlayersTurnLogText(Player currentPlayer) {
+        String name = currentPlayer.getName();
+        String pieceColor = currentPlayer.getColor().toString();
+        String pieceColorFormatted = pieceColor.charAt(0) + pieceColor.substring(1).toLowerCase();
+        logTextArea.setText(lineBreaks + " It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
     }
+
     public void noLegalMoveLogText() {
         logTextArea.setText(lineBreaks + " The piece you selected does not\n have any legal moves");
     }
@@ -110,8 +115,16 @@ public class GameLogPanel extends JPanel {
                 "piece\n and try again.");
     }
 
+    public void invalidPieceSelectionLogText() {
+        logTextArea.setText(lineBreaks + " The piece you selected was invalid\n try again.");
+    }
+
     public void nothingLeftToUndoLogText() {
         logTextArea.setText(lineBreaks + " There are no previous moves left\n to undo!");
+    }
+
+    public void checkLogText() {
+        logTextArea.setText(lineBreaks + " \t Check!");
     }
 
     public void updateCapturedPiecesDisplay() {

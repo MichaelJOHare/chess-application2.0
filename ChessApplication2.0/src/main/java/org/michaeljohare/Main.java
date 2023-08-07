@@ -19,11 +19,6 @@ public class Main {
 
     /*
      * TODO
-     *  Play Again not open new window
-     *  Clicking square with no piece > NPE
-     *  Clicking square of opponent piece should prompt about
-     *  EN PASSANT LIVES RENT FREE IN MY HEAD
-     *  Test undo castling
-     *  Test and debug en passant + undoing en passant
+     *  Test pinned piece not allowed to capture even though it removes check
      */
 }

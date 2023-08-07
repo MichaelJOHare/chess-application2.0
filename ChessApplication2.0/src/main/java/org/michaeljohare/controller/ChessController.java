@@ -3,6 +3,7 @@ package org.michaeljohare.controller;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.game.GameManager;
 import org.michaeljohare.model.moves.Move;
+import org.michaeljohare.model.player.Player;
 import org.michaeljohare.view.ChessGUI;
 
 import java.util.List;
@@ -44,11 +45,11 @@ public class ChessController {
         gui.getChessBoardPanel().clearHighlightedSquares();
     }
 
-    public void updateLogTextArea(String message) {
-        gui.getGameLogPanel().updateLogTextArea(message);
+    public void updatePlayAgainButton() {
     }
 
-    public void updatePlayAgainButton() {
+    public void currentPlayerLogText(Player currentPlayer) {
+        gui.getGameLogPanel().currentPlayersTurnLogText(currentPlayer);
     }
 
     public void noLegalMoveLogText() {
@@ -59,7 +60,15 @@ public class ChessController {
         gui.getGameLogPanel().moveIsNotLegalLogText();
     }
 
+    public void invalidPieceSelectionLogText() {
+        gui.getGameLogPanel().invalidPieceSelectionLogText();
+    }
+
     public void nothingLeftToUndoLogText() {
         gui.getGameLogPanel().nothingLeftToUndoLogText();
+    }
+
+    public void checkLogText() {
+        gui.getGameLogPanel().checkLogText();
     }
 }

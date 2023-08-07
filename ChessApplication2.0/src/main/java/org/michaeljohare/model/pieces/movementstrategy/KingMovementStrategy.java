@@ -97,8 +97,7 @@ public class KingMovementStrategy implements MovementStrategy {
         ChessPiece rook = board.getPieceAt(rookSquare.getRow(), rookSquare.getCol());
         if (rook instanceof Rook && !((Rook) rook).hasMoved() &&
                 board.isEmpty(king.getCurrentSquare().getRow(), king.getCurrentSquare().getCol() - 1) &&
-                board.isEmpty(king.getCurrentSquare().getRow(), king.getCurrentSquare().getCol() - 2) &&
-                board.isEmpty(king.getCurrentSquare().getRow(), king.getCurrentSquare().getCol() - 3)) {
+                board.isEmpty(king.getCurrentSquare().getRow(), king.getCurrentSquare().getCol() - 2)) {
 
             if (!board.isSquareAttackedByOpponent(king.getCurrentSquare().getRow(),
                     king.getCurrentSquare().getCol() - 1, king.getPlayer()) &&
