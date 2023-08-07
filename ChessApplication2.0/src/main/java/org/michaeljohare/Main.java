@@ -19,6 +19,7 @@ public class Main {
 
     /*
      * TODO
-     *  Test pinned piece not allowed to capture even though it removes check
+     *  Implement checkmate/stalemate
+     *  Implement  stockfish
      */
 }
