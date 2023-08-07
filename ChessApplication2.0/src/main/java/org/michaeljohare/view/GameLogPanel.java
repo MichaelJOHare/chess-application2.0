@@ -19,8 +19,6 @@ public class GameLogPanel extends JPanel {
     private JTextArea player1CapturedArea;
     private JTextArea player2CapturedArea;
     private ChessController controller;
-    private final List<ChessPiece> player1CapturedPieces = new ArrayList<>();
-    private final List<ChessPiece> player2CapturedPieces = new ArrayList<>();
     private final JPanel rightPanel;
     private final String lineBreaks = "\n\n\n\n\n";
 
@@ -127,33 +125,25 @@ public class GameLogPanel extends JPanel {
         logTextArea.setText(lineBreaks + " \t Check!");
     }
 
-    public void updateCapturedPiecesDisplay() {
+    public void checkmateLogText() {
+        logTextArea.setText(lineBreaks + "\tCheckmate!");
+    }
+
+    public void updateCapturedPiecesDisplay(List<ChessPiece> player1CapturedPieces, List<ChessPiece> player2CapturedPieces) {
         player1CapturedArea.removeAll();
         player2CapturedArea.removeAll();
 
+        addCapturedPiecesTitle(player1CapturedArea);
+        addCapturedPiecesTitle(player2CapturedArea);
+
         Font capturedPieceFont = new Font("Roboto", Font.PLAIN, 26);
-        Font capturedPiecesTitleFont = new Font("Roboto", Font.BOLD, 24);
-
-        Border paddingBorder = BorderFactory.createEmptyBorder(5, 70, 5, 70);
-        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray);
-        Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, paddingBorder);
-
-        JLabel capturedPiecesTitle1 = new JLabel("Captured Pieces");
-        capturedPiecesTitle1.setFont(capturedPiecesTitleFont);
-        capturedPiecesTitle1.setBorder(compoundBorder);
-        JLabel capturedPiecesTitle2 = new JLabel("Captured Pieces");
-        capturedPiecesTitle2.setFont(capturedPiecesTitleFont);
-        capturedPiecesTitle2.setBorder(compoundBorder);
-        player1CapturedArea.add(capturedPiecesTitle1);
-        player2CapturedArea.add(capturedPiecesTitle2);
-
-        for (ChessPiece piece : player1CapturedPieces) {
+        for (ChessPiece piece : player2CapturedPieces) {
             JLabel blackCapturedPieceLabel = new JLabel(piece.getBlackChessPieceSymbol());
             blackCapturedPieceLabel.setFont(capturedPieceFont);
             player1CapturedArea.add(blackCapturedPieceLabel);
         }
 
-        for (ChessPiece piece : player2CapturedPieces) {
+        for (ChessPiece piece : player1CapturedPieces) {
             JLabel whiteCapturedPieceLabel = new JLabel(piece.getWhiteChessPieceSymbol());
             whiteCapturedPieceLabel.setFont(capturedPieceFont);
             player2CapturedArea.add(whiteCapturedPieceLabel);
@@ -165,10 +155,24 @@ public class GameLogPanel extends JPanel {
         player2CapturedArea.repaint();
     }
 
+    private void addCapturedPiecesTitle(JTextArea capturedArea) {
+        Font capturedPiecesTitleFont = new Font("Roboto", Font.BOLD, 24);
+        Border paddingBorder = BorderFactory.createEmptyBorder(5, 70, 5, 70);
+        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray);
+        Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, paddingBorder);
+
+        JLabel capturedPiecesTitle = new JLabel("Captured Pieces");
+        capturedPiecesTitle.setFont(capturedPiecesTitleFont);
+        capturedPiecesTitle.setBorder(compoundBorder);
+        capturedArea.add(capturedPiecesTitle);
+    }
+
+    public void updateCapturedPiecesDisplay() {
+        updateCapturedPiecesDisplay(new ArrayList<>(), new ArrayList<>());
+    }
+
     private void onPlayAgainButtonClick() {
         controller.handlePlayAgainButtonClick();
-        player1CapturedPieces.clear();
-        player2CapturedPieces.clear();
         playAgainButton.setBackground(defaultButtonColor);
         playAgainButton.setForeground(null);
         controller.clearHighlightedSquares();

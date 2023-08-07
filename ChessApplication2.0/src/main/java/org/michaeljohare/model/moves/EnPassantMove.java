@@ -17,9 +17,7 @@ public class EnPassantMove extends Move {
     public void undo() {
         if (capturedPiece != null && capturedPiece instanceof Pawn) {
             capturedPiece.revive();
-            //Test
             board.removePiece(capturedPiece);
-            //Test
             capturedPiece.setCurrentSquare(originalSquareBeforeCapture);
             board.addPiece(capturedPiece);
         }

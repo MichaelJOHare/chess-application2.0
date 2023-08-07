@@ -19,7 +19,7 @@ public class Main {
 
     /*
      * TODO
-     *  Implement checkmate/stalemate
+     *  Implement stalemate
      *  Implement  stockfish
      */
 }

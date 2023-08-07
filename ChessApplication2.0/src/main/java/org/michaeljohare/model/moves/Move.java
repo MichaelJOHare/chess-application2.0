@@ -38,8 +38,8 @@ public class Move implements Movable{
         board.addPiece(piece);
         if (capturedPiece != null) {
             capturedPiece.revive();
-         capturedPiece.setCurrentSquare(endSquare);
-         board.addPiece(capturedPiece);
+            capturedPiece.setCurrentSquare(endSquare);
+            board.addPiece(capturedPiece);
         }
     }
 

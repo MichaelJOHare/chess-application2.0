@@ -29,8 +29,8 @@ public class PieceManager {
         }
     }
 
-    public Map<Player, List<ChessPiece>> getPiecesByPlayer() {
-        return piecesByPlayer;
+    public List<ChessPiece> getPlayerPieces(Player player) {
+        return piecesByPlayer.get(player);
     }
 
     public Square findKingSquare(Player player) {

@@ -14,9 +14,7 @@ public class GameState {
     private Player player1;
     private Player player2;
     private final ChessBoard board;
-    private boolean isCheck;
-    private boolean isCheckmate;
-    private int moveNumber;
+    private List<ChessPiece> capturedPieces;
     private List<ChessPiece> player1CapturedPieces;
     private List<ChessPiece> player2CapturedPieces;
 
@@ -31,19 +29,15 @@ public class GameState {
         board.init(player1, player2);
         currentPlayer = player1;
         opposingPlayer = player2;
+        capturedPieces = new ArrayList<>();
         player1CapturedPieces = new ArrayList<>();
         player2CapturedPieces = new ArrayList<>();
-        isCheck = false;
-        isCheckmate = false;
-        moveNumber = 1;
     }
 
     public GameStateMemento createMemento() {
         return new GameStateMemento(
                 currentPlayer, opposingPlayer,
-                player1, player2,
-                isCheck, isCheckmate,
-                moveNumber,
+                player1, player2, capturedPieces,
                 player1CapturedPieces,
                 player2CapturedPieces
         );
@@ -54,9 +48,7 @@ public class GameState {
         opposingPlayer = memento.getOpposingPlayer();
         player1 = memento.getPlayer1();
         player2 = memento.getPlayer2();
-        isCheck = memento.isCheck();
-        isCheckmate = memento.isCheckmate();
-        moveNumber = memento.getMoveNumber();
+        capturedPieces = new ArrayList<>(memento.getCapturedPieces());
         player1CapturedPieces = new ArrayList<>(memento.getPlayer1CapturedPieces());
         player2CapturedPieces = new ArrayList<>(memento.getPlayer2CapturedPieces());
     }
@@ -65,10 +57,6 @@ public class GameState {
         Player temp = currentPlayer;
         currentPlayer = opposingPlayer;
         opposingPlayer = temp;
-    }
-
-    public int getMoveNumber() {
-        return moveNumber;
     }
 
     public Player getCurrentPlayer() {
@@ -87,12 +75,18 @@ public class GameState {
         return player2;
     }
 
-    public boolean isCheck() {
-        return isCheck;
+    public List<ChessPiece> getCapturedPieces() {
+        return capturedPieces;
     }
 
-    public boolean isCheckmate() {
-        return isCheckmate;
+    public void updateCapturedPieces() {
+        for (ChessPiece piece : capturedPieces) {
+            if (piece.getPlayer().equals(player1) && !player1CapturedPieces.contains(piece)) {
+                player1CapturedPieces.add(piece);
+            } else if (piece.getPlayer().equals(player2) && !player2CapturedPieces.contains(piece)) {
+                player2CapturedPieces.add(piece);
+            }
+        }
     }
 
     public List<ChessPiece> getPlayer1CapturedPieces() {
@@ -101,36 +95,5 @@ public class GameState {
 
     public List<ChessPiece> getPlayer2CapturedPieces() {
         return player2CapturedPieces;
-    }
-
-    public void setCheck(boolean check) {
-        isCheck = check;
-    }
-
-    public void setCheckmate(boolean checkmate) {
-        isCheckmate = checkmate;
-    }
-
-    public void incrementMoveNumber() {
-        this.moveNumber++;
-    }
-
-    public void decrementMoveNumber() {
-        this.moveNumber--;
-    }
-
-    public void addPlayer1CapturedPieces(ChessPiece piece) {
-        this.player1CapturedPieces.add(piece);
-    }
-
-    public void removePlayer1CapturedPieces(ChessPiece piece) {
-        this.player1CapturedPieces.remove(piece);
-    }
-
-    public void addPlayer2CapturedPieces(ChessPiece piece) {
-        this.player2CapturedPieces.add(piece);
-    }
-    public void removePlayer2CapturedPieces(ChessPiece piece) {
-        this.player2CapturedPieces.remove(piece);
     }
 }

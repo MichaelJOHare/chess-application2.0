@@ -9,6 +9,7 @@ import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceWithMoveStatus;
 import org.michaeljohare.model.player.PieceManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -22,7 +23,7 @@ public class GameManager {
     private List<Move> moves;
     private Stack<GameStateMemento> mementos = new Stack<>();
     private MoveHistory move;
-    PieceManager pm;
+    public PieceManager pm;
 
     public GameManager() {
         this.board = new ChessBoard();
@@ -64,37 +65,56 @@ public class GameManager {
     public void handleSecondClick(int row, int col) {
         Square targetSquare = new Square(row, col);
         Move legalMove = null;
+
         for (Move m : moves) {
             if (m.getEndSquare().equals(targetSquare)) {
                 legalMove = m;
                 break;
             }
         }
+
         if (legalMove != null) {
-            mementos.push(gs.createMemento());
-            if (selectedPiece instanceof PieceWithMoveStatus) {
-                ((PieceWithMoveStatus) selectedPiece).setHasMoved(true);
-            }
-            move.makeMove(legalMove);
-            updateGUI();
-            isFirstClick = true;
-            gs.swapPlayers();
+            finalizeMove(legalMove);
         } else {
             tryAgainPrompt(controller::moveIsNotLegalLogText);
         }
-        controller.currentPlayerLogText(gs.getCurrentPlayer());
 
-        if (board.isKingInCheck(gs.getCurrentPlayer(), move)) {
-            controller.checkLogText();
-            gs.setCheck(true);
-        } else {
-            gs.setCheck(false);
-        }
+        controller.currentPlayerLogText(gs.getCurrentPlayer());
         controller.clearHighlightedSquares();
+
+        handleCheckAndCheckmate();
+    }
+
+    public void finalizeMove(Move legalMove) {
+        mementos.push(gs.createMemento());
+        if (selectedPiece instanceof PieceWithMoveStatus) {
+            ((PieceWithMoveStatus) selectedPiece).setHasMoved(true);
+        }
+        move.makeMove(legalMove);
+        handleCapturedPieces(legalMove, false);
+        updateGUI();
+        isFirstClick = true;
+        gs.swapPlayers();
+    }
+
+    public void handleCheckAndCheckmate() {
+        List<ChessPiece> playerPieces = pm.getPlayerPieces(gs.getCurrentPlayer());
+        List<List<Move>> currentPlayerLegalMoves = new ArrayList<>();
+        for (ChessPiece piece : playerPieces) {
+            currentPlayerLegalMoves.add(piece.calculateLegalMoves(board, move));
+        }
+        if (currentPlayerLegalMoves.stream()
+                .allMatch(List::isEmpty)) {
+            controller.checkmateLogText();
+            controller.updatePlayAgainButton();
+        } else if (board.isKingInCheck(gs.getCurrentPlayer(), move)) {
+            controller.checkLogText();
+        }
     }
 
     public void handleUndoButtonClick() {
         if (!mementos.isEmpty()) {
+            handleCapturedPieces(move.getLastMove(), true);
             move.undoMove();
             GameStateMemento memento = mementos.pop();
             gs.restoreFromMemento(memento);
@@ -112,6 +132,26 @@ public class GameManager {
         move.resetMoveHistory();
         mementos.clear();
         updateGUI();
+    }
+
+    public void handleCapturedPieces(Move legalMove, boolean isUndo) {
+        if (legalMove.getCapturedPiece() == null) {
+            return;
+        }
+        if (isUndo) {
+            if (move.getLastMove().getCapturedPiece() != null) {
+                ChessPiece capturedPiece = move.getLastMove().getCapturedPiece();
+                if (capturedPiece.getPlayer().equals(gs.getPlayer1())) {
+                    gs.getPlayer1CapturedPieces().remove(capturedPiece);
+                } else if (capturedPiece.getPlayer().equals(gs.getPlayer2())) {
+                    gs.getPlayer2CapturedPieces().remove(capturedPiece);
+                }
+            }
+        } else {
+            gs.getCapturedPieces().add(legalMove.getCapturedPiece());
+            gs.updateCapturedPieces();
+        }
+        controller.updateCapturedPieceDisplay(gs.getPlayer1CapturedPieces(), gs.getPlayer2CapturedPieces());
     }
 
     public void tryAgainPrompt(Runnable logTextMethod) {

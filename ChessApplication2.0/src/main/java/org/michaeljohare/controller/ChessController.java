@@ -3,9 +3,11 @@ package org.michaeljohare.controller;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.game.GameManager;
 import org.michaeljohare.model.moves.Move;
+import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.view.ChessGUI;
 
+import java.awt.*;
 import java.util.List;
 
 public class ChessController {
@@ -46,6 +48,11 @@ public class ChessController {
     }
 
     public void updatePlayAgainButton() {
+        gui.getGameLogPanel().updatePlayAgainButton(Color.GREEN, Color.BLACK);
+    }
+
+    public void updateCapturedPieceDisplay(List<ChessPiece> player1CapturedPieces, List<ChessPiece> player2CapturedPieces) {
+        gui.getGameLogPanel().updateCapturedPiecesDisplay(player1CapturedPieces, player2CapturedPieces);
     }
 
     public void currentPlayerLogText(Player currentPlayer) {
@@ -70,5 +77,9 @@ public class ChessController {
 
     public void checkLogText() {
         gui.getGameLogPanel().checkLogText();
+    }
+
+    public void checkmateLogText() {
+        gui.getGameLogPanel().checkmateLogText();
     }
 }
