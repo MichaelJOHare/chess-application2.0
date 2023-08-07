@@ -2,6 +2,8 @@ package org.michaeljohare.model.player;
 
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
+import org.michaeljohare.model.moves.Move;
+import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceType;
 
@@ -57,6 +59,20 @@ public class PieceManager {
             }
         }
         return null;
+    }
+
+    public void handlePromotion(Move move) {
+        if (move.isPromotion()) {
+            removePiece(((PromotionMove) move).getOriginalPiece());
+            addPiece(((PromotionMove) move).getPromotedPiece());
+        }
+    }
+
+    public void handleUndoPromotion(Move move) {
+        if (move.isPromotion()) {
+            removePiece(((PromotionMove) move).getPromotedPiece());
+            addPiece(((PromotionMove) move).getOriginalPiece());
+        }
     }
 
     public List<ChessPiece> getAllOpposingPieces(Player player) {

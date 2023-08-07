@@ -78,6 +78,8 @@ public class GameManager {
                 } else {
                     legalMove = m;
                 }
+            } else {
+                tryAgainPrompt(controller::moveIsNotLegalLogText);
             }
         }
 
@@ -102,14 +104,6 @@ public class GameManager {
             int promotionChoice = controller.handlePawnPromotion(selectedPiece);
             PieceType chosenPromotion = convertIntToPieceType(promotionChoice);
             ((PromotionMove) legalMove).setPromotionType(chosenPromotion);
-
-            ChessPiece promotedPiece = selectedPiece.promotePiece(chosenPromotion, selectedPiece.getPlayer(), legalMove.getEndSquare());
-            board.removePiece(selectedPiece);
-            pm.removePiece(selectedPiece);
-            board.addPiece(promotedPiece);
-            pm.addPiece(promotedPiece);
-
-            legalMove.setPiece(promotedPiece);
         }
 
         if (selectedPiece instanceof PieceWithMoveStatus) {
@@ -117,6 +111,7 @@ public class GameManager {
         }
 
         move.makeMove(legalMove);
+        pm.handlePromotion(move.getLastMove());
         handleCapturedPieces(legalMove, false);
         updateGUI();
         isFirstClick = true;
@@ -135,13 +130,16 @@ public class GameManager {
 
         if (currentPlayerLegalMoves.stream()
                 .allMatch(List::isEmpty) && board.isKingInCheck(gs.getCurrentPlayer(), move)) {
+
             controller.checkmateLogText();
             controller.updatePlayAgainButton();
         } else if (currentPlayerLegalMoves.stream()
                 .allMatch(List::isEmpty)) {
+
             controller.stalemateLogText();
             controller.updatePlayAgainButton();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move)) {
+
             controller.checkLogText();
         }
     }
@@ -149,6 +147,7 @@ public class GameManager {
     public void handleUndoButtonClick() {
         if (!mementos.isEmpty()) {
             handleCapturedPieces(move.getLastMove(), true);
+            pm.handleUndoPromotion(move.getLastMove());
             move.undoMove();
             GameStateMemento memento = mementos.pop();
             gs.restoreFromMemento(memento);
@@ -175,8 +174,7 @@ public class GameManager {
             return;
         }
 
-        if (isUndo && move.getLastMove().getCapturedPiece() != null) {
-            capturedPiece = move.getLastMove().getCapturedPiece();
+        if (isUndo) {
             List<ChessPiece> currentPlayerCapturedPieces = capturedPiece.getPlayer().equals(gs.getPlayer1())
                     ? gs.getPlayer1CapturedPieces()
                     : gs.getPlayer2CapturedPieces();
