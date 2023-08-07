@@ -35,6 +35,21 @@ public abstract class ChessPiece {
         return movementStrategy.calculateRawLegalMoves(board, this, move);
     }
 
+    public ChessPiece promotePiece(PieceType type, Player player, Square square) {
+        switch (type) {
+            case QUEEN:
+                return new Queen(square, player);
+            case ROOK:
+                return new Rook(square, player);
+            case BISHOP:
+                return new Bishop(square, player);
+            case KNIGHT:
+                return new Knight(square, player);
+            default:
+                throw new IllegalArgumentException("Invalid piece type");
+        }
+    }
+
     public Square getCurrentSquare() {
         return currentSquare;
     }
@@ -61,5 +76,10 @@ public abstract class ChessPiece {
 
     public void revive() {
         isAlive = true;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName()+ "[" + player.getColor() + "]";
     }
 }

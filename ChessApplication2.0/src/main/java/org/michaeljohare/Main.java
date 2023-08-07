@@ -20,6 +20,7 @@ public class Main {
     /*
      * TODO
      *  Implement stalemate
-     *  Implement  stockfish
+     *  Implement Pawn Promotion
+     *  Implement stockfish
      */
 }

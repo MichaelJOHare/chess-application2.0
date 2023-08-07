@@ -11,6 +11,7 @@ public class Move implements Movable{
     Square endSquare;
     ChessPiece capturedPiece;
     ChessBoard board;
+    boolean isPromotion;
 
     public Move(ChessPiece piece, Square from, Square to, ChessPiece capturedPiece, ChessBoard board) {
         this.piece = piece;
@@ -18,6 +19,7 @@ public class Move implements Movable{
         this.endSquare = to;
         this.capturedPiece = capturedPiece;
         this.board = board;
+        this.isPromotion = false;
     }
 
     @Override
@@ -52,6 +54,10 @@ public class Move implements Movable{
         return piece;
     }
 
+    public void setPiece(ChessPiece piece) {
+        this.piece = piece;
+    }
+
     public Square getStartSquare() {
         return startSquare;
     }
@@ -62,5 +68,12 @@ public class Move implements Movable{
 
     public ChessPiece getCapturedPiece() {
         return capturedPiece;
+    }
+    public boolean isPromotion() {
+        return isPromotion;
+    }
+
+    public void setPromotion(boolean promotion) {
+        this.isPromotion = promotion;
     }
 }

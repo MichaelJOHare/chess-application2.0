@@ -5,6 +5,7 @@ import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.EnPassantMove;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
+import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceType;
 
@@ -46,7 +47,7 @@ public class PawnMovementStrategy implements MovementStrategy {
             if (row > 0 && board.isEmpty(row - 1, col)) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 1, col), null, board));
             }
-            if (row == 6 && board.isEmpty(row - 2, col)) {
+            if (row == 6 && board.isEmpty(row - 2, col) && board.isEmpty(row - 1, col)) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 2, col), null, board));
             }
 
@@ -57,7 +58,7 @@ public class PawnMovementStrategy implements MovementStrategy {
             if (row > 0 && col > 0 && board.isOccupiedByOpponent(row - 1, col - 1, piece.getPlayer())) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 1, col - 1), board.getPieceAt(row - 1, col - 1), board));
             }
-            // En Passant Captures
+            // En Passant Capture
             // Separate this out at some point (DRY)
             Move lastMove = move.getLastMove();
             if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
@@ -72,6 +73,30 @@ public class PawnMovementStrategy implements MovementStrategy {
                 tempMove = new EnPassantMove(piece, currentSquare, targetSquare, originalSquareBeforeCapture, capturedPiece, board);
                 legalMoves.add(tempMove);
             }
+            // Promotions
+            // Captures with promotion
+            if (row == 1 && col < 7 && board.isOccupiedByOpponent(row - 1, col + 1, piece.getPlayer())) {
+                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col + 1), board.getPieceAt(row - 1, col + 1), promotionType, board);
+                    promotionMove.setPromotion(true);
+                    legalMoves.add(promotionMove);
+                }
+            }
+            if (row == 1 && col > 0 && board.isOccupiedByOpponent(row - 1, col - 1, piece.getPlayer())) {
+                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col - 1), board.getPieceAt(row - 1, col - 1), promotionType, board);
+                    promotionMove.setPromotion(true);
+                    legalMoves.add(promotionMove);
+                }
+            }
+            // Normal move with promotion
+            if (row == 1) {
+                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col), null, promotionType, board);
+                    promotionMove.setPromotion(true);
+                    legalMoves.add(promotionMove);
+                }
+            }
         }else {
 
             /*
@@ -82,7 +107,7 @@ public class PawnMovementStrategy implements MovementStrategy {
             if (row < 7 && board.isEmpty(row + 1, col)) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 1, col), null, board));
             }
-            if (row == 1 && board.isEmpty(row + 2, col)) {
+            if (row == 1 && board.isEmpty(row + 2, col) && board.isEmpty(row + 1, col)) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 2, col), null, board));
             }
 
@@ -93,7 +118,7 @@ public class PawnMovementStrategy implements MovementStrategy {
             if (row < 7 && col > 0 && board.isOccupiedByOpponent(row + 1, col - 1, piece.getPlayer())) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 1, col - 1), board.getPieceAt(row + 1, col - 1), board));
             }
-            // En Passant Captures
+            // En Passant Capture
             Move lastMove = move.getLastMove();
             if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
                     lastMove.getPiece().getPlayer().isWhite() &&
@@ -106,6 +131,28 @@ public class PawnMovementStrategy implements MovementStrategy {
                 originalSquareBeforeCapture = lastMove.getPiece().getCurrentSquare();
                 tempMove = new EnPassantMove(piece, currentSquare, targetSquare, originalSquareBeforeCapture, capturedPiece, board);
                 legalMoves.add(tempMove);
+            }
+            // Promotions
+            if (row == 6 && col < 7 && board.isOccupiedByOpponent(row + 1, col + 1, piece.getPlayer())) {
+                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col + 1), board.getPieceAt(row + 1, col + 1), promotionType, board);
+                    promotionMove.setPromotion(true);
+                    legalMoves.add(promotionMove);
+                }
+            }
+            if (row == 6 && col > 0 && board.isOccupiedByOpponent(row + 1, col - 1, piece.getPlayer())) {
+                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col - 1), board.getPieceAt(row + 1, col - 1), promotionType, board);
+                    promotionMove.setPromotion(true);
+                    legalMoves.add(promotionMove);
+                }
+            }
+            if (row == 6) {
+                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col),null, promotionType, board);
+                    promotionMove.setPromotion(true);
+                    legalMoves.add(promotionMove);
+                }
             }
         }
         return legalMoves;

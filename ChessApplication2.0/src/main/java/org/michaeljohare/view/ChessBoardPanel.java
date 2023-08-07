@@ -138,6 +138,10 @@ public class ChessBoardPanel extends JPanel {
         this.controller = controller;
     }
 
+    public JButton[][] getChessButtons() {
+        return chessButtons;
+    }
+
     private void onSquareClick(int row, int col) {
         controller.onSquareClick(row, col);
     }

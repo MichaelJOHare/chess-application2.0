@@ -33,6 +33,20 @@ public class PieceManager {
         return piecesByPlayer.get(player);
     }
 
+    public void removePiece(ChessPiece piece) {
+        Player owner = piece.getPlayer();
+        List<ChessPiece> playerPieces = piecesByPlayer.get(owner);
+        if (playerPieces != null) {
+            playerPieces.remove(piece);
+        }
+    }
+
+    public void addPiece(ChessPiece piece) {
+        Player owner = piece.getPlayer();
+        List<ChessPiece> playerPieces = piecesByPlayer.computeIfAbsent(owner, p -> new ArrayList<>());
+        playerPieces.add(piece);
+    }
+
     public Square findKingSquare(Player player) {
         List<ChessPiece> pieces = piecesByPlayer.get(player);
         if (pieces != null) {

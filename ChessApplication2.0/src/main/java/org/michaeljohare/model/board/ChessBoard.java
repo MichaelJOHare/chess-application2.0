@@ -128,7 +128,7 @@ public class ChessBoard {
         for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
             List<Move> pieceMoves = piece.calculateRawLegalMoves(this, new MoveHistory());
             for (Move m : pieceMoves) {
-                if (m.getEndSquare().getRow() == row && m.getEndSquare().getCol() == col) {
+                if (m.getPiece().isAlive() && m.getEndSquare().getRow() == row && m.getEndSquare().getCol() == col) {
                     return true;
                 }
             }
@@ -152,5 +152,19 @@ public class ChessBoard {
     public boolean isOccupiedByOpponent(int row, int col, Player player) {
         ChessPiece piece = getPieceAt(row, col);
         return piece != null && !piece.getPlayer().equals(player);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int row = 0; row < ROW_LENGTH; row++) {
+            for (int col = 0; col < COLUMN_LENGTH; col++) {
+                ChessPiece piece = board[row][col];
+                if (piece != null) {
+                    builder.append(piece).append("@").append(new Square(row, col)).append("\n");
+                }
+            }
+        }
+        return builder.toString();
     }
 }

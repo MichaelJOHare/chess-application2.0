@@ -129,6 +129,10 @@ public class GameLogPanel extends JPanel {
         logTextArea.setText(lineBreaks + "\tCheckmate!");
     }
 
+    public void stalemateLogText() {
+        logTextArea.setText(lineBreaks + "\tStalemate!");
+    }
+
     public void updateCapturedPiecesDisplay(List<ChessPiece> player1CapturedPieces, List<ChessPiece> player2CapturedPieces) {
         player1CapturedArea.removeAll();
         player2CapturedArea.removeAll();

@@ -39,6 +39,10 @@ public class ChessController {
         gm.handlePlayAgainButtonClick();
     }
 
+    public int handlePawnPromotion(ChessPiece pawn) {
+        return gui.createPromotionPane(pawn, gui.getChessBoardPanel().getChessButtons());
+    }
+
     public void setHighlightedSquares(List<Move> moves) {
         gui.getChessBoardPanel().setHighlightedSquares(moves);
     }
@@ -81,5 +85,9 @@ public class ChessController {
 
     public void checkmateLogText() {
         gui.getGameLogPanel().checkmateLogText();
+    }
+
+    public void stalemateLogText() {
+        gui.getGameLogPanel().stalemateLogText();
     }
 }

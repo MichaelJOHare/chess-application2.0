@@ -5,13 +5,17 @@ import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
+import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.ChessPiece;
+import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.pieces.PieceWithMoveStatus;
 import org.michaeljohare.model.player.PieceManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import static org.michaeljohare.model.pieces.PieceType.convertIntToPieceType;
 
 public class GameManager {
 
@@ -65,15 +69,21 @@ public class GameManager {
     public void handleSecondClick(int row, int col) {
         Square targetSquare = new Square(row, col);
         Move legalMove = null;
+        Move legalPromotionMove = null;
 
         for (Move m : moves) {
             if (m.getEndSquare().equals(targetSquare)) {
-                legalMove = m;
-                break;
+                if(m.isPromotion()){
+                    legalPromotionMove = m;
+                } else {
+                    legalMove = m;
+                }
             }
         }
 
-        if (legalMove != null) {
+        if(legalPromotionMove != null) {
+            finalizeMove(legalPromotionMove);
+        } else if (legalMove != null) {
             finalizeMove(legalMove);
         } else {
             tryAgainPrompt(controller::moveIsNotLegalLogText);
@@ -87,9 +97,25 @@ public class GameManager {
 
     public void finalizeMove(Move legalMove) {
         mementos.push(gs.createMemento());
+
+        if (legalMove.isPromotion()) {
+            int promotionChoice = controller.handlePawnPromotion(selectedPiece);
+            PieceType chosenPromotion = convertIntToPieceType(promotionChoice);
+            ((PromotionMove) legalMove).setPromotionType(chosenPromotion);
+
+            ChessPiece promotedPiece = selectedPiece.promotePiece(chosenPromotion, selectedPiece.getPlayer(), legalMove.getEndSquare());
+            board.removePiece(selectedPiece);
+            pm.removePiece(selectedPiece);
+            board.addPiece(promotedPiece);
+            pm.addPiece(promotedPiece);
+
+            legalMove.setPiece(promotedPiece);
+        }
+
         if (selectedPiece instanceof PieceWithMoveStatus) {
             ((PieceWithMoveStatus) selectedPiece).setHasMoved(true);
         }
+
         move.makeMove(legalMove);
         handleCapturedPieces(legalMove, false);
         updateGUI();
@@ -100,12 +126,20 @@ public class GameManager {
     public void handleCheckAndCheckmate() {
         List<ChessPiece> playerPieces = pm.getPlayerPieces(gs.getCurrentPlayer());
         List<List<Move>> currentPlayerLegalMoves = new ArrayList<>();
+
         for (ChessPiece piece : playerPieces) {
-            currentPlayerLegalMoves.add(piece.calculateLegalMoves(board, move));
+            if (piece.isAlive()) {
+                currentPlayerLegalMoves.add(piece.calculateLegalMoves(board, move));
+            }
         }
+
         if (currentPlayerLegalMoves.stream()
-                .allMatch(List::isEmpty)) {
+                .allMatch(List::isEmpty) && board.isKingInCheck(gs.getCurrentPlayer(), move)) {
             controller.checkmateLogText();
+            controller.updatePlayAgainButton();
+        } else if (currentPlayerLegalMoves.stream()
+                .allMatch(List::isEmpty)) {
+            controller.stalemateLogText();
             controller.updatePlayAgainButton();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move)) {
             controller.checkLogText();
@@ -118,6 +152,7 @@ public class GameManager {
             move.undoMove();
             GameStateMemento memento = mementos.pop();
             gs.restoreFromMemento(memento);
+            controller.currentPlayerLogText(gs.getCurrentPlayer());
             updateGUI();
         } else {
             controller.nothingLeftToUndoLogText();
@@ -135,22 +170,22 @@ public class GameManager {
     }
 
     public void handleCapturedPieces(Move legalMove, boolean isUndo) {
-        if (legalMove.getCapturedPiece() == null) {
+        ChessPiece capturedPiece = legalMove.getCapturedPiece();
+        if (capturedPiece == null) {
             return;
         }
-        if (isUndo) {
-            if (move.getLastMove().getCapturedPiece() != null) {
-                ChessPiece capturedPiece = move.getLastMove().getCapturedPiece();
-                if (capturedPiece.getPlayer().equals(gs.getPlayer1())) {
-                    gs.getPlayer1CapturedPieces().remove(capturedPiece);
-                } else if (capturedPiece.getPlayer().equals(gs.getPlayer2())) {
-                    gs.getPlayer2CapturedPieces().remove(capturedPiece);
-                }
-            }
+
+        if (isUndo && move.getLastMove().getCapturedPiece() != null) {
+            capturedPiece = move.getLastMove().getCapturedPiece();
+            List<ChessPiece> currentPlayerCapturedPieces = capturedPiece.getPlayer().equals(gs.getPlayer1())
+                    ? gs.getPlayer1CapturedPieces()
+                    : gs.getPlayer2CapturedPieces();
+            currentPlayerCapturedPieces.remove(capturedPiece);
         } else {
-            gs.getCapturedPieces().add(legalMove.getCapturedPiece());
+            gs.getCapturedPieces().add(capturedPiece);
             gs.updateCapturedPieces();
         }
+
         controller.updateCapturedPieceDisplay(gs.getPlayer1CapturedPieces(), gs.getPlayer2CapturedPieces());
     }
 
