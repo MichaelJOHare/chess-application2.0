@@ -1,5 +1,5 @@
-# chess-application2.0
-Re-write of my chess-application to separate out handling game flow and state from controller.
+# Chess Application v2.0
+Re-write of my chess-application to separate out handling game flow and state from controller to aide in stockfish integration and possible online play.
 
 White pieces always starts first, click a square to select a piece then click the square you want to move it to.  Legal moves will have their squares highlighted in yellow.  If you choose the wrong piece by accident you can move it to a legal square then use the Undo button to choose a different piece or move to an illegal square and it will prompt you to choose a new piece right away.
 
