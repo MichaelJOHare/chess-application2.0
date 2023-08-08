@@ -9,10 +9,14 @@ The repository containing the GUI implementation can be found here: https://gith
 ## Pictures
 
 ### Start of game
-![Chess-Application](https://github.com/MichaelJOHare/chess-application/assets/46801493/135fdae5-3835-42b5-9d9a-e32b439da98f)
+![Chess-Application](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/cebf9fdd-c9e3-4c76-8290-6e14e731ab9d)
 
-### Mid-game (highlighted squares are legal moves for the piece that is selected - the black Queen in this example)
-![Chess-Application-MidGame](https://github.com/MichaelJOHare/chess-application/assets/46801493/35603b88-ff5a-4d44-8d85-be51e95bdde6)
+### Mid-game 
+Yellow highlighted squares are legal moves for the piece that is selected.
+![Chess-Application-MidGame](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/1bf8ef78-7dac-4eb6-8aa9-5ed279d5585c)
+
+Or give the current board to Stockfish and ask it for the best move (Green highlighted squares)
+![Chess-Application-Ask-Stockfish](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/4d024a7c-8b65-406e-b0f1-69884245f744)
 
 ### Checkmate!
-![Chess-Application-Checkmate](https://github.com/MichaelJOHare/chess-application/assets/46801493/6a1a6f60-d712-40a5-a10f-d93c130fccd7)
+![Chess-Application-Checkmate](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/754f8247-c578-425f-8064-c34f5fc689ba)
