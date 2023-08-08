@@ -204,7 +204,7 @@ public class StockfishController {
         // 4. En passant target square
         Square enPassantTarget = move.getEnPassantTarget();
         if (enPassantTarget != null) {
-            fen.append(enPassantTarget).append(" ");
+            fen.append(" ").append(enPassantTarget).append(" ");
         } else {
             fen.append(" - ");
         }

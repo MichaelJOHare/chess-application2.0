@@ -2,6 +2,7 @@ package org.michaeljohare.model.moves;
 
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.pieces.ChessPiece;
+import org.michaeljohare.model.pieces.Pawn;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.pieces.PieceWithMoveStatus;
 import org.michaeljohare.model.player.PlayerColor;
@@ -60,7 +61,7 @@ public class MoveHistory {
 
     public Square getEnPassantTarget() {
         Move lastMove = getLastMove();
-        if (lastMove instanceof EnPassantMove) {
+        if (lastMove.getPiece() instanceof Pawn) {
             int difference = lastMove.getEndSquare().getRow() - lastMove.getStartSquare().getRow();
             if (Math.abs(difference) == 2) {
                 return new Square((lastMove.getEndSquare().getRow() + lastMove.getStartSquare().getRow()) / 2, lastMove.getStartSquare().getCol());
