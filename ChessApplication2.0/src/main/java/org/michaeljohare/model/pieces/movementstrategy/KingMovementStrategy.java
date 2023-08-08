@@ -26,6 +26,7 @@ public class KingMovementStrategy implements MovementStrategy {
                 legalMoves.add(m);
             }
         }
+        addCastlingMoves(board, piece, legalMoves);
         return legalMoves;
     }
 

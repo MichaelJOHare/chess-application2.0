@@ -19,6 +19,8 @@ public class Main {
 
     /*
      * TODO
-     *  Implement stockfish
+     *  Implement 50 move rule
+     *  Highlight stockfish best move
+     *  Refactor and clean up
      */
 }
