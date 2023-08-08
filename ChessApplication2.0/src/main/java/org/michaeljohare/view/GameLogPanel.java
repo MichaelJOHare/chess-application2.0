@@ -13,6 +13,7 @@ import java.util.List;
 public class GameLogPanel extends JPanel {
 
     private JButton playAgainButton;
+    private JButton askStockfishButton;
     private Color defaultButtonColor;
     private JTextArea logTextArea;
     private JScrollPane logScrollPane;
@@ -55,16 +56,28 @@ public class GameLogPanel extends JPanel {
         undoButton.setFont(new Font("Roboto", Font.BOLD, 24));
         undoButton.addActionListener(e -> onUndoButtonClick());
 
+        askStockfishButton = new JButton("Ask Stockfish");
+        askStockfishButton.setFont(new Font("Roboto", Font.BOLD, 24));
+        askStockfishButton.addActionListener(e -> onAskStockfishButtonClick());
+
         JPanel playAgainButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         playAgainButtonPanel.add(playAgainButton);
 
         JPanel undoButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         undoButtonPanel.add(undoButton);
 
+        JPanel askStockfishButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        askStockfishButtonPanel.add(askStockfishButton);
+
+        JPanel undoAndAskStockfishPanel = new JPanel(new BorderLayout());
+        undoAndAskStockfishPanel.add(askStockfishButtonPanel, BorderLayout.WEST);
+        undoAndAskStockfishPanel.add(undoButtonPanel, BorderLayout.EAST);
+        undoAndAskStockfishPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
+
         JPanel logPanelWithButtons = new JPanel(new BorderLayout());
         logPanelWithButtons.add(logScrollPane, BorderLayout.CENTER);
         logPanelWithButtons.add(playAgainButtonPanel, BorderLayout.NORTH);
-        logPanelWithButtons.add(undoButtonPanel, BorderLayout.SOUTH);
+        logPanelWithButtons.add(undoAndAskStockfishPanel, BorderLayout.SOUTH);
 
         rightPanel.add(player1CapturedArea, BorderLayout.SOUTH);
         rightPanel.add(logPanelWithButtons, BorderLayout.CENTER);
@@ -102,6 +115,14 @@ public class GameLogPanel extends JPanel {
         String pieceColor = currentPlayer.getColor().toString();
         String pieceColorFormatted = pieceColor.charAt(0) + pieceColor.substring(1).toLowerCase();
         logTextArea.setText(lineBreaks + " It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
+    }
+
+    public void stockfishWaitingButtonText() {
+        askStockfishButton.setText("Waiting...");
+    }
+
+    public void resetStockfishButtonText() {
+        askStockfishButton.setText("Ask Stockfish");
     }
 
     public void noLegalMoveLogText() {
@@ -190,5 +211,9 @@ public class GameLogPanel extends JPanel {
 
     private void onUndoButtonClick() {
         controller.handleUndoButtonClick();
+    }
+
+    private void onAskStockfishButtonClick() {
+        controller.handleAskStockfishButtonClick();
     }
 }

@@ -10,10 +10,11 @@ import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.*;
 import org.michaeljohare.model.player.PieceManager;
 
-import java.io.IOException;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.CompletableFuture;
 
 import static org.michaeljohare.model.pieces.PieceType.convertIntToPieceType;
 
@@ -117,9 +118,7 @@ public class GameManager {
         handleCapturedPieces(legalMove, false);
         updateGUI();
         isFirstClick = true;
-        System.out.println(sfController.toFEN());
         gs.swapPlayers();
-        askStockFish();
     }
 
     public void handleCheckAndCheckmate() {
@@ -162,6 +161,10 @@ public class GameManager {
         }
     }
 
+    public void handleAskStockfishButtonClick() {
+        askStockFish();
+    }
+
     public void handlePlayAgainButtonClick() {
         gs.init();
         board.init(gs.getPlayer1(), gs.getPlayer2());
@@ -201,16 +204,21 @@ public class GameManager {
     }
 
     private void askStockFish() {
-        if (sfController.startEngine()) {
-            System.out.println("Engine has started..");
-            sfController.sendCommand("uci");
-            Move bestMove = sfController.getMove();
-            System.out.println("Engine response:\n" + bestMove.getPiece() + "from " + bestMove.getStartSquare() + " to " +
-                    bestMove.getEndSquare());
+        controller.stockfishWaitingButtonText();
+        CompletableFuture.supplyAsync(() -> sfController.getMove())
+                .thenAccept(move -> SwingUtilities.invokeLater(() -> {
+                    controller.resetStockfishButtonText();
 
-            sfController.stopEngine();
-        } else {
-            System.out.println("Oops! Something went wrong..");
-        }
+                    controller.clearHighlightedSquares();
+                    controller.setHighlightedSquaresStockfish(move);
+                }))
+                .exceptionally(ex -> {
+                    System.err.println("Error fetching move from Stockfish: " + ex.getMessage());
+                    return null;
+                });
+    }
+
+    public void cleanup() {
+        sfController.cleanup();
     }
 }

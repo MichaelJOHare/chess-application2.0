@@ -14,7 +14,7 @@ public class Main {
             ex.printStackTrace();
         }
 
-        GameManager gm = new GameManager();
+        new GameManager();
     }
 
     /*

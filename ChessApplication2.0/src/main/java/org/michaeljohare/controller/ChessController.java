@@ -21,6 +21,7 @@ public class ChessController {
         this.gm = gm;
         gui.getChessBoardPanel().setController(this);
         gui.getGameLogPanel().setController(this);
+        gui.setController(this);
     }
 
     public void updateGUI() {
@@ -31,8 +32,16 @@ public class ChessController {
         gm.handleSquareClick(row, col);
     }
 
+    public void onWindowClosing() {
+        gm.cleanup();
+    }
+
     public void handleUndoButtonClick() {
         gm.handleUndoButtonClick();
+    }
+
+    public void handleAskStockfishButtonClick() {
+        gm.handleAskStockfishButtonClick();
     }
 
     public void handlePlayAgainButtonClick() {
@@ -45,6 +54,10 @@ public class ChessController {
 
     public void setHighlightedSquares(List<Move> moves) {
         gui.getChessBoardPanel().setHighlightedSquares(moves);
+    }
+
+    public void setHighlightedSquaresStockfish(Move move) {
+        gui.getChessBoardPanel().setHighlightedSquaresStockfish(move);
     }
 
     public void clearHighlightedSquares() {
@@ -89,5 +102,13 @@ public class ChessController {
 
     public void stalemateLogText() {
         gui.getGameLogPanel().stalemateLogText();
+    }
+
+    public void stockfishWaitingButtonText() {
+        gui.getGameLogPanel().stockfishWaitingButtonText();
+    }
+
+    public void resetStockfishButtonText() {
+        gui.getGameLogPanel().resetStockfishButtonText();
     }
 }

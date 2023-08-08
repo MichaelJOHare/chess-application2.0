@@ -128,6 +128,15 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
+    public void setHighlightedSquaresStockfish(Move move) {
+        Square startSquare = move.getStartSquare();
+        Square endSquare = move.getEndSquare();
+        chessButtons[startSquare.getRow()][startSquare.getCol()].setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
+        chessButtons[endSquare.getRow()][endSquare.getCol()].setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
+        highlightedSquares.add(startSquare);
+        highlightedSquares.add(endSquare);
+    }
+
     public void clearHighlightedSquares() {
         for (Square square : highlightedSquares) {
             chessButtons[square.getRow()][square.getCol()].setBorder(null);

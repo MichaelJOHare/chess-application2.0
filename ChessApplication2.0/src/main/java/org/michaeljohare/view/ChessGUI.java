@@ -1,17 +1,21 @@
 package org.michaeljohare.view;
 
+import org.michaeljohare.controller.ChessController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 public class ChessGUI extends JFrame {
 
     private ChessBoardPanel chessBoardPanel;
     private GameLogPanel gameLogPanel;
+    private ChessController controller;
 
 
     public ChessGUI(ChessBoard board) {
@@ -31,6 +35,14 @@ public class ChessGUI extends JFrame {
 
         add(chessBoardPanel, BorderLayout.CENTER);
         add(gameLogPanel, BorderLayout.EAST);
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                if (controller != null) {
+                    controller.onWindowClosing();
+                }
+            }
+        });
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
@@ -74,5 +86,9 @@ public class ChessGUI extends JFrame {
 
     public GameLogPanel getGameLogPanel() {
         return gameLogPanel;
+    }
+
+    public void setController(ChessController controller) {
+        this.controller = controller;
     }
 }

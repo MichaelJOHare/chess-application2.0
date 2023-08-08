@@ -10,9 +10,9 @@ import org.michaeljohare.model.pieces.*;
 import org.michaeljohare.model.player.PlayerColor;
 
 import java.io.*;
+import java.util.concurrent.CompletableFuture;
 
-import static org.michaeljohare.model.board.ChessBoard.BLACK_MAJOR_PIECE_ROW;
-import static org.michaeljohare.model.board.ChessBoard.WHITE_MAJOR_PIECE_ROW;
+import static org.michaeljohare.model.board.ChessBoard.*;
 
 public class StockfishController {
     private Process engineProcess;
@@ -28,6 +28,11 @@ public class StockfishController {
         this. board = board;
         this.move = move;
         this.gs = gs;
+        if (startEngine()) {
+            sendCommand("uci");
+        } else {
+            System.err.println("Failed to start Stockfish engine.");
+        }
     }
 
     public boolean startEngine() {
@@ -46,20 +51,26 @@ public class StockfishController {
     public void stopEngine() {
         try {
             sendCommand("quit");
-            engineProcess.destroy();
-            processReader.close();
-            processWriter.close();
+            if (processReader != null) {
+                processReader.close();
+            }
+            if (processWriter != null) {
+                processWriter.close();
+            }
+            if (engineProcess != null) {
+                engineProcess.destroy();
+            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public void sendCommand(String command) {
+    public synchronized void sendCommand(String command) {
         processWriter.println(command);
         processWriter.flush();
     }
 
-    public Move getMove() {
+    public synchronized Move getMove() {
         String fen = toFEN();
 
         sendCommand("position fen " + fen);
@@ -75,7 +86,7 @@ public class StockfishController {
         return parseMove(bestMove);
     }
 
-    public String getResponse() throws IOException {
+    public synchronized String getResponse() throws IOException {
         String line;
         StringBuilder response = new StringBuilder();
         String bestMove = "";
@@ -155,15 +166,47 @@ public class StockfishController {
         fen.append(gs.getCurrentPlayer().isWhite() ? " w " : " b ");
 
         // 3. Castling availability
-        String castlingRights = getCastlingRights();
-        fen.append(castlingRights.isEmpty() ? "-" : castlingRights).append(" ");
+        ChessPiece[][] chessBoard = board.getBoard();
+
+        boolean anyCastlingAvailable = false;
+        ChessPiece whiteKing = chessBoard[WHITE_MAJOR_PIECE_ROW][KING_COLUMN];
+        if (whiteKing instanceof King && !((King) whiteKing).hasMoved()) {
+            ChessPiece whiteKingRook = chessBoard[WHITE_MAJOR_PIECE_ROW][ROOK_COLUMN_1];
+            ChessPiece whiteQueenRook = chessBoard[WHITE_MAJOR_PIECE_ROW][ROOK_COLUMN_2];
+            if (whiteKingRook instanceof Rook && !((Rook) whiteKingRook).hasMoved()) {
+                fen.append("K");
+                anyCastlingAvailable = true;
+            }
+            if (whiteQueenRook instanceof Rook && !((Rook) whiteQueenRook).hasMoved()) {
+                fen.append("Q");
+                anyCastlingAvailable = true;
+            }
+        }
+
+        ChessPiece blackKing = chessBoard[BLACK_MAJOR_PIECE_ROW][KING_COLUMN];
+        if (blackKing instanceof King && !((King) blackKing).hasMoved()) {
+            ChessPiece blackKingRook = chessBoard[BLACK_MAJOR_PIECE_ROW][ROOK_COLUMN_1];
+            ChessPiece blackQueenRook = chessBoard[BLACK_MAJOR_PIECE_ROW][ROOK_COLUMN_2];
+            if (blackKingRook instanceof Rook && !((Rook) blackKingRook).hasMoved()) {
+                fen.append("k");
+                anyCastlingAvailable = true;
+            }
+            if (blackQueenRook instanceof Rook && !((Rook) blackQueenRook).hasMoved()) {
+                fen.append("q");
+                anyCastlingAvailable = true;
+            }
+        }
+
+        if (!anyCastlingAvailable) {
+            fen.append(" - ");
+        }
 
         // 4. En passant target square
         Square enPassantTarget = move.getEnPassantTarget();
         if (enPassantTarget != null) {
             fen.append(enPassantTarget).append(" ");
         } else {
-            fen.append("- ");
+            fen.append(" - ");
         }
 
         // 5. Halfmove clock
@@ -175,45 +218,6 @@ public class StockfishController {
         return fen.toString();
     }
 
-    public String getCastlingRights() {
-        StringBuilder castling = new StringBuilder();
-
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                ChessPiece piece = board.getBoard()[row][col];
-                if (piece instanceof King) {
-                    if (piece.getPlayer().getColor() == PlayerColor.WHITE && !((PieceWithMoveStatus) piece).hasMoved()) {
-                        // Check rooks for white's castling rights
-                        for (int rcol = 0; rcol < 8; rcol++) {
-                            ChessPiece rookPiece = board.getPieceAt(WHITE_MAJOR_PIECE_ROW, rcol);
-                            if (rookPiece instanceof Rook && !((PieceWithMoveStatus) rookPiece).hasMoved()) {
-                                if (rcol < col) {
-                                    castling.append("Q");
-                                } else {
-                                    castling.append("K");
-                                }
-                            }
-                        }
-                    } else if (piece.getPlayer().getColor() == PlayerColor.BLACK && !((PieceWithMoveStatus) piece).hasMoved()) {
-                        // Check rooks for black's castling rights
-                        for (int rcol = 0; rcol < 8; rcol++) {
-                            ChessPiece rookPiece = board.getPieceAt(BLACK_MAJOR_PIECE_ROW, rcol);
-                            if (rookPiece instanceof Rook && !((PieceWithMoveStatus) rookPiece).hasMoved()) {
-                                if (rcol < col) {
-                                    castling.append("q");
-                                } else {
-                                    castling.append("k");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return castling.toString();
-    }
-
     private PieceType charToPieceType(char pieceChar) {
         switch (pieceChar) {
             case 'q': return PieceType.QUEEN;
@@ -222,5 +226,9 @@ public class StockfishController {
             case 'n': return PieceType.KNIGHT;
             default: throw new IllegalArgumentException("Invalid promotion piece char: " + pieceChar);
         }
+    }
+
+    public void cleanup() {
+        stopEngine();
     }
 }
