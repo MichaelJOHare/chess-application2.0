@@ -16,13 +16,21 @@ public class KnightMovementStrategy implements MovementStrategy {
         List<Move> rawLegalMoves = calculateRawLegalMoves(board, piece, move);
         List<Move> legalMoves = new ArrayList<>();
         for (Move m : rawLegalMoves) {
-            move.makeMove(m);
-            if (!board.isKingInCheck(piece.getPlayer(), move)) {
+            if (!wouldResultInCheck(board, piece, move, m)) {
                 legalMoves.add(m);
             }
-            move.undoMove();
         }
         return legalMoves;
+    }
+
+    public boolean wouldResultInCheck(ChessBoard board, ChessPiece piece, MoveHistory move, Move m) {
+        ChessBoard copiedBoard = board.copy();
+        MoveHistory copiedMoveHistory = move.copy();
+        Move copiedMove = m.copy();
+
+        copiedMoveHistory.makeMove(copiedMove);
+
+        return copiedBoard.isKingInCheck(piece.getPlayer(), move);
     }
 
     @Override

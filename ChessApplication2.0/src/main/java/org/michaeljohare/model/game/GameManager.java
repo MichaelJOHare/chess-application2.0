@@ -1,16 +1,16 @@
 package org.michaeljohare.model.game;
 
 import org.michaeljohare.controller.ChessController;
+import org.michaeljohare.controller.StockfishController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.moves.PromotionMove;
-import org.michaeljohare.model.pieces.ChessPiece;
-import org.michaeljohare.model.pieces.PieceType;
-import org.michaeljohare.model.pieces.PieceWithMoveStatus;
+import org.michaeljohare.model.pieces.*;
 import org.michaeljohare.model.player.PieceManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -20,6 +20,7 @@ import static org.michaeljohare.model.pieces.PieceType.convertIntToPieceType;
 public class GameManager {
 
     private ChessController controller;
+    private StockfishController sfController;
     private ChessBoard board;
     private GameState gs;
     private ChessPiece selectedPiece;
@@ -36,6 +37,7 @@ public class GameManager {
         this.controller = new ChessController(board, this);
         isFirstClick = true;
         move = new MoveHistory();
+        sfController = new StockfishController(board, move, gs);
     }
 
     public void handleSquareClick(int row, int col) {
@@ -115,7 +117,9 @@ public class GameManager {
         handleCapturedPieces(legalMove, false);
         updateGUI();
         isFirstClick = true;
+        System.out.println(sfController.toFEN());
         gs.swapPlayers();
+        askStockFish();
     }
 
     public void handleCheckAndCheckmate() {
@@ -194,5 +198,19 @@ public class GameManager {
 
     private void updateGUI() {
         controller.updateGUI();
+    }
+
+    private void askStockFish() {
+        if (sfController.startEngine()) {
+            System.out.println("Engine has started..");
+            sfController.sendCommand("uci");
+            Move bestMove = sfController.getMove();
+            System.out.println("Engine response:\n" + bestMove.getPiece() + "from " + bestMove.getStartSquare() + " to " +
+                    bestMove.getEndSquare());
+
+            sfController.stopEngine();
+        } else {
+            System.out.println("Oops! Something went wrong..");
+        }
     }
 }

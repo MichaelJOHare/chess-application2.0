@@ -3,7 +3,7 @@ package org.michaeljohare.model.board;
 public class Square {
     private int row;
     private int col;
-    private final String[] legendLetter = { "A", "B", "C", "D", "E", "F", "G", "H" };
+    private final String[] legendLetter = { "a", "b", "c", "d", "e", "f", "g", "h" };
     private final String[] legendNumber = { "8", "7", "6", "5", "4", "3", "2", "1" };
 
     public Square(int row, int col) {
@@ -17,6 +17,10 @@ public class Square {
 
     public int getCol() {
         return col;
+    }
+
+    public Square copy() {
+        return new Square(this.row, this.col);
     }
 
     @Override

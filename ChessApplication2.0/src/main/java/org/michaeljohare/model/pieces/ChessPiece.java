@@ -6,10 +6,11 @@ import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.pieces.movementstrategy.MovementStrategy;
 import org.michaeljohare.model.player.Player;
+import org.michaeljohare.model.player.PlayerColor;
 
 import java.util.List;
 
-public abstract class ChessPiece {
+public abstract class ChessPiece implements Cloneable {
 
     protected Square currentSquare;
     private final MovementStrategy movementStrategy;
@@ -76,6 +77,35 @@ public abstract class ChessPiece {
 
     public void revive() {
         isAlive = true;
+    }
+
+    public char pieceToFEN() {
+        switch (type) {
+            case KING:
+                return player.getColor() == PlayerColor.WHITE ? 'K' : 'k';
+            case QUEEN:
+                return player.getColor() == PlayerColor.WHITE ? 'Q' : 'q';
+            case ROOK:
+                return player.getColor() == PlayerColor.WHITE ? 'R' : 'r';
+            case BISHOP:
+                return player.getColor() == PlayerColor.WHITE ? 'B' : 'b';
+            case KNIGHT:
+                return player.getColor() == PlayerColor.WHITE ? 'N' : 'n';
+            case PAWN:
+                return player.getColor() == PlayerColor.WHITE ? 'P' : 'p';
+            default:
+                throw new IllegalArgumentException("Unknown piece type");
+        }
+    }
+
+    public ChessPiece copy() {
+        try {
+            ChessPiece copiedPiece = (ChessPiece) super.clone();
+            copiedPiece.currentSquare = this.currentSquare.copy();
+            return copiedPiece;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 
     @Override

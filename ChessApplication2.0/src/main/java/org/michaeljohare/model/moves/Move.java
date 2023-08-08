@@ -12,6 +12,7 @@ public class Move implements Movable{
     ChessPiece capturedPiece;
     ChessBoard board;
     boolean isPromotion;
+    boolean isCapture;
 
     public Move(ChessPiece piece, Square from, Square to, ChessPiece capturedPiece, ChessBoard board) {
         this.piece = piece;
@@ -20,6 +21,7 @@ public class Move implements Movable{
         this.capturedPiece = capturedPiece;
         this.board = board;
         this.isPromotion = false;
+        this.isCapture = false;
     }
 
     @Override
@@ -27,6 +29,7 @@ public class Move implements Movable{
         if (capturedPiece != null) {
             capturedPiece.kill();
             board.removePiece(capturedPiece);
+            isCapture = true;
         }
         board.removePiece(piece);
         piece.setCurrentSquare(endSquare);
@@ -73,7 +76,26 @@ public class Move implements Movable{
         return isPromotion;
     }
 
+    public boolean isCapture() {
+        return isCapture;
+    }
+
     public void setPromotion(boolean promotion) {
         this.isPromotion = promotion;
+    }
+
+    public Move copy() {
+        ChessPiece copiedPiece = this.piece.copy();
+        Square copiedStartSquare = new Square(this.startSquare.getRow(), this.startSquare.getCol());
+        Square copiedEndSquare = new Square(this.endSquare.getRow(), this.endSquare.getCol());
+        ChessPiece copiedCapturedPiece = this.capturedPiece != null ? this.capturedPiece.copy() : null;
+        ChessBoard copiedBoard = this.board.copy();
+
+        Move copiedMove = new Move(copiedPiece, copiedStartSquare, copiedEndSquare, copiedCapturedPiece, copiedBoard);
+
+        copiedMove.isPromotion = this.isPromotion;
+        copiedMove.isCapture = this.isCapture;
+
+        return copiedMove;
     }
 }

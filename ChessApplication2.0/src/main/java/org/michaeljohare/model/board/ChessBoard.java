@@ -154,6 +154,24 @@ public class ChessBoard {
         return piece != null && !piece.getPlayer().equals(player);
     }
 
+    public ChessBoard copy() {
+        ChessBoard copiedBoard = new ChessBoard();
+
+        for (int row = 0; row < ROW_LENGTH; row++) {
+            for (int col = 0; col < COLUMN_LENGTH; col++) {
+                ChessPiece currentPiece = this.board[row][col];
+                if (currentPiece != null) {
+                    ChessPiece copiedPiece = currentPiece.copy();
+                    copiedBoard.board[row][col] = copiedPiece;
+                }
+            }
+        }
+
+        copiedBoard.initializePieceManager();
+
+        return copiedBoard;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
