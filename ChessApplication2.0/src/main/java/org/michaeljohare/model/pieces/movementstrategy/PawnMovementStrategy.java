@@ -90,7 +90,7 @@ public class PawnMovementStrategy implements MovementStrategy {
                 }
             }
             // Normal move with promotion
-            if (row == 1) {
+            if (row == 1 && board.isEmpty(row - 1, col)) {
                 for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
                     PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col), null, promotionType, board);
                     promotionMove.setPromotion(true);
@@ -147,7 +147,7 @@ public class PawnMovementStrategy implements MovementStrategy {
                     legalMoves.add(promotionMove);
                 }
             }
-            if (row == 6) {
+            if (row == 6 && board.isEmpty(row + 1, col)) {
                 for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
                     PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col),null, promotionType, board);
                     promotionMove.setPromotion(true);
