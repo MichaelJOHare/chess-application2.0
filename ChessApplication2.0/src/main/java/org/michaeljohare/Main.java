@@ -21,5 +21,8 @@ public class Main {
      * TODO
      *  Implement 50 move rule
      *  Refactor and clean up
+     *  Implement stockfish as player
+     *  Implement letting player choose name/opponent
+     *  Try to reproduce checkmate bug? (see desktop picture)
      */
 }
