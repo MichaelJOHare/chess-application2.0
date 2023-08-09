@@ -111,10 +111,10 @@ public class ChessBoard {
         board[piece.getCurrentSquare().getRow()][piece.getCurrentSquare().getCol()] = null;
     }
 
-    public boolean isKingInCheck(Player player, MoveHistory move) {
+    public boolean isKingInCheck(Player player, MoveHistory move, ChessBoard board) {
         Square kingSquare = pieceManager.findKingSquare(player);
         for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
-            List<Move> pieceMoves = piece.calculateRawLegalMoves(this, move);
+            List<Move> pieceMoves = piece.calculateRawLegalMoves(board, move);
             for (Move m : pieceMoves) {
                 if (m.getPiece().isAlive() && m.getEndSquare().equals(kingSquare)) {
                     return true;

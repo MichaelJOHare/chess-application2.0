@@ -25,6 +25,10 @@ public class Player {
         return color == WHITE;
     }
 
+    public Player copy() {
+        return new Player(this.color, this.name);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

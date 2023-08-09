@@ -132,7 +132,7 @@ public class GameManager {
         }
 
         if (currentPlayerLegalMoves.stream()
-                .allMatch(List::isEmpty) && board.isKingInCheck(gs.getCurrentPlayer(), move)) {
+                .allMatch(List::isEmpty) && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
 
             controller.checkmateLogText();
             controller.updatePlayAgainButton();
@@ -141,7 +141,7 @@ public class GameManager {
 
             controller.stalemateLogText();
             controller.updatePlayAgainButton();
-        } else if (board.isKingInCheck(gs.getCurrentPlayer(), move)) {
+        } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
 
             controller.checkLogText();
         }

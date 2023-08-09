@@ -8,6 +8,7 @@ import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.King;
 import org.michaeljohare.model.pieces.Rook;
+import org.michaeljohare.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,15 @@ public class KingMovementStrategy implements MovementStrategy {
     public boolean wouldResultInCheck(ChessBoard board, ChessPiece piece, MoveHistory move, Move m) {
         ChessBoard copiedBoard = board.copy();
         MoveHistory copiedMoveHistory = move.copy();
-        Move copiedMove = m.copy();
+        ChessPiece copiedPiece = copiedBoard.getPieceAt(piece.getCurrentSquare().getRow(), piece.getCurrentSquare().getCol());;
+        Player copiedPlayer = copiedPiece.getPlayer().copy();
+
+        Move copiedMove = new Move(copiedPiece, m.getStartSquare(), m.getEndSquare(), copiedBoard.getPieceAt(m.getEndSquare().getRow(), m.getEndSquare().getCol()), copiedBoard);
 
         copiedMoveHistory.makeMove(copiedMove);
+        copiedBoard.initializePieceManager();
 
-        return copiedBoard.isKingInCheck(piece.getPlayer(), move);
+        return copiedBoard.isKingInCheck(copiedPlayer, copiedMoveHistory, copiedBoard);
     }
 
     @Override
