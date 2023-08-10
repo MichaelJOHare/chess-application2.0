@@ -5,6 +5,8 @@ import org.michaeljohare.model.game.GameManager;
 
 
 import javax.swing.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,7 +16,20 @@ public class Main {
             ex.printStackTrace();
         }
 
+/*        TimerTask memoryMonitor = new TimerTask() {
+            @Override
+            public void run() {
+                Runtime runtime = Runtime.getRuntime();
+                long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+                System.out.println("Used memory: " + usedMemory + " bytes");
+            }
+        };
+
+        Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(memoryMonitor, 0, 1000);*/
+
         new GameManager();
+
     }
 
     /*
