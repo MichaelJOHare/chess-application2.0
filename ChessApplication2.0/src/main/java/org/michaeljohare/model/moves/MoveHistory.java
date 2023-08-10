@@ -61,7 +61,7 @@ public class MoveHistory {
 
     public Square getEnPassantTarget() {
         Move lastMove = getLastMove();
-        if (lastMove.getPiece() instanceof Pawn) {
+        if (lastMove != null && lastMove.getPiece() instanceof Pawn) {
             int difference = lastMove.getEndSquare().getRow() - lastMove.getStartSquare().getRow();
             if (Math.abs(difference) == 2) {
                 return new Square((lastMove.getEndSquare().getRow() + lastMove.getStartSquare().getRow()) / 2, lastMove.getStartSquare().getCol());

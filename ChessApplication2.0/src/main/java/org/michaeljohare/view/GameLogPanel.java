@@ -211,6 +211,10 @@ public class GameLogPanel extends JPanel {
 
     private void onUndoButtonClick() {
         controller.handleUndoButtonClick();
+        if (playAgainButton.getForeground() != null) {
+            playAgainButton.setForeground(null);
+            playAgainButton.setBackground(defaultButtonColor);
+        }
     }
 
     private void onAskStockfishButtonClick() {

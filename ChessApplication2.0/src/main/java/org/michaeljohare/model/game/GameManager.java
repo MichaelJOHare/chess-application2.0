@@ -214,6 +214,7 @@ public class GameManager {
                 }))
                 .exceptionally(ex -> {
                     System.err.println("Error fetching move from Stockfish: " + ex.getMessage());
+                    ex.printStackTrace();
                     return null;
                 });
     }
