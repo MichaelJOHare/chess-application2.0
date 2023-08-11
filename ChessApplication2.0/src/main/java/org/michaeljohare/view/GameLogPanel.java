@@ -7,6 +7,7 @@ import org.michaeljohare.model.player.Player;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,36 +48,26 @@ public class GameLogPanel extends JPanel {
     private JPanel createRightPanel() {
         rightPanel.setLayout(new BorderLayout());
 
-        playAgainButton = new JButton("Play Again");
-        playAgainButton.setFont(new Font("Roboto", Font.BOLD, 24));
-        playAgainButton.addActionListener(e -> onPlayAgainButtonClick());
+        playAgainButton = createStyledButton("Play Again", e -> onPlayAgainButtonClick());
         defaultButtonColor = playAgainButton.getBackground();
 
-        JButton undoButton = new JButton("Undo");
-        undoButton.setFont(new Font("Roboto", Font.BOLD, 24));
-        undoButton.addActionListener(e -> onUndoButtonClick());
-
-        askStockfishButton = new JButton("Ask Stockfish");
-        askStockfishButton.setFont(new Font("Roboto", Font.BOLD, 24));
-        askStockfishButton.addActionListener(e -> onAskStockfishButtonClick());
-
-        JPanel playAgainButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        playAgainButtonPanel.add(playAgainButton);
-
-        JPanel undoButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        undoButtonPanel.add(undoButton);
-
-        JPanel askStockfishButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        askStockfishButtonPanel.add(askStockfishButton);
+        JButton undoButton = createStyledButton("Undo", e -> onUndoButtonClick());
+        askStockfishButton = createStyledButton("Ask Stockfish", e -> onAskStockfishButtonClick());
+        JButton flipBoardButton = createStyledButton("Flip Board", e -> onFlipBoardButtonClick());
 
         JPanel undoAndAskStockfishPanel = new JPanel(new BorderLayout());
-        undoAndAskStockfishPanel.add(askStockfishButtonPanel, BorderLayout.WEST);
-        undoAndAskStockfishPanel.add(undoButtonPanel, BorderLayout.EAST);
+        undoAndAskStockfishPanel.add(createButtonPanel(askStockfishButton), BorderLayout.WEST);
+        undoAndAskStockfishPanel.add(createButtonPanel(undoButton), BorderLayout.EAST);
         undoAndAskStockfishPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
+
+        JPanel playAgainAndFlipBoardPanel = new JPanel(new BorderLayout());
+        playAgainAndFlipBoardPanel.add(createButtonPanel(playAgainButton), BorderLayout.EAST);
+        playAgainAndFlipBoardPanel.add(createButtonPanel(flipBoardButton), BorderLayout.WEST);
+        playAgainAndFlipBoardPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
 
         JPanel logPanelWithButtons = new JPanel(new BorderLayout());
         logPanelWithButtons.add(logScrollPane, BorderLayout.CENTER);
-        logPanelWithButtons.add(playAgainButtonPanel, BorderLayout.NORTH);
+        logPanelWithButtons.add(playAgainAndFlipBoardPanel, BorderLayout.NORTH);
         logPanelWithButtons.add(undoAndAskStockfishPanel, BorderLayout.SOUTH);
 
         rightPanel.add(player1CapturedArea, BorderLayout.SOUTH);
@@ -84,6 +75,21 @@ public class GameLogPanel extends JPanel {
         rightPanel.add(player2CapturedArea, BorderLayout.NORTH);
 
         return rightPanel;
+    }
+
+    private JButton createStyledButton(String text, ActionListener action) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Roboto", Font.BOLD, 24));
+        button.addActionListener(action);
+        return button;
+    }
+
+    private JPanel createButtonPanel(JButton... buttons) {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        for (JButton button : buttons) {
+            buttonPanel.add(button);
+        }
+        return buttonPanel;
     }
 
     private JTextArea createLogTextArea() {
@@ -223,5 +229,9 @@ public class GameLogPanel extends JPanel {
 
     private void onAskStockfishButtonClick() {
         controller.handleAskStockfishButtonClick();
+    }
+
+    private void onFlipBoardButtonClick() {
+        controller.onUserRequestFlipBoard();
     }
 }

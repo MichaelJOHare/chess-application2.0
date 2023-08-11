@@ -49,11 +49,23 @@ public class ChessBoard {
     }
 
     private void initializeBoard(Player player1, Player player2) {
-        initializeMajorPieces(player1, player2);
-        initializePawns(player1, player2);
+        if (player1.isWhite()) {
+            initializeMajorPieces(player1, WHITE_MAJOR_PIECE_ROW, player2, BLACK_MAJOR_PIECE_ROW);
+            initializePawnRows(player1, WHITE_PAWN_ROW, player2, BLACK_PAWN_ROW);
+        } else {
+            initializeMajorPieces(player1, BLACK_MAJOR_PIECE_ROW, player2, WHITE_MAJOR_PIECE_ROW);
+            initializePawnRows(player1, BLACK_PAWN_ROW, player2, WHITE_PAWN_ROW);
+        }
     }
 
-    private void initializeMajorPieces(Player player1, Player player2) {
+    private void initializeMajorPieces(Player player1, int player1Row, Player player2, int player2Row) {
+        Map<Integer, BiFunction<Square, Player, ChessPiece>> pieceMap = createPieceMap();
+
+        placeMajorPiecesForRow(player1Row, player1, pieceMap);
+        placeMajorPiecesForRow(player2Row, player2, pieceMap);
+    }
+
+    private Map<Integer, BiFunction<Square, Player, ChessPiece>> createPieceMap() {
         Map<Integer, BiFunction<Square, Player, ChessPiece>> pieceMap = new HashMap<>();
         pieceMap.put(ROOK_COLUMN_1, Rook::new);
         pieceMap.put(ROOK_COLUMN_2, Rook::new);
@@ -63,22 +75,20 @@ public class ChessBoard {
         pieceMap.put(BISHOP_COLUMN_2, Bishop::new);
         pieceMap.put(QUEEN_COLUMN, Queen::new);
         pieceMap.put(KING_COLUMN, King::new);
+        return pieceMap;
+    }
 
-        for (int row = 0; row < COLUMN_LENGTH; row++) {
-            for (int col = 0; col < ROW_LENGTH; col++) {
-                if (row == WHITE_MAJOR_PIECE_ROW || row == BLACK_MAJOR_PIECE_ROW) {
-                    Player player = (row == WHITE_MAJOR_PIECE_ROW) ? player1 : player2;
-                    if (pieceMap.containsKey(col)) {
-                        placePiece(row, col, pieceMap.get(col).apply(new Square(row, col), player));
-                    }
-                }
+    private void placeMajorPiecesForRow(int row, Player player, Map<Integer, BiFunction<Square, Player, ChessPiece>> pieceMap) {
+        for (int col = 0; col < ROW_LENGTH; col++) {
+            if (pieceMap.containsKey(col)) {
+                placePiece(row, col, pieceMap.get(col).apply(new Square(row, col), player));
             }
         }
     }
 
-    private void initializePawns(Player player1, Player player2) {
-        initializePawnRow(BLACK_PAWN_ROW, player2);
-        initializePawnRow(WHITE_PAWN_ROW, player1);
+    private void initializePawnRows(Player player1, int row1, Player player2, int row2) {
+        initializePawnRow(row1, player1);
+        initializePawnRow(row2, player2);
     }
 
     private void initializePawnRow(int row, Player player) {

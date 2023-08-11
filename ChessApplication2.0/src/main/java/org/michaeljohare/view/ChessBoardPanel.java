@@ -23,6 +23,7 @@ public class ChessBoardPanel extends JPanel {
     private final List<Square> highlightedSquares = new ArrayList<>();
     private static final Color LIGHT_SQUARE = new Color(248, 240, 198);
     private static final Color DARK_SQUARE = new Color(156, 98, 69);
+    private boolean boardFlipped = false;
 
     public ChessBoardPanel(ChessBoard board) {
         this.board = board;
@@ -37,9 +38,18 @@ public class ChessBoardPanel extends JPanel {
 
     private JPanel createChessboardPanel() {
         chessBoardPanel.setLayout(new GridLayout(8, 8));
+
+        int startRow = boardFlipped ? 7 : 0;
+        int endRow = boardFlipped ? -1 : 8;
+        int rowIncrement = boardFlipped ? -1 : 1;
+
+        int startCol = boardFlipped ? 7 : 0;
+        int endCol = boardFlipped ? -1 : 8;
+        int colIncrement = boardFlipped ? -1 : 1;
+
         chessButtons = new JButton[8][8];
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = startRow; row != endRow; row += rowIncrement) {
+            for (int col = startCol; col != endCol; col += colIncrement) {
                 chessButtons[row][col] = new JButton();
                 chessButtons[row][col].setLayout(new BorderLayout());
 
@@ -59,26 +69,43 @@ public class ChessBoardPanel extends JPanel {
     }
 
     private void createButtonLabels(int row, int col, JButton[][] chessButtons) {
-        if (row == 7) {
+
+        if ((boardFlipped && row == 0) || (!boardFlipped && row == 7)) {
             JLabel letterLabel = new JLabel("abcdefgh".substring(col, col + 1));
             letterLabel.setFont(new Font("Roboto", Font.BOLD, 16));
             if (col % 2 == 0) {
-                letterLabel.setForeground(LIGHT_SQUARE);
+                if (boardFlipped) {
+                    letterLabel.setForeground(DARK_SQUARE);
+                } else {
+                    letterLabel.setForeground(LIGHT_SQUARE);
+                }
             } else {
-                letterLabel.setForeground(DARK_SQUARE);
+                if (boardFlipped) {
+                    letterLabel.setForeground(LIGHT_SQUARE);
+                } else {
+                    letterLabel.setForeground(DARK_SQUARE);
+                }
             }
             int leftPadding = 5;
             letterLabel.setBorder(BorderFactory.createEmptyBorder(0, leftPadding, 0, 0));
             chessButtons[row][col].add(letterLabel, BorderLayout.SOUTH);
         }
 
-        if (col == 7) {
+        if ((boardFlipped && col == 0) || (!boardFlipped && col == 7)) {
             JLabel numberLabel = new JLabel("87654321".substring(row, row + 1), SwingConstants.RIGHT);
             numberLabel.setFont(new Font("Roboto", Font.BOLD, 16));
             if (row % 2 == 1) {
-                numberLabel.setForeground(DARK_SQUARE);
+                if (boardFlipped) {
+                    numberLabel.setForeground(LIGHT_SQUARE);
+                } else {
+                    numberLabel.setForeground(DARK_SQUARE);
+                }
             } else {
-                numberLabel.setForeground(LIGHT_SQUARE);
+                if (boardFlipped) {
+                    numberLabel.setForeground(DARK_SQUARE);
+                } else {
+                    numberLabel.setForeground(LIGHT_SQUARE);
+                }
             }
             int rightPadding = 5;
             numberLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, rightPadding));
@@ -154,4 +181,13 @@ public class ChessBoardPanel extends JPanel {
     private void onSquareClick(int row, int col) {
         controller.onSquareClick(row, col);
     }
+
+    public void flipBoard() {
+        boardFlipped = !boardFlipped;
+        chessBoardPanel.removeAll();
+        createChessboardPanel();
+        chessBoardPanel.revalidate();
+        chessBoardPanel.repaint();
+    }
+
 }

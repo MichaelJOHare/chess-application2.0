@@ -25,13 +25,12 @@ public class ChessController {
         gui.setController(this);
     }
 
-/*    public void updateBoardOrientation() {
-        gui.getChessBoardPanel().setFlipped(gm.getGs().getPlayer1().getColor() == PlayerColor.BLACK);
-    }*/
-
     public void showGUI() {
-        //updateBoardOrientation();
         gui.showGUI();
+    }
+
+    public void onUserRequestFlipBoard() {
+        gui.getChessBoardPanel().flipBoard();
     }
 
     public ChessGUI getGui() {
