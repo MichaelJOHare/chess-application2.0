@@ -5,6 +5,7 @@ import org.michaeljohare.model.game.GameManager;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
+import org.michaeljohare.model.player.PlayerColor;
 import org.michaeljohare.view.ChessGUI;
 
 import java.awt.*;
@@ -22,6 +23,19 @@ public class ChessController {
         gui.getChessBoardPanel().setController(this);
         gui.getGameLogPanel().setController(this);
         gui.setController(this);
+    }
+
+/*    public void updateBoardOrientation() {
+        gui.getChessBoardPanel().setFlipped(gm.getGs().getPlayer1().getColor() == PlayerColor.BLACK);
+    }*/
+
+    public void showGUI() {
+        //updateBoardOrientation();
+        gui.showGUI();
+    }
+
+    public ChessGUI getGui() {
+        return gui;
     }
 
     public void updateGUI() {
@@ -106,6 +120,10 @@ public class ChessController {
 
     public void stockfishWaitingButtonText() {
         gui.getGameLogPanel().stockfishWaitingButtonText();
+    }
+
+    public void stockfishThinkingButtonText() {
+        gui.getGameLogPanel().stockfishThinkingButtonText();
     }
 
     public void resetStockfishButtonText() {

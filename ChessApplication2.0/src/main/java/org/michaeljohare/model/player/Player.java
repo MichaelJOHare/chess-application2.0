@@ -7,10 +7,12 @@ import static org.michaeljohare.model.player.PlayerColor.WHITE;
 public class Player {
     private PlayerColor color;
     private String name;
+    private boolean isPlayer1;
 
-    public Player(PlayerColor color, String name) {
+    public Player(PlayerColor color, String name, boolean isPlayer1) {
         this.name = name;
         this.color = color;
+        this.isPlayer1 = isPlayer1;
     }
 
     public String getName() {
@@ -25,8 +27,12 @@ public class Player {
         return color == WHITE;
     }
 
+    public boolean isPlayer1() {
+        return isPlayer1;
+    }
+
     public Player copy() {
-        return new Player(this.color, this.name);
+        return new Player(this.color, this.name, this.isPlayer1);
     }
 
     @Override
@@ -38,7 +44,7 @@ public class Player {
             return false;
         }
         Player player = (Player) obj;
-        return color == player.color && Objects.equals(name, player.name);
+        return color == player.color && Objects.equals(name, player.name) && isPlayer1 == player.isPlayer1;
     }
 
     @Override

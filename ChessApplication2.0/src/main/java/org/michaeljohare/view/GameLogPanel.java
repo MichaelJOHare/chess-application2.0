@@ -121,6 +121,10 @@ public class GameLogPanel extends JPanel {
         askStockfishButton.setText("Waiting...");
     }
 
+    public void stockfishThinkingButtonText() {
+        askStockfishButton.setText("Thinking...");
+    }
+
     public void resetStockfishButtonText() {
         askStockfishButton.setText("Ask Stockfish");
     }

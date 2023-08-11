@@ -9,6 +9,7 @@ import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.*;
 import org.michaeljohare.model.player.PieceManager;
+import org.michaeljohare.model.player.PlayerColor;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -35,10 +36,21 @@ public class GameManager {
         this.board = new ChessBoard();
         this.gs = new GameState(board);
         this.pm = board.getPieceManager();
-        this.controller = new ChessController(board, this);
+
         isFirstClick = true;
         move = new MoveHistory();
         sfController = new StockfishController(board, move, gs);
+
+        this.controller = new ChessController(board, this);
+        controller.showGUI();
+
+        initiateGame();
+    }
+
+    private void initiateGame() {
+        if (gs.getCurrentPlayer().getName().equals("Stockfish")) {
+            makeStockfishMove();
+        }
     }
 
     public void handleSquareClick(int row, int col) {
@@ -94,10 +106,12 @@ public class GameManager {
             tryAgainPrompt(controller::moveIsNotLegalLogText);
         }
 
-        controller.currentPlayerLogText(gs.getCurrentPlayer());
         controller.clearHighlightedSquares();
-
         handleCheckAndCheckmate();
+
+        if (gs.getCurrentPlayer().getName().equals("Stockfish")) {
+            makeStockfishMove();
+        }
     }
 
     public void finalizeMove(Move legalMove) {
@@ -118,7 +132,9 @@ public class GameManager {
         handleCapturedPieces(legalMove, false);
         updateGUI();
         isFirstClick = true;
+
         gs.swapPlayers();
+        controller.currentPlayerLogText(gs.getCurrentPlayer());
     }
 
     public void handleCheckAndCheckmate() {
@@ -148,17 +164,33 @@ public class GameManager {
     }
 
     public void handleUndoButtonClick() {
-        if (!mementos.isEmpty()) {
-            handleCapturedPieces(move.getLastMove(), true);
-            pm.handleUndoPromotion(move.getLastMove());
-            move.undoMove();
-            GameStateMemento memento = mementos.pop();
-            gs.restoreFromMemento(memento);
-            controller.currentPlayerLogText(gs.getCurrentPlayer());
-            updateGUI();
+        if (gs.getCurrentPlayer().equals(gs.getPlayer1()) && gs.getPlayer2().getName().equals("Stockfish")) {
+
+            if (mementos.size() < 2) {
+                controller.nothingLeftToUndoLogText();
+                return;
+            }
+
+            // Undo Stockfish's move and player's move
+            handleSingleUndo();
+            handleSingleUndo();
         } else {
-            controller.nothingLeftToUndoLogText();
+            if (mementos.isEmpty()) {
+                controller.nothingLeftToUndoLogText();
+            } else {
+                handleSingleUndo();
+            }
         }
+    }
+
+    private void handleSingleUndo() {
+        handleCapturedPieces(move.getLastMove(), true);
+        pm.handleUndoPromotion(move.getLastMove());
+        move.undoMove();
+        GameStateMemento memento = mementos.pop();
+        gs.restoreFromMemento(memento);
+        controller.currentPlayerLogText(gs.getCurrentPlayer());
+        updateGUI();
     }
 
     public void handleAskStockfishButtonClick() {
@@ -173,6 +205,7 @@ public class GameManager {
         move.resetMoveHistory();
         mementos.clear();
         updateGUI();
+        initiateGame();
     }
 
     public void handleCapturedPieces(Move legalMove, boolean isUndo) {
@@ -214,6 +247,24 @@ public class GameManager {
                 }))
                 .exceptionally(ex -> {
                     System.err.println("Error fetching move from Stockfish: " + ex.getMessage());
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+
+    private void makeStockfishMove() {
+        controller.stockfishThinkingButtonText();
+
+        CompletableFuture.supplyAsync(() -> sfController.getMove())
+                .thenAccept(stockfishMove -> SwingUtilities.invokeLater(() -> {
+                    controller.resetStockfishButtonText();
+
+                    finalizeMove(stockfishMove);
+
+                    handleCheckAndCheckmate();
+                }))
+                .exceptionally(ex -> {
+                    System.err.println("Error executing move for Stockfish: " + ex.getMessage());
                     ex.printStackTrace();
                     return null;
                 });

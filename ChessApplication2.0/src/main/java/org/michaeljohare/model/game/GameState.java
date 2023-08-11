@@ -4,6 +4,8 @@ import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.model.player.PlayerColor;
+import org.michaeljohare.utils.Pair;
+import org.michaeljohare.view.setup.GameSetup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +22,28 @@ public class GameState {
 
     public GameState(ChessBoard board) {
         this.board = board;
+        initializePlayers();
         init();
     }
 
+    private void initializePlayers() {
+        Pair<Player, Player> players = GameSetup.getPlayerDetails();
+
+        this.player1 = players.getKey();
+        this.player2 = players.getValue();
+    }
+
     public void init() {
-        player1 = new Player(PlayerColor.WHITE, "Mike");
-        player2 = new Player(PlayerColor.BLACK, "Bob");
         board.init(player1, player2);
-        currentPlayer = player1;
-        opposingPlayer = player2;
+
+        if (player1.getColor() == PlayerColor.WHITE) {
+            currentPlayer = player1;
+            opposingPlayer = player2;
+        } else {
+            currentPlayer = player2;
+            opposingPlayer = player1;
+        }
+
         capturedPieces = new ArrayList<>();
         player1CapturedPieces = new ArrayList<>();
         player2CapturedPieces = new ArrayList<>();

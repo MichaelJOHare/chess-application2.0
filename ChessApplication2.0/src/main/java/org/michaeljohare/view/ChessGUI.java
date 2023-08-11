@@ -45,6 +45,9 @@ public class ChessGUI extends JFrame {
         });
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    public void showGUI() {
         setVisible(true);
         updateGUI();
     }

@@ -3,14 +3,13 @@ package org.michaeljohare.controller;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.game.GameState;
+import org.michaeljohare.model.moves.CastlingMove;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.*;
-import org.michaeljohare.model.player.PlayerColor;
 
 import java.io.*;
-import java.util.concurrent.CompletableFuture;
 
 import static org.michaeljohare.model.board.ChessBoard.*;
 
@@ -110,10 +109,30 @@ public class StockfishController {
 
         ChessPiece movingPiece = board.getPieceAt(startSquare.getRow(), startSquare.getCol());
 
+        // If stockfish is suggesting a 2 square king move it must be a castling move
+        if (movingPiece instanceof King && Math.abs(startSquare.getCol() - endSquare.getCol()) == 2) {
+            Square rookStartSquare;
+            Square rookEndSquare;
+
+            // King side castles
+            if (end.equals("g1") || end.equals("g8")) {
+                rookStartSquare = new Square(startSquare.getRow(), 7);
+                rookEndSquare = new Square(startSquare.getRow(), 5);
+            } else { // Queen side castles
+                rookStartSquare = new Square(startSquare.getRow(), 0);
+                rookEndSquare = new Square(startSquare.getRow(), 3);
+            }
+
+            Rook rook = (Rook) board.getPieceAt(rookStartSquare.getRow(), rookStartSquare.getCol());
+            return new CastlingMove(movingPiece, rook, startSquare, endSquare, rookStartSquare, rookEndSquare, board);
+        }
+
         ChessPiece capturedPiece = board.getPieceAt(endSquare.getRow(), endSquare.getCol());
 
         Move move;
 
+        // The only algebraic move with length over 4 that stockfish suggests is a pawn promotion
+        //    eg. normally it's e2e4 etc.
         if (algebraicMove.length() > 4) {
             char promotionPieceChar = algebraicMove.charAt(4);
             PieceType promotionType = charToPieceType(promotionPieceChar);

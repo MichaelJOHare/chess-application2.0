@@ -28,7 +28,7 @@ public class Main {
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(memoryMonitor, 0, 1000);*/
 
-        new GameManager();
+        SwingUtilities.invokeLater(GameManager::new);
 
     }
 
@@ -36,7 +36,6 @@ public class Main {
      * TODO
      *  Implement 50 move rule
      *  Refactor and clean up
-     *  Implement stockfish as player
-     *  Implement letting player choose name/opponent
+     *  Implement flipping board when player chooses black pieces
      */
 }
