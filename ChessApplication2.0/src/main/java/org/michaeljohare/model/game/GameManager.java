@@ -30,7 +30,7 @@ public class GameManager {
     private List<Move> moves;
     private Stack<GameStateMemento> mementos = new Stack<>();
     private MoveHistory move;
-    public PieceManager pm;
+    private PieceManager pm;
 
     public GameManager() {
         this.board = new ChessBoard();

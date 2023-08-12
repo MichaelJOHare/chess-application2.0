@@ -120,7 +120,7 @@ public class GameLogPanel extends JPanel {
         String name = currentPlayer.getName();
         String pieceColor = currentPlayer.getColor().toString();
         String pieceColorFormatted = pieceColor.charAt(0) + pieceColor.substring(1).toLowerCase();
-        logTextArea.setText(lineBreaks + " It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
+        logTextArea.setText(lineBreaks + "    It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
     }
 
     public void stockfishWaitingButtonText() {
@@ -192,7 +192,7 @@ public class GameLogPanel extends JPanel {
 
     private void addCapturedPiecesTitle(JTextArea capturedArea) {
         Font capturedPiecesTitleFont = new Font("Roboto", Font.BOLD, 24);
-        Border paddingBorder = BorderFactory.createEmptyBorder(5, 70, 5, 70);
+        Border paddingBorder = BorderFactory.createEmptyBorder(5, 80, 5, 80);
         Border lineBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray);
         Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, paddingBorder);
 
