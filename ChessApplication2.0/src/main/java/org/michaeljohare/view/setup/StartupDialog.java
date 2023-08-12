@@ -12,6 +12,7 @@ public class StartupDialog extends JDialog {
     private JComboBox<String> colorChoice1, colorChoice2;
     private JComboBox<String> opponentChoice;
     private JButton startButton;
+    private Font defaultFont = new Font("Roboto", Font.PLAIN, 18);
 
     private String playerName1, playerName2;
     private PlayerColor playerColor1, playerColor2;
@@ -23,78 +24,125 @@ public class StartupDialog extends JDialog {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Title
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 1.0;
+        gbc.insets = new Insets(50, 10, 10, 10);
+        JLabel title = new JLabel("Michael's Chess Game");
+        title.setFont(new Font("Roboto", Font.BOLD, 36));
+        title.setHorizontalAlignment(JLabel.CENTER);
+        add(title, gbc);
+
+        gbc.gridy = 1;
+        addSpacer(gbc, 1.0);
+        gbc.weightx = 0;
+        gbc.gridwidth = 1;
 
         // Player 1 Name
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
+        addSpacer(gbc, 0.2);
         gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(10,10,10,40);
-        add(new JLabel("Player 1 Name: "), gbc);
+        gbc.insets = new Insets(50,10,10,10);
+        JLabel player1Name = new JLabel("Player 1 Name:");
+        setFontSize(player1Name);
+        add(player1Name, gbc);
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 0.5;
         playerName1Field = new JTextField(10);
+        setFontSize(playerName1Field);
         add(playerName1Field, gbc);
 
         // Player 1 Color choice
-        gbc.gridx = 0;
+        gbc.gridx = 2;
         gbc.gridy = 1;
+        gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        add(new JLabel("Player 1 Color: "), gbc);
+        JLabel player1ColorChoice = new JLabel("Player 1 Color:");
+        setFontSize(player1ColorChoice);
+        add(player1ColorChoice, gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx = 3;
+        gbc.weightx = 0.5;
         gbc.anchor = GridBagConstraints.WEST;
         colorChoice1 = new JComboBox<>(new String[]{"White", "Black"});
+        setFontSize(colorChoice1);
         add(colorChoice1, gbc);
 
         // Player 2 Name
-        gbc.gridx = 2;
-        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        add(new JLabel("Player 2 Name: "), gbc);
-
-        gbc.gridx = 3;
-        gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(10,10,10,10);
+        JLabel player2Name = new JLabel("Player 2 Name:");
+        setFontSize(player2Name);
+        add(player2Name, gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 0.5;
         playerName2Field = new JTextField(10);
+        setFontSize(playerName2Field);
         add(playerName2Field, gbc);
 
         // Player 2 Color choice
         gbc.gridx = 2;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        add(new JLabel("Player 2 Color: "), gbc);
+        JLabel player2ColorChoice = new JLabel("Player 2 Color:");
+        setFontSize(player2ColorChoice);
+        add(player2ColorChoice, gbc);
 
         gbc.gridx = 3;
+        gbc.weightx = 0.5;
         gbc.anchor = GridBagConstraints.WEST;
-        colorChoice2 = new JComboBox<>(new String[]{"White", "Black"});
+        colorChoice2 = new JComboBox<>(new String[]{"Black", "White"});
+        setFontSize(colorChoice2);
         add(colorChoice2, gbc);
+        addSpacer(gbc, 0.2);
 
-        // Opponent choice
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridwidth = 4;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(40,10,10,10);
-        add(new JLabel("Opponent: "), gbc);
+        // Opponent choice panel
+        JPanel opponentPanel = new JPanel(new GridLayout(2, 1));
+        setFontSize(opponentPanel);
 
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(10,10,10,10);
+        JLabel opponent = new JLabel("Opponent", SwingConstants.CENTER);
+        setFontSize(opponent);
+        opponentPanel.add(opponent);
+
         opponentChoice = new JComboBox<>(new String[]{"Human", "Stockfish"});
-        add(opponentChoice, gbc);
+        setFontSize(opponentChoice);
         opponentChoice.addActionListener(e -> onOpponentChoiceChange());
+        opponentPanel.add(opponentChoice);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(90,10,10,10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(opponentPanel, gbc);
+
+        // Spacer for start button
+        gbc.gridy = 6;
+        gbc.weighty = 0.8;
+        add(new JLabel(""), gbc);
+        gbc.weighty = 0;
 
         // Start button
-        gbc.gridx = 1;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.insets = new Insets(50,10,20,10);
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(40,10,10,10);
         startButton = new JButton("Start Game");
+        startButton.setFont(new Font("Roboto", Font.BOLD, 24));
         add(startButton, gbc);
 
         pack();
@@ -157,6 +205,16 @@ public class StartupDialog extends JDialog {
             playerName2Field.setEnabled(true);
             colorChoice2.setEnabled(true);
         }
+    }
+
+    private void setFontSize(Component comp) {
+        comp.setFont(defaultFont);
+    }
+
+    private void addSpacer(GridBagConstraints gbc, double weight) {
+        JLabel spacer = new JLabel("");
+        gbc.weighty = weight;
+        add(spacer, gbc);
     }
 
     public String getPlayerName1() {

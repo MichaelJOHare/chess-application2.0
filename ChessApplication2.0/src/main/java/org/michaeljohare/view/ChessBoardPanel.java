@@ -16,13 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChessBoardPanel extends JPanel {
+    private static final Color LIGHT_SQUARE = new Color(248, 240, 198);
+    private static final Color DARK_SQUARE = new Color(156, 98, 69);
+    private static final Color LIGHT_SQUARE_PREVIOUS_MOVE = new Color(205,210,106,255);
+    private static final Color DARK_SQUARE_PREVIOUS_MOVE = new Color(170,162,58,255);
+
     private JButton[][] chessButtons;
-    JPanel chessBoardPanel;
+    private JPanel chessBoardPanel;
     private ChessBoard board;
     private ChessController controller;
     private final List<Square> highlightedSquares = new ArrayList<>();
-    private static final Color LIGHT_SQUARE = new Color(248, 240, 198);
-    private static final Color DARK_SQUARE = new Color(156, 98, 69);
+    private final List<Square> previousMoveHighlightedSquares = new ArrayList<>();
     private boolean boardFlipped = false;
 
     public ChessBoardPanel(ChessBoard board) {
@@ -164,12 +168,43 @@ public class ChessBoardPanel extends JPanel {
         highlightedSquares.add(endSquare);
     }
 
+    public void setHighlightedSquaresPreviousMove(Move move) {
+        Square startSquare = move.getStartSquare();
+        Square endSquare = move.getEndSquare();
+
+        if (chessButtons[startSquare.getRow()][startSquare.getCol()].getBackground().equals(DARK_SQUARE)) {
+            chessButtons[startSquare.getRow()][startSquare.getCol()].setBackground(DARK_SQUARE_PREVIOUS_MOVE);
+        } else if (chessButtons[startSquare.getRow()][startSquare.getCol()].getBackground().equals(LIGHT_SQUARE)) {
+            chessButtons[startSquare.getRow()][startSquare.getCol()].setBackground(LIGHT_SQUARE_PREVIOUS_MOVE);
+        }
+
+        if (chessButtons[endSquare.getRow()][endSquare.getCol()].getBackground().equals(DARK_SQUARE)) {
+            chessButtons[endSquare.getRow()][endSquare.getCol()].setBackground(DARK_SQUARE_PREVIOUS_MOVE);
+        } else if (chessButtons[endSquare.getRow()][endSquare.getCol()].getBackground().equals(LIGHT_SQUARE)) {
+            chessButtons[endSquare.getRow()][endSquare.getCol()].setBackground(LIGHT_SQUARE_PREVIOUS_MOVE);
+        }
+
+        previousMoveHighlightedSquares.add(startSquare);
+        previousMoveHighlightedSquares.add(endSquare);
+    }
+
     public void clearHighlightedSquares() {
         for (Square square : highlightedSquares) {
             chessButtons[square.getRow()][square.getCol()].setBorder(null);
         }
         highlightedSquares.clear();
     }
+
+    public void clearPreviousMoveHighlightedSquares() {
+        for (Square square : previousMoveHighlightedSquares) {
+            if (chessButtons[square.getRow()][square.getCol()].getBackground().equals(DARK_SQUARE_PREVIOUS_MOVE)) {
+                chessButtons[square.getRow()][square.getCol()].setBackground(DARK_SQUARE);
+            } else if (chessButtons[square.getRow()][square.getCol()].getBackground().equals(LIGHT_SQUARE_PREVIOUS_MOVE)) {
+                chessButtons[square.getRow()][square.getCol()].setBackground(LIGHT_SQUARE);
+            }
+        }
+    }
+
     public void setController(ChessController controller) {
         this.controller = controller;
     }

@@ -69,12 +69,20 @@ public class ChessController {
         gui.getChessBoardPanel().setHighlightedSquares(moves);
     }
 
+    public void setHighlightedSquaresPreviousMove(Move move) {
+        gui.getChessBoardPanel().setHighlightedSquaresPreviousMove(move);
+    }
+
     public void setHighlightedSquaresStockfish(Move move) {
         gui.getChessBoardPanel().setHighlightedSquaresStockfish(move);
     }
 
     public void clearHighlightedSquares() {
         gui.getChessBoardPanel().clearHighlightedSquares();
+    }
+
+    public void clearPreviousMoveHighlightedSquares() {
+        gui.getChessBoardPanel().clearPreviousMoveHighlightedSquares();
     }
 
     public void updatePlayAgainButton() {

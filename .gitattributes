@@ -1,1 +1,3 @@
-**/stockfish/* linguist-vendored
+ChessApplication2.0/src/main/resources/stockfish/** linguist-vendored
+*.cpp linguist-vendored
+*.h linguist-vendored

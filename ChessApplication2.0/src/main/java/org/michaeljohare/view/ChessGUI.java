@@ -30,7 +30,7 @@ public class ChessGUI extends JFrame {
     private void initializeGUI() {
         updateFrame(this);
 
-        setSize(1300, 1100);
+        setSize(1250, 1000);
         setLayout(new BorderLayout());
 
         add(chessBoardPanel, BorderLayout.CENTER);

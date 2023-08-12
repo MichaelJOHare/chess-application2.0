@@ -135,6 +135,9 @@ public class GameManager {
 
         gs.swapPlayers();
         controller.currentPlayerLogText(gs.getCurrentPlayer());
+
+        controller.clearPreviousMoveHighlightedSquares();
+        controller.setHighlightedSquaresPreviousMove(legalMove);
     }
 
     public void handleCheckAndCheckmate() {
