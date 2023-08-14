@@ -40,6 +40,5 @@ public class Main {
      * TODO
      *  Implement 50 move rule
      *  Refactor and clean up
-     *  Recompile and run another JFR
      */
 }

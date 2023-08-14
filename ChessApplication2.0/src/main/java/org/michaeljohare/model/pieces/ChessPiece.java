@@ -9,6 +9,7 @@ import org.michaeljohare.model.player.Player;
 import org.michaeljohare.model.player.PlayerColor;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class ChessPiece implements Cloneable {
 
@@ -106,6 +107,23 @@ public abstract class ChessPiece implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, player.getColor(), currentSquare);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        ChessPiece that = (ChessPiece) obj;
+
+        return type == that.type &&
+                player.getColor() == that.player.getColor() &&
+                Objects.equals(currentSquare, that.currentSquare);
     }
 
     @Override
