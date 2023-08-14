@@ -192,9 +192,13 @@ public class GameManager {
     private void handleSingleUndo() {
         handleCapturedPieces(move.getLastMove(), true);
         pm.handleUndoPromotion(move.getLastMove());
+
         move.undoMove();
         GameStateMemento memento = mementos.pop();
         gs.restoreFromMemento(memento);
+
+        controller.clearPreviousMoveHighlightedSquares();
+        controller.setHighlightedSquaresPreviousMove(move.getLastMove());
         controller.currentPlayerLogText(gs.getCurrentPlayer());
         updateGUI();
     }

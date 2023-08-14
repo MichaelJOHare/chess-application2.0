@@ -169,6 +169,10 @@ public class ChessBoardPanel extends JPanel {
     }
 
     public void setHighlightedSquaresPreviousMove(Move move) {
+        if (move == null) {
+            return;
+        }
+
         Square startSquare = move.getStartSquare();
         Square endSquare = move.getEndSquare();
 

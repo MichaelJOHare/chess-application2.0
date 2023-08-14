@@ -20,7 +20,7 @@ public class Main {
             ex.printStackTrace();
         }
 
-/*        TimerTask memoryMonitor = new TimerTask() {
+        TimerTask memoryMonitor = new TimerTask() {
             @Override
             public void run() {
                 Runtime runtime = Runtime.getRuntime();
@@ -30,7 +30,7 @@ public class Main {
         };
 
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(memoryMonitor, 0, 1000);*/
+        timer.scheduleAtFixedRate(memoryMonitor, 0, 1000);
 
         SwingUtilities.invokeLater(GameManager::new);
 
