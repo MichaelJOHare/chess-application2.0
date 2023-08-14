@@ -4,7 +4,7 @@ import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.model.player.PlayerColor;
-import org.michaeljohare.utils.Pair;
+import org.michaeljohare.utils.PlayerSetup;
 import org.michaeljohare.view.setup.GameSetup;
 
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ public class GameState {
     private List<ChessPiece> capturedPieces;
     private List<ChessPiece> player1CapturedPieces;
     private List<ChessPiece> player2CapturedPieces;
+    private int stockfishElo = -1;
 
     public GameState(ChessBoard board) {
         this.board = board;
@@ -27,10 +28,14 @@ public class GameState {
     }
 
     private void initializePlayers() {
-        Pair<Player, Player> players = GameSetup.getPlayerDetails();
+        PlayerSetup setup = GameSetup.getPlayerSetup();
 
-        this.player1 = players.getKey();
-        this.player2 = players.getValue();
+        this.player1 = setup.getPlayer1();
+        this.player2 = setup.getPlayer2();
+
+        if (setup.isStockfishInPlay()) {
+            this.stockfishElo = setup.getElo();
+        }
     }
 
     public void init() {
@@ -88,6 +93,14 @@ public class GameState {
 
     public Player getPlayer2() {
         return player2;
+    }
+
+    public boolean isStockfishInPlay() {
+        return stockfishElo != -1;
+    }
+
+    public int getStockfishElo() {
+        return stockfishElo;
     }
 
     public List<ChessPiece> getCapturedPieces() {

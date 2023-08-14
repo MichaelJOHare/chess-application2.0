@@ -9,7 +9,6 @@ import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.*;
 import org.michaeljohare.model.player.PieceManager;
-import org.michaeljohare.model.player.PlayerColor;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ public class GameManager {
     private GameState gs;
     private ChessPiece selectedPiece;
     private boolean isFirstClick;
+    private boolean isGameOver;
     private List<Move> moves;
     private Stack<GameStateMemento> mementos = new Stack<>();
     private MoveHistory move;
@@ -38,6 +38,7 @@ public class GameManager {
         this.pm = board.getPieceManager();
 
         isFirstClick = true;
+        isGameOver = false;
         move = new MoveHistory();
         sfController = new StockfishController(board, move, gs);
 
@@ -153,11 +154,13 @@ public class GameManager {
         if (currentPlayerLegalMoves.stream()
                 .allMatch(List::isEmpty) && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
 
+            isGameOver = true;
             controller.checkmateLogText();
             controller.updatePlayAgainButton();
         } else if (currentPlayerLegalMoves.stream()
                 .allMatch(List::isEmpty)) {
 
+            isGameOver = true;
             controller.stalemateLogText();
             controller.updatePlayAgainButton();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
@@ -240,6 +243,10 @@ public class GameManager {
     }
 
     private void askStockFish() {
+        if (isGameOver) {
+            return;
+        }
+
         controller.stockfishWaitingButtonText();
         CompletableFuture.supplyAsync(() -> sfController.getMove())
                 .thenAccept(move -> SwingUtilities.invokeLater(() -> {
@@ -256,8 +263,11 @@ public class GameManager {
     }
 
     private void makeStockfishMove() {
-        controller.stockfishThinkingButtonText();
+        if (isGameOver) {
+            return;
+        }
 
+        controller.stockfishThinkingButtonText();
         CompletableFuture.supplyAsync(() -> sfController.getMove())
                 .thenAccept(stockfishMove -> SwingUtilities.invokeLater(() -> {
                     controller.resetStockfishButtonText();

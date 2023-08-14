@@ -13,6 +13,10 @@ public class Main {
         try {
             UIManager.setLookAndFeel(new FlatDarculaLaf());
         } catch (Exception ex) {
+            System.out.println("Error setting LookAndFeel: " + ex.getMessage());
+            if (ex.getCause() != null) {
+                System.out.println("Caused by: " + ex.getCause().getMessage());
+            }
             ex.printStackTrace();
         }
 
@@ -36,6 +40,6 @@ public class Main {
      * TODO
      *  Implement 50 move rule
      *  Refactor and clean up
-     *  Implement flipping board when player chooses black pieces
+     *  Recompile and run another JFR
      */
 }

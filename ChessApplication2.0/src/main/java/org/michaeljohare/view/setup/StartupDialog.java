@@ -11,12 +11,15 @@ public class StartupDialog extends JDialog {
     private JTextField playerName1Field, playerName2Field;
     private JComboBox<String> colorChoice1, colorChoice2;
     private JComboBox<String> opponentChoice;
+    private JComboBox<String> stockfishEloChoice;
+    private JLabel stockfishElo;
     private JButton startButton;
     private Font defaultFont = new Font("Roboto", Font.PLAIN, 18);
 
     private String playerName1, playerName2;
     private PlayerColor playerColor1, playerColor2;
     private boolean playWithStockfish;
+    private int stockfishEloNumber;
 
     public StartupDialog(Frame owner) {
         super(owner, "Start New Game", true);
@@ -129,6 +132,28 @@ public class StartupDialog extends JDialog {
         gbc.anchor = GridBagConstraints.CENTER;
         add(opponentPanel, gbc);
 
+        // Stockfish Elo choice
+        JPanel stockfishEloPanel = new JPanel(new GridLayout(2, 1));
+        setFontSize(stockfishEloPanel);
+
+        stockfishElo = new JLabel("Stockfish Elo", SwingConstants.CENTER);
+        setFontSize(stockfishElo);
+        stockfishElo.setVisible(false);
+        stockfishEloPanel.add(stockfishElo);
+
+        stockfishEloChoice = new JComboBox<>(new String[]{"800", "1200", "1600", "2000", "2400", "2800"});
+        setFontSize(stockfishEloChoice);
+        stockfishEloChoice.setVisible(false);
+        stockfishEloPanel.add(stockfishEloChoice);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(20,10,10,10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(stockfishEloPanel, gbc);
+
         // Spacer for start button
         gbc.gridy = 6;
         gbc.weighty = 0.8;
@@ -194,6 +219,15 @@ public class StartupDialog extends JDialog {
         Object selectedOpponent = opponentChoice.getSelectedItem();
         playWithStockfish = "Stockfish".equals(selectedOpponent);
 
+        if (playWithStockfish) {
+            String selectedElo = (String) stockfishEloChoice.getSelectedItem();
+            if (selectedElo != null) {
+                stockfishEloNumber = Integer.parseInt(selectedElo);
+            } else {
+                stockfishEloNumber = 800;
+            }
+        }
+
         dispose();
     }
 
@@ -201,9 +235,13 @@ public class StartupDialog extends JDialog {
         if ("Stockfish".equals(opponentChoice.getSelectedItem())) {
             playerName2Field.setEnabled(false);
             colorChoice2.setEnabled(false);
+            stockfishElo.setVisible(true);
+            stockfishEloChoice.setVisible(true);
         } else {
             playerName2Field.setEnabled(true);
             colorChoice2.setEnabled(true);
+            stockfishElo.setVisible(false);
+            stockfishEloChoice.setVisible(false);
         }
     }
 
@@ -235,5 +273,9 @@ public class StartupDialog extends JDialog {
 
     public boolean isPlayWithStockfish() {
         return playWithStockfish;
+    }
+
+    public int getStockfishElo() {
+        return stockfishEloNumber;
     }
 }

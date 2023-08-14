@@ -5,19 +5,16 @@ import org.michaeljohare.model.game.GameManager;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
-import org.michaeljohare.model.player.PlayerColor;
 import org.michaeljohare.view.ChessGUI;
 
 import java.awt.*;
 import java.util.List;
 
 public class ChessController {
-    ChessBoard board;
-    ChessGUI gui;
-    GameManager gm;
+    private final ChessGUI gui;
+    private final GameManager gm;
 
     public ChessController(ChessBoard board, GameManager gm) {
-        this.board = board;
         this.gui = new ChessGUI(board);
         this.gm = gm;
         gui.getChessBoardPanel().setController(this);
@@ -31,10 +28,6 @@ public class ChessController {
 
     public void onUserRequestFlipBoard() {
         gui.getChessBoardPanel().flipBoard();
-    }
-
-    public ChessGUI getGui() {
-        return gui;
     }
 
     public void updateGUI() {

@@ -27,8 +27,10 @@ public class StockfishController {
         this. board = board;
         this.move = move;
         this.gs = gs;
+
         if (startEngine()) {
             sendCommand("uci");
+            setSkillLevel();
         } else {
             System.err.println("Failed to start Stockfish engine.");
         }
@@ -69,6 +71,13 @@ public class StockfishController {
         processWriter.flush();
     }
 
+    private void setSkillLevel() {
+        int elo = gs.getStockfishElo();
+        int skillLevel = (elo - 800) / 100;
+        skillLevel = Math.max(0, Math.min(skillLevel, 20));
+        sendCommand("setoption name Skill Level value " + skillLevel);
+    }
+
     public synchronized Move getMove() {
         String fen = toFEN();
 
@@ -85,12 +94,10 @@ public class StockfishController {
         return parseMove(bestMove);
     }
 
-    public synchronized String getResponse() throws IOException {
+    private synchronized String getResponse() throws IOException {
         String line;
-        StringBuilder response = new StringBuilder();
         String bestMove = "";
         while ((line = processReader.readLine()) != null) {
-            response.append(line).append("\n");
             if (line.contains("bestmove")) {
                 bestMove = line.split(" ")[1];
                 break;
@@ -99,7 +106,7 @@ public class StockfishController {
         return bestMove;
     }
 
-    public Move parseMove(String algebraicMove) {
+    private Move parseMove(String algebraicMove) {
 
         String start = algebraicMove.substring(0, 2);
         String end = algebraicMove.substring(2, 4);
@@ -145,7 +152,7 @@ public class StockfishController {
         return move;
     }
 
-    public Square algebraicToSquare(String algebraic) {
+    private Square algebraicToSquare(String algebraic) {
         char col = algebraic.charAt(0);
         int row = Integer.parseInt(String.valueOf(algebraic.charAt(1)));
 
