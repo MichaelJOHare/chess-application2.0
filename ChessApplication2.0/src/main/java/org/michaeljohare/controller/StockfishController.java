@@ -108,6 +108,11 @@ public class StockfishController {
 
     private Move parseMove(String algebraicMove) {
 
+        //                   AKA Game is over
+        if (algebraicMove.equals("(none)")) {
+            return null;
+        }
+
         String start = algebraicMove.substring(0, 2);
         String end = algebraicMove.substring(2, 4);
 

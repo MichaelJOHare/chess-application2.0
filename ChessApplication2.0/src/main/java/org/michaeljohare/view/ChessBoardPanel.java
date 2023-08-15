@@ -57,7 +57,7 @@ public class ChessBoardPanel extends JPanel {
                 chessButtons[row][col] = new JButton();
                 chessButtons[row][col].setLayout(new BorderLayout());
 
-                getSquareColor(row, col);
+                setSquareColor(row, col);
 
                 updateButton(row, col);
                 final int finalRow = row;
@@ -74,6 +74,7 @@ public class ChessBoardPanel extends JPanel {
 
     private void createButtonLabels(int row, int col, JButton[][] chessButtons) {
 
+        // Letter labels for files a-h
         if ((boardFlipped && row == 0) || (!boardFlipped && row == 7)) {
             JLabel letterLabel = new JLabel("abcdefgh".substring(col, col + 1));
             letterLabel.setFont(new Font("Roboto", Font.BOLD, 16));
@@ -95,6 +96,7 @@ public class ChessBoardPanel extends JPanel {
             chessButtons[row][col].add(letterLabel, BorderLayout.SOUTH);
         }
 
+        // Number labels for ranks 1-8
         if ((boardFlipped && col == 0) || (!boardFlipped && col == 7)) {
             JLabel numberLabel = new JLabel("87654321".substring(row, row + 1), SwingConstants.RIGHT);
             numberLabel.setFont(new Font("Roboto", Font.BOLD, 16));
@@ -117,7 +119,7 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
-    private void getSquareColor(int row, int col) {
+    private void setSquareColor(int row, int col) {
         if (row % 2 == 0) {
             if (col % 2 == 0) {
                 chessButtons[row][col].setBackground(LIGHT_SQUARE);

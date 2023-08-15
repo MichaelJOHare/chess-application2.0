@@ -107,6 +107,16 @@ public class GameState {
         return capturedPieces;
     }
 
+    public void addCapturedPiece(ChessPiece capturedPiece) {
+        capturedPieces.add(capturedPiece);
+        updateCapturedPieces();
+    }
+
+    public void removeCapturedPiece(ChessPiece capturedPiece) {
+        player1CapturedPieces.remove(capturedPiece);
+        player2CapturedPieces.remove(capturedPiece);
+    }
+
     public void updateCapturedPieces() {
         for (ChessPiece piece : capturedPieces) {
             if (piece.getPlayer().equals(player1) && !player1CapturedPieces.contains(piece)) {

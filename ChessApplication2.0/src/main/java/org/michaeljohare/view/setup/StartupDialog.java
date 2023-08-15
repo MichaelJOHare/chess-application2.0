@@ -185,50 +185,56 @@ public class StartupDialog extends JDialog {
 
     private void onGameStart() {
         playerName1 = playerName1Field.getText();
-
-        if ("Stockfish".equals(opponentChoice.getSelectedItem())) {
-            playerName2 = "Stockfish";
-        } else {
-            playerName2 = playerName2Field.getText();
-            if (playerName2 == null || playerName2.trim().isEmpty() || playerName2.equals("Stockfish")) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid name for Player 2.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-
-        if (playerName1 == null || playerName1.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid name for Player 1.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Object selectedColor1 = colorChoice1.getSelectedItem();
-        playerColor1 = "White".equals(selectedColor1) ? PlayerColor.WHITE : PlayerColor.BLACK;
-
-        if ("Stockfish".equals(opponentChoice.getSelectedItem())) {
-            playerColor2 = playerColor1 == PlayerColor.WHITE ? PlayerColor.BLACK : PlayerColor.WHITE;
-        } else {
-            Object selectedColor2 = colorChoice2.getSelectedItem();
-            playerColor2 = "White".equals(selectedColor2) ? PlayerColor.WHITE : PlayerColor.BLACK;
-
-            if (playerColor1 == playerColor2) {
-                JOptionPane.showMessageDialog(this, "Both players cannot choose the same color.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-
-        Object selectedOpponent = opponentChoice.getSelectedItem();
+        String selectedOpponent = (String) opponentChoice.getSelectedItem();
         playWithStockfish = "Stockfish".equals(selectedOpponent);
 
         if (playWithStockfish) {
-            String selectedElo = (String) stockfishEloChoice.getSelectedItem();
-            if (selectedElo != null) {
-                stockfishEloNumber = Integer.parseInt(selectedElo);
-            } else {
-                stockfishEloNumber = 800;
+            playerName2 = "Stockfish";
+            playerColor1 = getColorChoice(colorChoice1);
+            playerColor2 = oppositeColor(playerColor1);
+            setupStockfishElo();
+        } else {
+            playerName2 = playerName2Field.getText();
+            if (isInvalidPlayerName(playerName2)) {
+                showError("Please enter a valid name for Player 2.");
+                return;
+            }
+
+            playerColor1 = getColorChoice(colorChoice1);
+            playerColor2 = getColorChoice(colorChoice2);
+            if (playerColor1 == playerColor2) {
+                showError("Both players cannot choose the same color.");
+                return;
             }
         }
 
+        if (isInvalidPlayerName(playerName1)) {
+            showError("Please enter a valid name for Player 1.");
+            return;
+        }
+
         dispose();
+    }
+
+    private PlayerColor getColorChoice(JComboBox<String> comboBox) {
+        return "White".equals(comboBox.getSelectedItem()) ? PlayerColor.WHITE : PlayerColor.BLACK;
+    }
+
+    private PlayerColor oppositeColor(PlayerColor color) {
+        return color == PlayerColor.WHITE ? PlayerColor.BLACK : PlayerColor.WHITE;
+    }
+
+    private boolean isInvalidPlayerName(String playerName) {
+        return playerName == null || playerName.trim().isEmpty() || "Stockfish".equals(playerName);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Invalid Input", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void setupStockfishElo() {
+        String selectedElo = (String) stockfishEloChoice.getSelectedItem();
+        stockfishEloNumber = selectedElo != null ? Integer.parseInt(selectedElo) : 800;
     }
 
     private void onOpponentChoiceChange() {

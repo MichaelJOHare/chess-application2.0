@@ -115,6 +115,41 @@ public class GameManager {
         }
     }
 
+    public void handleUndoButtonClick() {
+        if (gs.getCurrentPlayer().equals(gs.getPlayer1()) && gs.getPlayer2().getName().equals("Stockfish")) {
+
+            if (mementos.size() < 2) {
+                controller.nothingLeftToUndoLogText();
+                return;
+            }
+
+            // Undo Stockfish's move and player's move
+            handleSingleUndo();
+            handleSingleUndo();
+        } else {
+            if (mementos.isEmpty()) {
+                controller.nothingLeftToUndoLogText();
+            } else {
+                handleSingleUndo();
+            }
+        }
+    }
+
+    public void handleAskStockfishButtonClick() {
+        askStockFish();
+    }
+
+    public void handlePlayAgainButtonClick() {
+        gs.init();
+        board.init(gs.getPlayer1(), gs.getPlayer2());
+        this.pm = board.getPieceManager();
+        isFirstClick = true;
+        move.resetMoveHistory();
+        mementos.clear();
+        updateGUI();
+        initiateGame();
+    }
+
     public void finalizeMove(Move legalMove) {
         mementos.push(gs.createMemento());
 
@@ -169,27 +204,11 @@ public class GameManager {
         }
     }
 
-    public void handleUndoButtonClick() {
-        if (gs.getCurrentPlayer().equals(gs.getPlayer1()) && gs.getPlayer2().getName().equals("Stockfish")) {
-
-            if (mementos.size() < 2) {
-                controller.nothingLeftToUndoLogText();
-                return;
-            }
-
-            // Undo Stockfish's move and player's move
-            handleSingleUndo();
-            handleSingleUndo();
-        } else {
-            if (mementos.isEmpty()) {
-                controller.nothingLeftToUndoLogText();
-            } else {
-                handleSingleUndo();
-            }
-        }
-    }
-
     private void handleSingleUndo() {
+        if (isGameOver) {
+            isGameOver = false;
+        }
+
         handleCapturedPieces(move.getLastMove(), true);
         pm.handleUndoPromotion(move.getLastMove());
 
@@ -203,47 +222,20 @@ public class GameManager {
         updateGUI();
     }
 
-    public void handleAskStockfishButtonClick() {
-        askStockFish();
-    }
-
-    public void handlePlayAgainButtonClick() {
-        gs.init();
-        board.init(gs.getPlayer1(), gs.getPlayer2());
-        this.pm = board.getPieceManager();
-        isFirstClick = true;
-        move.resetMoveHistory();
-        mementos.clear();
-        updateGUI();
-        initiateGame();
-    }
-
     public void handleCapturedPieces(Move legalMove, boolean isUndo) {
         ChessPiece capturedPiece = legalMove.getCapturedPiece();
+
         if (capturedPiece == null) {
             return;
         }
 
         if (isUndo) {
-            List<ChessPiece> currentPlayerCapturedPieces = capturedPiece.getPlayer().equals(gs.getPlayer1())
-                    ? gs.getPlayer1CapturedPieces()
-                    : gs.getPlayer2CapturedPieces();
-            currentPlayerCapturedPieces.remove(capturedPiece);
+            gs.removeCapturedPiece(capturedPiece);
         } else {
-            gs.getCapturedPieces().add(capturedPiece);
-            gs.updateCapturedPieces();
+            gs.addCapturedPiece(capturedPiece);
         }
 
         controller.updateCapturedPieceDisplay(gs.getPlayer1CapturedPieces(), gs.getPlayer2CapturedPieces());
-    }
-
-    public void tryAgainPrompt(Runnable logTextMethod) {
-        logTextMethod.run();
-        isFirstClick = true;
-    }
-
-    private void updateGUI() {
-        controller.updateGUI();
     }
 
     private void askStockFish() {
@@ -253,12 +245,17 @@ public class GameManager {
 
         controller.stockfishWaitingButtonText();
         CompletableFuture.supplyAsync(() -> sfController.getMove())
-                .thenAccept(move -> SwingUtilities.invokeLater(() -> {
-                    controller.resetStockfishButtonText();
-
-                    controller.clearHighlightedSquares();
-                    controller.setHighlightedSquaresStockfish(move);
-                }))
+                .thenAccept(move -> {
+                    if (move != null) {
+                        SwingUtilities.invokeLater(() -> {
+                            controller.resetStockfishButtonText();
+                            controller.clearHighlightedSquares();
+                            controller.setHighlightedSquaresStockfish(move);
+                        });
+                    } else {
+                        // controller.stockfishGameOverButtonText();
+                    }
+                })
                 .exceptionally(ex -> {
                     System.err.println("Error fetching move from Stockfish: " + ex.getMessage());
                     ex.printStackTrace();
@@ -273,18 +270,33 @@ public class GameManager {
 
         controller.stockfishThinkingButtonText();
         CompletableFuture.supplyAsync(() -> sfController.getMove())
-                .thenAccept(stockfishMove -> SwingUtilities.invokeLater(() -> {
-                    controller.resetStockfishButtonText();
+                .thenAccept(stockfishMove -> {
+                    if (stockfishMove != null) {
+                        SwingUtilities.invokeLater(() -> {
+                            controller.resetStockfishButtonText();
 
-                    finalizeMove(stockfishMove);
+                            finalizeMove(stockfishMove);
 
-                    handleCheckAndCheckmate();
-                }))
+                            handleCheckAndCheckmate();
+                        });
+                    } else {
+                        // controller.stockfishGameOverButtonText();
+                    }
+                })
                 .exceptionally(ex -> {
                     System.err.println("Error executing move for Stockfish: " + ex.getMessage());
                     ex.printStackTrace();
                     return null;
                 });
+    }
+
+    public void tryAgainPrompt(Runnable logTextMethod) {
+        logTextMethod.run();
+        isFirstClick = true;
+    }
+
+    private void updateGUI() {
+        controller.updateGUI();
     }
 
     public void cleanup() {
