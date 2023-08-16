@@ -159,10 +159,6 @@ public class GameManager {
             ((PromotionMove) legalMove).setPromotionType(chosenPromotion);
         }
 
-        if (selectedPiece instanceof PieceWithMoveStatus) {
-            ((PieceWithMoveStatus) selectedPiece).setHasMoved(true);
-        }
-
         move.makeMove(legalMove);
         pm.handlePromotion(move.getLastMove());
         handleCapturedPieces(legalMove, false);
@@ -219,6 +215,7 @@ public class GameManager {
         controller.clearPreviousMoveHighlightedSquares();
         controller.setHighlightedSquaresPreviousMove(move.getLastMove());
         controller.currentPlayerLogText(gs.getCurrentPlayer());
+        isFirstClick = true;
         updateGUI();
     }
 

@@ -31,9 +31,12 @@ public class PawnMovementStrategy implements MovementStrategy {
     public boolean wouldResultInCheck(ChessBoard board, ChessPiece piece, MoveHistory move, Move m) {
         ChessBoard copiedBoard = board.copy();
         MoveHistory copiedMoveHistory = move.copy();
+
         //ChessPiece copiedPiece = copiedBoard.getPieceAt(piece.getCurrentSquare().getRow(), piece.getCurrentSquare().getCol());
+
         // Testing copy method (NPE BUG)
         ChessPiece copiedPiece = piece.copy();
+
         Player copiedPlayer = copiedPiece.getPlayer().copy();
 
         Move copiedMove = new Move(copiedPiece, m.getStartSquare(), m.getEndSquare(), copiedBoard.getPieceAt(m.getEndSquare().getRow(), m.getEndSquare().getCol()), copiedBoard);

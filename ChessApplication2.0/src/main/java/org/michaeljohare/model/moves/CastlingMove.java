@@ -23,6 +23,7 @@ public class CastlingMove extends Move {
         board.removePiece(rook);
         rook.setCurrentSquare(rookEndSquare);
         board.addPiece(rook);
+        rook.setHasMoved(true);
     }
 
     @Override
@@ -31,6 +32,7 @@ public class CastlingMove extends Move {
         board.removePiece(rook);
         rook.setCurrentSquare(rookStartSquare);
         board.addPiece(rook);
+        rook.setHasMoved(false);
     }
 
     @Override

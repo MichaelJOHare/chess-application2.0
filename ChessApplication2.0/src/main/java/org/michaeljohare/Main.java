@@ -17,8 +17,12 @@ public class Main {
 
     /*
      * TODO
-     *  START IN DEBUG (Very rare NPE.. endgame, maybe after pawn promotion?)
+     *  START IN DEBUG (Very rare NPE.. endgame, maybe after pawn promotion and/or undo?)
+     *          - Can't figure out how to reproduce, might be fixed? Suspect piece.copy() in PawnMovementStrategy and/or resetting firstClick in GameManager might've fixed it
      *  Implement 50 move rule
+     *  QOL: implement check for clicking on piece you own on second click so that it can be selected instead of invalid square notification
      *  Refactor and clean up
+     *      + Maybe separate out some things in GameManager to other classes
+     *          - clear previous move highlighted squares on play again
      */
 }

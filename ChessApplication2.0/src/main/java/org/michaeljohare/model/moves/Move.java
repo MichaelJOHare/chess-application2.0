@@ -3,6 +3,7 @@ package org.michaeljohare.model.moves;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.pieces.ChessPiece;
+import org.michaeljohare.model.pieces.PieceWithMoveStatus;
 
 public class Move implements Movable{
 
@@ -34,6 +35,10 @@ public class Move implements Movable{
         board.removePiece(piece);
         piece.setCurrentSquare(endSquare);
         board.addPiece(piece);
+
+        if (piece instanceof PieceWithMoveStatus) {
+            ((PieceWithMoveStatus) piece).setHasMoved(true);
+        }
     }
 
     @Override

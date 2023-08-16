@@ -32,7 +32,9 @@ public class MoveHistory {
     public void undoMove() {
         if (!history.isEmpty()) {
             Move lastMove = history.pop();
-            resetHasMovedFlagForUndo(lastMove);
+            if (lastMove instanceof CastlingMove) {
+                resetHasMovedFlagForUndo(lastMove);
+            }
             lastMove.undo();
             undone.push(lastMove);
         }
