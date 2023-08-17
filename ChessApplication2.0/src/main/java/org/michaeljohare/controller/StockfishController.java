@@ -21,8 +21,6 @@ public class StockfishController {
     private MoveHistory move;
     private GameState gs;
 
-    private static final String PATH = "src/main/resources/stockfish/stockfish-windows-x86-64-avx2.exe";
-
     public StockfishController(ChessBoard board, MoveHistory move, GameState gs) {
         this. board = board;
         this.move = move;
@@ -36,10 +34,24 @@ public class StockfishController {
         }
     }
 
+    public String getStockfishPath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String stockfishPath;
+
+        if (os.contains("win")) {
+            stockfishPath = "src/main/resources/stockfish/stockfish-windows-x86-64-avx2.exe";
+        } else if (os.contains("mac")) {
+            stockfishPath = "src/main/resources/stockfish/stockfish"; // Update this to match your macOS Stockfish binary path
+        } else {
+            throw new RuntimeException("Unsupported operating system");
+        }
+        return stockfishPath;
+    }
+
     public boolean startEngine() {
 
         try {
-            engineProcess = new ProcessBuilder(PATH).start();
+            engineProcess = new ProcessBuilder(getStockfishPath()).start();
             processReader = new BufferedReader(new InputStreamReader(engineProcess.getInputStream()));
             processWriter = new PrintWriter(engineProcess.getOutputStream());
         } catch (Exception e) {

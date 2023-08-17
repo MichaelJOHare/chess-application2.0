@@ -192,7 +192,7 @@ public class GameLogPanel extends JPanel {
 
     private void addCapturedPiecesTitle(JTextArea capturedArea) {
         Font capturedPiecesTitleFont = new Font("Roboto", Font.BOLD, 24);
-        Border paddingBorder = BorderFactory.createEmptyBorder(5, 80, 5, 80);
+        Border paddingBorder = BorderFactory.createEmptyBorder(5, 90, 5, 90);
         Border lineBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray);
         Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, paddingBorder);
 

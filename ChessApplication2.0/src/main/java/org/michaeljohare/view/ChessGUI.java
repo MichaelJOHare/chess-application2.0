@@ -1,5 +1,6 @@
 package org.michaeljohare.view;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import org.michaeljohare.controller.ChessController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
