@@ -140,6 +140,7 @@ public class GameManager {
     }
 
     public void handlePlayAgainButtonClick() {
+        controller.clearPreviousMoveHighlightedSquares();
         gs.init();
         board.init(gs.getPlayer1(), gs.getPlayer2());
         this.pm = board.getPieceManager();

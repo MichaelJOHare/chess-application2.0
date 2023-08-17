@@ -13,39 +13,7 @@ import org.michaeljohare.model.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PawnMovementStrategy implements MovementStrategy {
-
-    @Override
-    public List<Move> calculateLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {
-        List<Move> rawLegalMoves = calculateRawLegalMoves(board, piece, move);
-        List<Move> legalMoves = new ArrayList<>();
-
-        for (Move m : rawLegalMoves) {
-            if (!wouldResultInCheck(board, piece, move, m)) {
-                legalMoves.add(m);
-            }
-        }
-        return legalMoves;
-    }
-
-    public boolean wouldResultInCheck(ChessBoard board, ChessPiece piece, MoveHistory move, Move m) {
-        ChessBoard copiedBoard = board.copy();
-        MoveHistory copiedMoveHistory = move.copy();
-
-        //ChessPiece copiedPiece = copiedBoard.getPieceAt(piece.getCurrentSquare().getRow(), piece.getCurrentSquare().getCol());
-
-        // Testing copy method (NPE BUG)
-        ChessPiece copiedPiece = piece.copy();
-
-        Player copiedPlayer = copiedPiece.getPlayer().copy();
-
-        Move copiedMove = new Move(copiedPiece, m.getStartSquare(), m.getEndSquare(), copiedBoard.getPieceAt(m.getEndSquare().getRow(), m.getEndSquare().getCol()), copiedBoard);
-
-        copiedMoveHistory.makeMove(copiedMove);
-        copiedBoard.initializePieceManager();
-
-        return copiedBoard.isKingInCheck(copiedPlayer, copiedMoveHistory, copiedBoard);
-    }
+public class PawnMovementStrategy extends BaseMovementStrategy {
 
     public List<Move> calculateRawLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {
         Move tempMove;
@@ -61,7 +29,7 @@ public class PawnMovementStrategy implements MovementStrategy {
          */
 
         if (piece.getPlayer().isWhite()) {
-            // Normal moves moves
+            // Normal moves
             if (row > 0 && board.isEmpty(row - 1, col)) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 1, col), null, board));
             }

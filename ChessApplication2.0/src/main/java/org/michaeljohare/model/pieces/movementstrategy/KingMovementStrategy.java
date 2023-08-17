@@ -16,38 +16,14 @@ import java.util.List;
 import static org.michaeljohare.model.board.ChessBoard.ROOK_COLUMN_1;
 import static org.michaeljohare.model.board.ChessBoard.ROOK_COLUMN_2;
 
-public class KingMovementStrategy implements MovementStrategy {
+public class KingMovementStrategy extends BaseMovementStrategy {
+
 
     @Override
     public List<Move> calculateLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {
-        List<Move> rawLegalMoves = calculateRawLegalMoves(board, piece, move);
-        List<Move> legalMoves = new ArrayList<>();
-        for (Move m : rawLegalMoves) {
-            if (!wouldResultInCheck(board, piece, move, m)) {
-                legalMoves.add(m);
-            }
-        }
+        List<Move> legalMoves = super.calculateLegalMoves(board, piece, move);
         addCastlingMoves(board, piece, legalMoves);
         return legalMoves;
-    }
-
-    public boolean wouldResultInCheck(ChessBoard board, ChessPiece piece, MoveHistory move, Move m) {
-        ChessBoard copiedBoard = board.copy();
-        MoveHistory copiedMoveHistory = move.copy();
-
-        // ChessPiece copiedPiece = copiedBoard.getPieceAt(piece.getCurrentSquare().getRow(), piece.getCurrentSquare().getCol());
-
-        // Testing copy method (NPE BUG)
-        ChessPiece copiedPiece = piece.copy();
-
-        Player copiedPlayer = copiedPiece.getPlayer().copy();
-
-        Move copiedMove = new Move(copiedPiece, m.getStartSquare(), m.getEndSquare(), copiedBoard.getPieceAt(m.getEndSquare().getRow(), m.getEndSquare().getCol()), copiedBoard);
-
-        copiedMoveHistory.makeMove(copiedMove);
-        copiedBoard.initializePieceManager();
-
-        return copiedBoard.isKingInCheck(copiedPlayer, copiedMoveHistory, copiedBoard);
     }
 
     @Override
@@ -55,7 +31,7 @@ public class KingMovementStrategy implements MovementStrategy {
         List<Move> rawLegalMoves = new ArrayList<>();
         int row = piece.getCurrentSquare().getRow(), col = piece.getCurrentSquare().getCol();
 
-        //8 directions similar to Queen but only one step
+        // 8 directions similar to Queen but only one step
         int[][] directions = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } };
 
         for (int[] direction : directions) {
