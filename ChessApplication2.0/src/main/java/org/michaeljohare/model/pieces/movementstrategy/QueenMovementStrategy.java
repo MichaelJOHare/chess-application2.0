@@ -5,7 +5,6 @@ import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.pieces.ChessPiece;
-import org.michaeljohare.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;

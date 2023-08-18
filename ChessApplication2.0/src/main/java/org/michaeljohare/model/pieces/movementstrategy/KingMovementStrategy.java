@@ -8,7 +8,6 @@ import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.King;
 import org.michaeljohare.model.pieces.Rook;
-import org.michaeljohare.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;

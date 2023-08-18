@@ -72,7 +72,7 @@ public class GameManager {
 
         if (selectedPiece.getPlayer().equals(gs.getCurrentPlayer())) {
             moves = selectedPiece.calculateLegalMoves(board, move);
-            if (moves.size() > 0) {
+            if (!moves.isEmpty()) {
                 controller.setHighlightedSquares(moves);
             } else {
                 tryAgainPrompt(controller::noLegalMoveLogText);

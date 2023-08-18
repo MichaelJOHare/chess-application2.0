@@ -8,7 +8,6 @@ import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.moves.PromotionMove;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceType;
-import org.michaeljohare.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,131 +15,98 @@ import java.util.List;
 public class PawnMovementStrategy extends BaseMovementStrategy {
 
     public List<Move> calculateRawLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {
-        Move tempMove;
-        Square currentSquare;
-        Square targetSquare;
-        ChessPiece capturedPiece;
-        Square originalSquareBeforeCapture;
         List<Move> legalMoves = new ArrayList<>();
         int row = piece.getCurrentSquare().getRow(), col = piece.getCurrentSquare().getCol();
 
-        /*
-         * White Pieces
-         */
+        addNormalMoves(row, col, piece, board, legalMoves);
+        addEnPassantMoves(row, col, piece, board, move, legalMoves);
+        addPromotionMoves(row, col, piece, board, legalMoves);
+        return legalMoves;
+    }
 
-        if (piece.getPlayer().isWhite()) {
-            // Normal moves
-            if (row > 0 && board.isEmpty(row - 1, col)) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 1, col), null, board));
-            }
-            if (row == 6 && board.isEmpty(row - 2, col) && board.isEmpty(row - 1, col)) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 2, col), null, board));
-            }
+    private void addNormalMoves(int row, int col, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
+        int direction = piece.getPlayer().isWhite() ? -1 : 1;
+        int backRank = piece.getPlayer().isWhite() ? 0 : 7;
+        int startingRow = piece.getPlayer().isWhite() ? 6 : 1;
 
-            // Normal captures
-            if (row > 0 && col < 7 && board.isOccupiedByOpponent(row - 1, col + 1, piece.getPlayer())) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 1, col + 1), board.getPieceAt(row - 1, col + 1), board));
-            }
-            if (row > 0 && col > 0 && board.isOccupiedByOpponent(row - 1, col - 1, piece.getPlayer())) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row - 1, col - 1), board.getPieceAt(row - 1, col - 1), board));
-            }
-            // En Passant Capture
-            // Separate this out at some point (DRY)
-            Move lastMove = move.getLastMove();
-            if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
-                    !lastMove.getPiece().getPlayer().isWhite() &&
-                    lastMove.getStartSquare().getRow() == 1 && lastMove.getEndSquare().getRow() == 3 &&
-                    row == 3 &&
-                    Math.abs(col - lastMove.getEndSquare().getCol()) == 1) {
-                currentSquare = new Square(row, col);
-                targetSquare = new Square(row - 1, lastMove.getEndSquare().getCol());
-                capturedPiece = lastMove.getPiece();
-                originalSquareBeforeCapture = lastMove.getPiece().getCurrentSquare();
-                tempMove = new EnPassantMove(piece, currentSquare, targetSquare, originalSquareBeforeCapture, capturedPiece, board);
-                legalMoves.add(tempMove);
-            }
-            // Promotions
-            // Captures with promotion
-            if (row == 1 && col < 7 && board.isOccupiedByOpponent(row - 1, col + 1, piece.getPlayer())) {
-                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
-                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col + 1), board.getPieceAt(row - 1, col + 1), promotionType, board);
-                    promotionMove.setPromotion(true);
-                    legalMoves.add(promotionMove);
-                }
-            }
-            if (row == 1 && col > 0 && board.isOccupiedByOpponent(row - 1, col - 1, piece.getPlayer())) {
-                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
-                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col - 1), board.getPieceAt(row - 1, col - 1), promotionType, board);
-                    promotionMove.setPromotion(true);
-                    legalMoves.add(promotionMove);
-                }
-            }
-            // Normal move with promotion
-            if (row == 1 && board.isEmpty(row - 1, col)) {
-                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
-                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row - 1, col), null, promotionType, board);
-                    promotionMove.setPromotion(true);
-                    legalMoves.add(promotionMove);
-                }
-            }
-        }else {
+        handleNormalMove(row, col, direction, backRank, piece, board, legalMoves);
+        handleDoubleMove(row, col, direction, startingRow, piece, board, legalMoves);
+        // Left capture
+        handleCapture(row, col, direction, -1, piece, board, legalMoves);
+        // Right capture
+        handleCapture(row, col, direction, 1, piece, board, legalMoves);
+    }
 
-            /*
-            Black Pieces
-            */
-
-            // Normal moves
-            if (row < 7 && board.isEmpty(row + 1, col)) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 1, col), null, board));
-            }
-            if (row == 1 && board.isEmpty(row + 2, col) && board.isEmpty(row + 1, col)) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 2, col), null, board));
-            }
-
-            // Normal captures
-            if (row < 7 && col < 7 && board.isOccupiedByOpponent(row + 1, col + 1, piece.getPlayer())) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 1, col + 1), board.getPieceAt(row + 1, col + 1), board));
-            }
-            if (row < 7 && col > 0 && board.isOccupiedByOpponent(row + 1, col - 1, piece.getPlayer())) {
-                legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 1, col - 1), board.getPieceAt(row + 1, col - 1), board));
-            }
-            // En Passant Capture
-            Move lastMove = move.getLastMove();
-            if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
-                    lastMove.getPiece().getPlayer().isWhite() &&
-                    lastMove.getStartSquare().getRow() == 6 && lastMove.getEndSquare().getRow() == 4 &&
-                    row == 4 &&
-                    Math.abs(col - lastMove.getEndSquare().getCol()) == 1) {
-                currentSquare = new Square(row, col);
-                targetSquare = new Square(row + 1, lastMove.getEndSquare().getCol());
-                capturedPiece = lastMove.getPiece();
-                originalSquareBeforeCapture = lastMove.getPiece().getCurrentSquare();
-                tempMove = new EnPassantMove(piece, currentSquare, targetSquare, originalSquareBeforeCapture, capturedPiece, board);
-                legalMoves.add(tempMove);
-            }
-            // Promotions
-            if (row == 6 && col < 7 && board.isOccupiedByOpponent(row + 1, col + 1, piece.getPlayer())) {
-                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
-                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col + 1), board.getPieceAt(row + 1, col + 1), promotionType, board);
-                    promotionMove.setPromotion(true);
-                    legalMoves.add(promotionMove);
-                }
-            }
-            if (row == 6 && col > 0 && board.isOccupiedByOpponent(row + 1, col - 1, piece.getPlayer())) {
-                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
-                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col - 1), board.getPieceAt(row + 1, col - 1), promotionType, board);
-                    promotionMove.setPromotion(true);
-                    legalMoves.add(promotionMove);
-                }
-            }
-            if (row == 6 && board.isEmpty(row + 1, col)) {
-                for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
-                    PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + 1, col),null, promotionType, board);
-                    promotionMove.setPromotion(true);
-                    legalMoves.add(promotionMove);
-                }
+    private void handleNormalMove(int row, int col, int direction, int backRank, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
+        if ((direction == -1 && row > backRank) || (direction == 1 && row < backRank)) {
+            int newRow = row + direction;
+            if (board.isEmpty(newRow, col)) {
+                legalMoves.add(new Move(piece, new Square(row, col), new Square(newRow, col), null, board));
             }
         }
-        return legalMoves;
+    }
+
+    private void handleDoubleMove(int row, int col, int direction, int startingRow, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
+        if (row == startingRow && board.isEmpty(row + direction, col) && board.isEmpty(row + 2 * direction, col)) {
+            legalMoves.add(new Move(piece, new Square(row, col), new Square(row + 2 * direction, col), null, board));
+        }
+    }
+
+    private void handleCapture(int row, int col, int direction, int colOffset, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
+        int newRow = row + direction;
+        int newCol = col + colOffset;
+        if (newCol >= 0 && newCol <= 7 && board.isOccupiedByOpponent(newRow, newCol, piece.getPlayer())) {
+            legalMoves.add(new Move(piece, new Square(row, col), new Square(newRow, newCol), board.getPieceAt(newRow, newCol), board));
+        }
+    }
+
+    private void addEnPassantMoves(int row, int col, ChessPiece piece, ChessBoard board, MoveHistory move, List<Move> legalMoves) {
+        int capturedPawnStartingRow = piece.getPlayer().isWhite() ? 1 : 6;
+        int capturedPawnEndRow = piece.getPlayer().isWhite() ? 3 : 4;
+        int direction = piece.getPlayer().isWhite() ? -1 : 1;
+        Move lastMove = move.getLastMove();
+
+        if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
+                lastMove.getStartSquare().getRow() == capturedPawnStartingRow &&
+                lastMove.getEndSquare().getRow() == capturedPawnEndRow &&
+                row == capturedPawnEndRow &&
+                Math.abs(col - lastMove.getEndSquare().getCol()) == 1) {
+
+            Square currentSquare = new Square(row, col);
+            Square targetSquare = new Square(row + direction, lastMove.getEndSquare().getCol());
+            ChessPiece capturedPiece = lastMove.getPiece();
+            Square originalSquareBeforeCapture = lastMove.getPiece().getCurrentSquare();
+            Move tempMove = new EnPassantMove(piece, currentSquare, targetSquare, originalSquareBeforeCapture, capturedPiece, board);
+            legalMoves.add(tempMove);
+        }
+    }
+
+    private void addPromotionMoves(int row, int col, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
+        int direction = piece.getPlayer().isWhite() ? -1 : 1;
+        int rowBeforePromotionRow = piece.getPlayer().isWhite() ? 1 : 6;
+
+        // Captures with promotion
+        if (row == rowBeforePromotionRow && col < 7 && board.isOccupiedByOpponent(row + direction, col + 1, piece.getPlayer())) {
+            for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + direction, col + 1), board.getPieceAt(row + direction, col + 1), promotionType, board);
+                promotionMove.setPromotion(true);
+                legalMoves.add(promotionMove);
+            }
+        }
+        if (row == rowBeforePromotionRow && col > 0 && board.isOccupiedByOpponent(row + direction, col - 1, piece.getPlayer())) {
+            for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row  + direction, col - 1), board.getPieceAt(row + direction, col - 1), promotionType, board);
+                promotionMove.setPromotion(true);
+                legalMoves.add(promotionMove);
+            }
+        }
+        // Normal move with promotion
+        if (row == rowBeforePromotionRow && board.isEmpty(row + direction, col)) {
+            for (PieceType promotionType : new PieceType[] {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {
+                PromotionMove promotionMove = new PromotionMove(piece, new Square(row, col), new Square(row + direction, col), null, promotionType, board);
+                promotionMove.setPromotion(true);
+                legalMoves.add(promotionMove);
+            }
+        }
     }
 }
