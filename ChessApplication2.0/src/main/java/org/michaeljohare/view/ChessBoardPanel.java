@@ -1,7 +1,7 @@
 package org.michaeljohare.view;
 
 
-import org.michaeljohare.controller.ChessController;
+import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.Move;
@@ -24,7 +24,7 @@ public class ChessBoardPanel extends JPanel {
     private JButton[][] chessButtons;
     private JPanel chessBoardPanel;
     private ChessBoard board;
-    private ChessController controller;
+    private GUIController controller;
     private final List<Square> highlightedSquares = new ArrayList<>();
     private final List<Square> previousMoveHighlightedSquares = new ArrayList<>();
     private boolean boardFlipped = false;
@@ -211,7 +211,7 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
-    public void setController(ChessController controller) {
+    public void setController(GUIController controller) {
         this.controller = controller;
     }
 

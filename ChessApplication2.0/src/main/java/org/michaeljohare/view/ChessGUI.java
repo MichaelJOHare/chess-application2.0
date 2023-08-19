@@ -1,7 +1,6 @@
 package org.michaeljohare.view;
 
-import com.formdev.flatlaf.util.SystemInfo;
-import org.michaeljohare.controller.ChessController;
+import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
 
@@ -16,7 +15,7 @@ public class ChessGUI extends JFrame {
 
     private ChessBoardPanel chessBoardPanel;
     private GameLogPanel gameLogPanel;
-    private ChessController controller;
+    private GUIController controller;
 
 
     public ChessGUI(ChessBoard board) {
@@ -92,7 +91,7 @@ public class ChessGUI extends JFrame {
         return gameLogPanel;
     }
 
-    public void setController(ChessController controller) {
+    public void setController(GUIController controller) {
         this.controller = controller;
     }
 }

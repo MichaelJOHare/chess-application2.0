@@ -21,10 +21,6 @@ public class PieceManager {
         initPieces(board);
     }
 
-    private PieceManager() {
-        piecesByPlayer = new HashMap<>();
-    }
-
     private void initPieces(ChessBoard board) {
         for (ChessPiece[] row : board.getBoard()) {
             for (ChessPiece piece : row) {
@@ -84,14 +80,5 @@ public class PieceManager {
                 .filter(entry -> !entry.getKey().equals(player))
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
-    }
-
-    public PieceManager copy() {
-        PieceManager copiedManager = new PieceManager();
-        for (Map.Entry<Player, List<ChessPiece>> entry : piecesByPlayer.entrySet()) {
-            List<ChessPiece> copiedPieces = entry.getValue().stream().map(ChessPiece::copy).collect(Collectors.toList());
-            copiedManager.piecesByPlayer.put(entry.getKey(), copiedPieces);
-        }
-        return copiedManager;
     }
 }

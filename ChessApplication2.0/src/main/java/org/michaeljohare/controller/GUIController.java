@@ -1,7 +1,6 @@
 package org.michaeljohare.controller;
 
 import org.michaeljohare.model.board.ChessBoard;
-import org.michaeljohare.model.game.GameManager;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
@@ -10,13 +9,13 @@ import org.michaeljohare.view.ChessGUI;
 import java.awt.*;
 import java.util.List;
 
-public class ChessController {
+public class GUIController {
     private final ChessGUI gui;
-    private final GameManager gm;
+    private final GameController gc;
 
-    public ChessController(ChessBoard board, GameManager gm) {
+    public GUIController(ChessBoard board, GameController gc) {
         this.gui = new ChessGUI(board);
-        this.gm = gm;
+        this.gc = gc;
         gui.getChessBoardPanel().setController(this);
         gui.getGameLogPanel().setController(this);
         gui.setController(this);
@@ -35,23 +34,23 @@ public class ChessController {
     }
 
     public void onSquareClick(int row, int col) {
-        gm.handleSquareClick(row, col);
+        gc.handleSquareClick(row, col);
     }
 
     public void onWindowClosing() {
-        gm.cleanup();
+        gc.cleanup();
     }
 
     public void handleUndoButtonClick() {
-        gm.handleUndoButtonClick();
+        gc.handleUndoButtonClick();
     }
 
     public void handleAskStockfishButtonClick() {
-        gm.handleAskStockfishButtonClick();
+        gc.handleAskStockfishButtonClick();
     }
 
     public void handlePlayAgainButtonClick() {
-        gm.handlePlayAgainButtonClick();
+        gc.handlePlayAgainButtonClick();
     }
 
     public int handlePawnPromotion(ChessPiece pawn) {
@@ -63,6 +62,7 @@ public class ChessController {
     }
 
     public void setHighlightedSquaresPreviousMove(Move move) {
+        clearPreviousMoveHighlightedSquares();
         gui.getChessBoardPanel().setHighlightedSquaresPreviousMove(move);
     }
 
@@ -112,10 +112,12 @@ public class ChessController {
 
     public void checkmateLogText() {
         gui.getGameLogPanel().checkmateLogText();
+        updatePlayAgainButton();
     }
 
     public void stalemateLogText() {
         gui.getGameLogPanel().stalemateLogText();
+        updatePlayAgainButton();
     }
 
     public void stockfishWaitingButtonText() {

@@ -1,6 +1,6 @@
 package org.michaeljohare.view;
 
-import org.michaeljohare.controller.ChessController;
+import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
 
@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class GameLogPanel extends JPanel {
 
@@ -20,7 +21,7 @@ public class GameLogPanel extends JPanel {
     private JScrollPane logScrollPane;
     private JTextArea player1CapturedArea;
     private JTextArea player2CapturedArea;
-    private ChessController controller;
+    private GUIController controller;
     private final JPanel rightPanel;
     private final String lineBreaks = "\n\n\n\n\n";
 
@@ -39,10 +40,14 @@ public class GameLogPanel extends JPanel {
 
         player1CapturedArea = createCapturedArea();
         player2CapturedArea = createCapturedArea();
-        updateCapturedPiecesDisplay();
+        setEmptyCapturedPiecesDisplay();
 
         setLayout(new BorderLayout());
         add(createRightPanel(), BorderLayout.CENTER);
+    }
+
+    public void setController(GUIController controller) {
+        this.controller = controller;
     }
 
     private JPanel createRightPanel() {
@@ -55,15 +60,8 @@ public class GameLogPanel extends JPanel {
         askStockfishButton = createStyledButton("Ask Stockfish", e -> onAskStockfishButtonClick());
         JButton flipBoardButton = createStyledButton("Flip Board", e -> onFlipBoardButtonClick());
 
-        JPanel undoAndAskStockfishPanel = new JPanel(new BorderLayout());
-        undoAndAskStockfishPanel.add(createButtonPanel(askStockfishButton), BorderLayout.WEST);
-        undoAndAskStockfishPanel.add(createButtonPanel(undoButton), BorderLayout.EAST);
-        undoAndAskStockfishPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
-
-        JPanel playAgainAndFlipBoardPanel = new JPanel(new BorderLayout());
-        playAgainAndFlipBoardPanel.add(createButtonPanel(playAgainButton), BorderLayout.EAST);
-        playAgainAndFlipBoardPanel.add(createButtonPanel(flipBoardButton), BorderLayout.WEST);
-        playAgainAndFlipBoardPanel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
+        JPanel undoAndAskStockfishPanel = createButtonGroupPanel(askStockfishButton, undoButton);
+        JPanel playAgainAndFlipBoardPanel = createButtonGroupPanel(flipBoardButton, playAgainButton);
 
         JPanel logPanelWithButtons = new JPanel(new BorderLayout());
         logPanelWithButtons.add(logScrollPane, BorderLayout.CENTER);
@@ -92,6 +90,14 @@ public class GameLogPanel extends JPanel {
         return buttonPanel;
     }
 
+    private JPanel createButtonGroupPanel(JButton button1, JButton button2) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(createButtonPanel(button1), BorderLayout.WEST);
+        panel.add(createButtonPanel(button2), BorderLayout.EAST);
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 25, 5, 25));
+        return panel;
+    }
+
     private JTextArea createLogTextArea() {
         JTextArea logTextArea = new JTextArea(5, 20);
         logTextArea.setLineWrap(true);
@@ -111,6 +117,42 @@ public class GameLogPanel extends JPanel {
         return capturedArea;
     }
 
+    private void addCapturedPiecesTitle(JTextArea capturedArea) {
+        Font capturedPiecesTitleFont = new Font("Roboto", Font.BOLD, 24);
+        Border paddingBorder = BorderFactory.createEmptyBorder(5, 90, 5, 90);
+        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray);
+        Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, paddingBorder);
+
+        JLabel capturedPiecesTitle = new JLabel("Captured Pieces");
+        capturedPiecesTitle.setFont(capturedPiecesTitleFont);
+        capturedPiecesTitle.setBorder(compoundBorder);
+        capturedArea.add(capturedPiecesTitle);
+    }
+
+    public void updateCapturedPiecesDisplay(List<ChessPiece> player1CapturedPieces, List<ChessPiece> player2CapturedPieces) {
+        updatePlayerCapturedArea(player1CapturedArea, player2CapturedPieces, ChessPiece::getBlackChessPieceSymbol);
+        updatePlayerCapturedArea(player2CapturedArea, player1CapturedPieces, ChessPiece::getWhiteChessPieceSymbol);
+    }
+
+    private void updatePlayerCapturedArea(JTextArea capturedArea, List<ChessPiece> capturedPieces, Function<ChessPiece, String> pieceSymbolExtractor) {
+        capturedArea.removeAll();
+        addCapturedPiecesTitle(capturedArea);
+        Font capturedPieceFont = new Font("Roboto", Font.PLAIN, 26);
+
+        for (ChessPiece piece : capturedPieces) {
+            JLabel capturedPieceLabel = new JLabel(pieceSymbolExtractor.apply(piece));
+            capturedPieceLabel.setFont(capturedPieceFont);
+            capturedArea.add(capturedPieceLabel);
+        }
+
+        capturedArea.revalidate();
+        capturedArea.repaint();
+    }
+
+    public void setEmptyCapturedPiecesDisplay() {
+        updateCapturedPiecesDisplay(new ArrayList<>(), new ArrayList<>());
+    }
+
     public void updatePlayAgainButton(Color backgroundColor, Color foregroundColor) {
         playAgainButton.setBackground(backgroundColor);
         playAgainButton.setForeground(foregroundColor);
@@ -120,6 +162,7 @@ public class GameLogPanel extends JPanel {
         String name = currentPlayer.getName();
         String pieceColor = currentPlayer.getColor().toString();
         String pieceColorFormatted = pieceColor.charAt(0) + pieceColor.substring(1).toLowerCase();
+
         logTextArea.setText(lineBreaks + "    It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
     }
 
@@ -164,59 +207,13 @@ public class GameLogPanel extends JPanel {
         logTextArea.setText(lineBreaks + "\tStalemate!");
     }
 
-    public void updateCapturedPiecesDisplay(List<ChessPiece> player1CapturedPieces, List<ChessPiece> player2CapturedPieces) {
-        player1CapturedArea.removeAll();
-        player2CapturedArea.removeAll();
-
-        addCapturedPiecesTitle(player1CapturedArea);
-        addCapturedPiecesTitle(player2CapturedArea);
-
-        Font capturedPieceFont = new Font("Roboto", Font.PLAIN, 26);
-        for (ChessPiece piece : player2CapturedPieces) {
-            JLabel blackCapturedPieceLabel = new JLabel(piece.getBlackChessPieceSymbol());
-            blackCapturedPieceLabel.setFont(capturedPieceFont);
-            player1CapturedArea.add(blackCapturedPieceLabel);
-        }
-
-        for (ChessPiece piece : player1CapturedPieces) {
-            JLabel whiteCapturedPieceLabel = new JLabel(piece.getWhiteChessPieceSymbol());
-            whiteCapturedPieceLabel.setFont(capturedPieceFont);
-            player2CapturedArea.add(whiteCapturedPieceLabel);
-        }
-
-        player1CapturedArea.revalidate();
-        player1CapturedArea.repaint();
-        player2CapturedArea.revalidate();
-        player2CapturedArea.repaint();
-    }
-
-    private void addCapturedPiecesTitle(JTextArea capturedArea) {
-        Font capturedPiecesTitleFont = new Font("Roboto", Font.BOLD, 24);
-        Border paddingBorder = BorderFactory.createEmptyBorder(5, 90, 5, 90);
-        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray);
-        Border compoundBorder = BorderFactory.createCompoundBorder(lineBorder, paddingBorder);
-
-        JLabel capturedPiecesTitle = new JLabel("Captured Pieces");
-        capturedPiecesTitle.setFont(capturedPiecesTitleFont);
-        capturedPiecesTitle.setBorder(compoundBorder);
-        capturedArea.add(capturedPiecesTitle);
-    }
-
-    public void updateCapturedPiecesDisplay() {
-        updateCapturedPiecesDisplay(new ArrayList<>(), new ArrayList<>());
-    }
-
     private void onPlayAgainButtonClick() {
         controller.handlePlayAgainButtonClick();
         playAgainButton.setBackground(defaultButtonColor);
         playAgainButton.setForeground(null);
         controller.clearHighlightedSquares();
-        updateCapturedPiecesDisplay();
+        setEmptyCapturedPiecesDisplay();
         controller.updateGUI();
-    }
-
-    public void setController(ChessController controller) {
-        this.controller = controller;
     }
 
     private void onUndoButtonClick() {

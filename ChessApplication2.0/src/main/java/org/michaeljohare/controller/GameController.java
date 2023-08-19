@@ -1,9 +1,9 @@
-package org.michaeljohare.model.game;
+package org.michaeljohare.controller;
 
-import org.michaeljohare.controller.ChessController;
-import org.michaeljohare.controller.StockfishController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
+import org.michaeljohare.model.game.GameState;
+import org.michaeljohare.model.game.GameStateMemento;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.moves.MoveHistory;
 import org.michaeljohare.model.moves.PromotionMove;
@@ -18,9 +18,9 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.michaeljohare.model.pieces.PieceType.convertIntToPieceType;
 
-public class GameManager {
+public class GameController {
 
-    private ChessController controller;
+    private GUIController controller;
     private StockfishController sfController;
     private ChessBoard board;
     private GameState gs;
@@ -32,7 +32,7 @@ public class GameManager {
     private MoveHistory move;
     private PieceManager pm;
 
-    public GameManager() {
+    public GameController() {
         this.board = new ChessBoard();
         this.gs = new GameState(board);
         this.pm = board.getPieceManager();
@@ -42,7 +42,7 @@ public class GameManager {
         move = new MoveHistory();
         sfController = new StockfishController(board, move, gs);
 
-        this.controller = new ChessController(board, this);
+        this.controller = new GUIController(board, this);
         controller.showGUI();
 
         initiateGame();
@@ -62,7 +62,7 @@ public class GameManager {
         }
     }
 
-    public void handleFirstClick(int row, int col) {
+    private void handleFirstClick(int row, int col) {
         selectedPiece = board.getPieceAt(row, col);
 
         if (selectedPiece == null || selectedPiece.getPlayer() != gs.getCurrentPlayer()) {
@@ -82,7 +82,7 @@ public class GameManager {
         }
     }
 
-    public void handleSecondClick(int row, int col) {
+    private void handleSecondClick(int row, int col) {
         Square targetSquare = new Square(row, col);
         Move legalMove = null;
         Move legalPromotionMove = null;
@@ -151,7 +151,7 @@ public class GameManager {
         initiateGame();
     }
 
-    public void finalizeMove(Move legalMove) {
+    private void finalizeMove(Move legalMove) {
         mementos.push(gs.createMemento());
 
         if (legalMove.isPromotion()) {
@@ -168,12 +168,10 @@ public class GameManager {
 
         gs.swapPlayers();
         controller.currentPlayerLogText(gs.getCurrentPlayer());
-
-        controller.clearPreviousMoveHighlightedSquares();
         controller.setHighlightedSquaresPreviousMove(legalMove);
     }
 
-    public void handleCheckAndCheckmate() {
+    private void handleCheckAndCheckmate() {
         List<ChessPiece> playerPieces = pm.getPlayerPieces(gs.getCurrentPlayer());
         List<List<Move>> currentPlayerLegalMoves = new ArrayList<>();
 
@@ -188,13 +186,11 @@ public class GameManager {
 
             isGameOver = true;
             controller.checkmateLogText();
-            controller.updatePlayAgainButton();
         } else if (currentPlayerLegalMoves.stream()
                 .allMatch(List::isEmpty)) {
 
             isGameOver = true;
             controller.stalemateLogText();
-            controller.updatePlayAgainButton();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
 
             controller.checkLogText();
@@ -213,14 +209,13 @@ public class GameManager {
         GameStateMemento memento = mementos.pop();
         gs.restoreFromMemento(memento);
 
-        controller.clearPreviousMoveHighlightedSquares();
         controller.setHighlightedSquaresPreviousMove(move.getLastMove());
         controller.currentPlayerLogText(gs.getCurrentPlayer());
         isFirstClick = true;
         updateGUI();
     }
 
-    public void handleCapturedPieces(Move legalMove, boolean isUndo) {
+    private void handleCapturedPieces(Move legalMove, boolean isUndo) {
         ChessPiece capturedPiece = legalMove.getCapturedPiece();
 
         if (capturedPiece == null) {
@@ -288,7 +283,7 @@ public class GameManager {
                 });
     }
 
-    public void tryAgainPrompt(Runnable logTextMethod) {
+    private void tryAgainPrompt(Runnable logTextMethod) {
         logTextMethod.run();
         isFirstClick = true;
     }

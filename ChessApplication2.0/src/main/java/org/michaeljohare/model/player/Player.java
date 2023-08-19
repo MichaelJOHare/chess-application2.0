@@ -7,7 +7,7 @@ import static org.michaeljohare.model.player.PlayerColor.WHITE;
 public class Player {
     private PlayerColor color;
     private String name;
-    private boolean isPlayer1;
+    private boolean isPlayer1; // No longer useful?
 
     public Player(PlayerColor color, String name, boolean isPlayer1) {
         this.name = name;
