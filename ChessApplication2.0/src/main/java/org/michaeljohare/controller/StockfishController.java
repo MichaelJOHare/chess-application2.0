@@ -156,12 +156,13 @@ public class StockfishController {
         Move move;
 
         // The only algebraic move with length over 4 that stockfish suggests is a pawn promotion
-        //    eg. normally it's e2e4 etc.
+        //    e.g. normally it's e2e4 etc.
         if (algebraicMove.length() > 4) {
             char promotionPieceChar = algebraicMove.charAt(4);
             PieceType promotionType = charToPieceType(promotionPieceChar);
 
             move = new PromotionMove(movingPiece, startSquare, endSquare, capturedPiece, promotionType, board);
+            move.setPromotion(true);
         } else {
             move = new Move(movingPiece, startSquare, endSquare, capturedPiece, board);
         }

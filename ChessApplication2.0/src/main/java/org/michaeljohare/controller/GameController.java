@@ -49,7 +49,7 @@ public class GameController {
     }
 
     private void initiateGame() {
-        if (gs.getCurrentPlayer().getName().equals("Stockfish")) {
+        if (gs.getCurrentPlayer().isStockfish()) {
             makeStockfishMove();
         }
     }
@@ -110,13 +110,13 @@ public class GameController {
         controller.clearHighlightedSquares();
         handleCheckAndCheckmate();
 
-        if (gs.getCurrentPlayer().getName().equals("Stockfish")) {
+        if (gs.getCurrentPlayer().isStockfish()) {
             makeStockfishMove();
         }
     }
 
     public void handleUndoButtonClick() {
-        if (gs.getCurrentPlayer().equals(gs.getPlayer1()) && gs.getPlayer2().getName().equals("Stockfish")) {
+        if (gs.getCurrentPlayer().equals(gs.getPlayer1()) && gs.getPlayer2().isStockfish()) {
 
             if (mementos.size() < 2) {
                 controller.nothingLeftToUndoLogText();
@@ -145,6 +145,7 @@ public class GameController {
         board.init(gs.getPlayer1(), gs.getPlayer2());
         this.pm = board.getPieceManager();
         isFirstClick = true;
+        isGameOver = false;
         move.resetMoveHistory();
         mementos.clear();
         updateGUI();
@@ -154,7 +155,7 @@ public class GameController {
     private void finalizeMove(Move legalMove) {
         mementos.push(gs.createMemento());
 
-        if (legalMove.isPromotion()) {
+        if (legalMove.isPromotion() && !gs.getCurrentPlayer().isStockfish()) {
             int promotionChoice = controller.handlePawnPromotion(selectedPiece);
             PieceType chosenPromotion = convertIntToPieceType(promotionChoice);
             ((PromotionMove) legalMove).setPromotionType(chosenPromotion);

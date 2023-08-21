@@ -10,8 +10,7 @@ import java.awt.event.WindowEvent;
 public class StartupDialog extends JDialog {
     private JTextField playerName1Field, playerName2Field;
     private JComboBox<String> colorChoice1, colorChoice2;
-    private JComboBox<String> opponentChoice;
-    private JComboBox<String> stockfishEloChoice;
+    private JComboBox<String> opponentChoice, stockfishEloChoice;
     private JLabel stockfishElo;
     private JButton startButton;
     private Font defaultFont = new Font("Roboto", Font.PLAIN, 18);

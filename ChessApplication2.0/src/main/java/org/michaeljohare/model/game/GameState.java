@@ -97,7 +97,7 @@ public class GameState {
 
     public boolean isStockfishInPlay() {
         return stockfishElo != -1;
-    }
+    } // Use to make sure user can't move for stockfish?
 
     public int getStockfishElo() {
         return stockfishElo;

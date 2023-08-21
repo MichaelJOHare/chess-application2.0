@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BishopMovementStrategy extends BaseMovementStrategy {
     @Override
-    public List<Move> calculateRawLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {;
+    public List<Move> calculateRawLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {
         List<Move> legalMoves = new ArrayList<>();
         int row = piece.getCurrentSquare().getRow(), col = piece.getCurrentSquare().getCol();
 

@@ -3,16 +3,17 @@ package org.michaeljohare.model.player;
 import java.util.Objects;
 
 import static org.michaeljohare.model.player.PlayerColor.WHITE;
+import static org.michaeljohare.model.player.PlayerType.AI;
 
 public class Player {
     private PlayerColor color;
+    private PlayerType type;
     private String name;
-    private boolean isPlayer1; // No longer useful?
 
-    public Player(PlayerColor color, String name, boolean isPlayer1) {
-        this.name = name;
+    public Player(PlayerColor color, PlayerType type, String name) {
         this.color = color;
-        this.isPlayer1 = isPlayer1;
+        this.type = type;
+        this.name = name;
     }
 
     public String getName() {
@@ -26,13 +27,12 @@ public class Player {
     public boolean isWhite() {
         return color == WHITE;
     }
-
-    public boolean isPlayer1() {
-        return isPlayer1;
+    public boolean isStockfish(){
+        return type == AI;
     }
 
     public Player copy() {
-        return new Player(this.color, this.name, this.isPlayer1);
+        return new Player(this.color, this.type, this.name);
     }
 
     @Override
@@ -44,12 +44,12 @@ public class Player {
             return false;
         }
         Player player = (Player) obj;
-        return color == player.color && Objects.equals(name, player.name) && isPlayer1 == player.isPlayer1;
+        return color == player.color && type == player.type && Objects.equals(name, player.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, name);
+        return Objects.hash(color, name, type);
     }
 
 }

@@ -61,13 +61,13 @@ public class PawnMovementStrategy extends BaseMovementStrategy {
     }
 
     private void addEnPassantMoves(int row, int col, ChessPiece piece, ChessBoard board, MoveHistory move, List<Move> legalMoves) {
-        int capturedPawnStartingRow = piece.getPlayer().isWhite() ? 1 : 6;
+        int capturedPawnStartingRow = piece.getPlayer().isWhite() ? 1 : 6; // Better variable name?
         int capturedPawnEndRow = piece.getPlayer().isWhite() ? 3 : 4;
         int direction = piece.getPlayer().isWhite() ? -1 : 1;
         Move lastMove = move.getLastMove();
 
         if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
-                lastMove.getStartSquare().getRow() == capturedPawnStartingRow &&
+                lastMove.getStartSquare().getRow() == capturedPawnStartingRow && // Kind of confusing
                 lastMove.getEndSquare().getRow() == capturedPawnEndRow &&
                 row == capturedPawnEndRow &&
                 Math.abs(col - lastMove.getEndSquare().getCol()) == 1) {
