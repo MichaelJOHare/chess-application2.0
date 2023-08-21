@@ -3,6 +3,7 @@ package org.michaeljohare.view;
 import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
+import org.michaeljohare.model.pieces.PieceType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ChessGUI extends JFrame {
 
@@ -61,18 +63,31 @@ public class ChessGUI extends JFrame {
         }
     }
 
-    public int createPromotionPane(ChessPiece playerPiece, JButton[][] chessButtons) {
-        String[] options = {"Queen", "Rook", "Bishop", "Knight"};
-        return JOptionPane.showOptionDialog(
+    public PieceType createPromotionPane(ChessPiece playerPiece, JButton[][] chessButtons) {
+        PieceType[] options = {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT};
+        String[] optionNames = Arrays.stream(options)
+                .map(PieceType::name)
+                .map(String::toLowerCase)
+                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+                .toArray(String[]::new);
+
+        int selectedIndex = JOptionPane.showOptionDialog(
                 chessButtons[playerPiece.getCurrentSquare().getRow()][playerPiece.getCurrentSquare().getCol()],
                 "Select a piece to promote the pawn to:",
                 "Pawn Promotion",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
-                options,
-                options[0]
+                optionNames,
+                optionNames[0]
         );
+
+        // If the user closes the pane, automatically select the queen.
+        if (selectedIndex == -1) {
+            selectedIndex = 0;
+        }
+
+        return options[selectedIndex];
     }
 
     public void updateGUI() {

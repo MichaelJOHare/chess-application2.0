@@ -3,13 +3,12 @@ package org.michaeljohare.controller;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.game.GameState;
-import org.michaeljohare.model.moves.CastlingMove;
-import org.michaeljohare.model.moves.Move;
-import org.michaeljohare.model.moves.MoveHistory;
-import org.michaeljohare.model.moves.PromotionMove;
+import org.michaeljohare.model.moves.*;
 import org.michaeljohare.model.pieces.*;
 
+import javax.swing.*;
 import java.io.*;
+import java.util.concurrent.CompletableFuture;
 
 import static org.michaeljohare.model.board.ChessBoard.*;
 
@@ -20,11 +19,15 @@ public class StockfishController {
     private ChessBoard board;
     private MoveHistory move;
     private GameState gs;
+    private MoveHandler mh;
+    private GUIController guiController;
 
-    public StockfishController(ChessBoard board, MoveHistory move, GameState gs) {
+    public StockfishController(ChessBoard board, MoveHistory move, GameState gs, GUIController guiController, MoveHandler mh) {
         this. board = board;
         this.move = move;
         this.gs = gs;
+        this.guiController = guiController;
+        this.mh = mh;
 
         if (startEngine()) {
             sendCommand("uci");
@@ -34,21 +37,21 @@ public class StockfishController {
         }
     }
 
-    public String getStockfishPath() {
+    private String getStockfishPath() {
         String os = System.getProperty("os.name").toLowerCase();
         String stockfishPath;
 
         if (os.contains("win")) {
             stockfishPath = "src/main/resources/stockfish/stockfish-windows-x86-64-avx2.exe";
         } else if (os.contains("mac")) {
-            stockfishPath = "src/main/resources/stockfish/stockfish"; // Update this to match your macOS Stockfish binary path
+            stockfishPath = "src/main/resources/stockfish/stockfish";
         } else {
             throw new RuntimeException("Unsupported operating system");
         }
         return stockfishPath;
     }
 
-    public boolean startEngine() {
+    private boolean startEngine() {
 
         try {
             engineProcess = new ProcessBuilder(getStockfishPath()).start();
@@ -104,6 +107,58 @@ public class StockfishController {
         }
 
         return parseMove(bestMove);
+    }
+
+    public void makeMove() {
+        if (gs.isGameOver()) {
+            return;
+        }
+
+        guiController.stockfishThinkingButtonText();
+        CompletableFuture.supplyAsync(this::getMove)
+                .thenAccept(stockfishMove -> {
+                    if (stockfishMove != null) {
+                        SwingUtilities.invokeLater(() -> {
+                            guiController.resetStockfishButtonText();
+
+                            mh.finalizeMove(stockfishMove);
+
+                            mh.handleCheckAndCheckmate();
+                        });
+                    } else {
+                        // guiController.stockfishGameOverButtonText();
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error executing move for Stockfish: " + ex.getMessage());
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+
+    public void getBestMove() {
+        if (gs.isGameOver()) {
+            return;
+        }
+
+        guiController.stockfishWaitingButtonText();
+        CompletableFuture.supplyAsync(this::getMove)
+                .thenAccept(move -> {
+                    if (move != null) {
+                        SwingUtilities.invokeLater(() -> {
+                            guiController.resetStockfishButtonText();
+                            guiController.clearHighlightedSquares();
+                            guiController.setHighlightedSquaresStockfish(move);
+                        });
+                    } else {
+                        // controller.stockfishGameOverButtonText();
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error fetching move from Stockfish: " + ex.getMessage());
+                    ex.printStackTrace();
+                    return null;
+                });
     }
 
     private synchronized String getResponse() throws IOException {
@@ -180,7 +235,7 @@ public class StockfishController {
         return new Square(rowIndex, colIndex);
     }
 
-    public String toFEN() {
+    private String toFEN() {
         StringBuilder fen = new StringBuilder();
 
         // 1. Piece placement

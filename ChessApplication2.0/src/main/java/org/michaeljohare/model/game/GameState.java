@@ -19,12 +19,14 @@ public class GameState {
     private List<ChessPiece> capturedPieces;
     private List<ChessPiece> player1CapturedPieces;
     private List<ChessPiece> player2CapturedPieces;
+    private boolean isGameOver;
     private int stockfishElo = -1;
 
     public GameState(ChessBoard board) {
         this.board = board;
         initializePlayers();
         init();
+        isGameOver = false;
     }
 
     private void initializePlayers() {
@@ -105,6 +107,14 @@ public class GameState {
 
     public List<ChessPiece> getCapturedPieces() {
         return capturedPieces;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
     }
 
     public void addCapturedPiece(ChessPiece capturedPiece) {

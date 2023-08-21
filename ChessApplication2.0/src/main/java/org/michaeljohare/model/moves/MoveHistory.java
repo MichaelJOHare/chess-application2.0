@@ -50,7 +50,7 @@ public class MoveHistory {
     }
 
     public Move getLastMove() {
-        return history.size() > 0 ? history.peek() : null;
+        return !history.isEmpty() ? history.peek() : null;
     }
 
     public int getHalfMoveClock() {

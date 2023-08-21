@@ -3,6 +3,7 @@ package org.michaeljohare.controller;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.ChessPiece;
+import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.view.ChessGUI;
 
@@ -46,14 +47,14 @@ public class GUIController {
     }
 
     public void handleAskStockfishButtonClick() {
-        gc.handleAskStockfishButtonClick();
+        gc.askStockFish();
     }
 
     public void handlePlayAgainButtonClick() {
         gc.handlePlayAgainButtonClick();
     }
 
-    public int handlePawnPromotion(ChessPiece pawn) {
+    public PieceType handlePawnPromotion(ChessPiece pawn) {
         return gui.createPromotionPane(pawn, gui.getChessBoardPanel().getChessButtons());
     }
 

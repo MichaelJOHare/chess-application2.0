@@ -26,8 +26,4 @@ public class EnPassantMove extends Move {
         board.addPiece(piece);
     }
 
-    @Override
-    public void redo() {
-        execute();
-    }
 }
