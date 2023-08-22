@@ -175,23 +175,20 @@ public class ChessBoardPanel extends JPanel {
             return;
         }
 
-        Square startSquare = move.getStartSquare();
-        Square endSquare = move.getEndSquare();
+        Square[] squares = {move.getStartSquare(), move.getEndSquare()};
 
-        if (chessButtons[startSquare.getRow()][startSquare.getCol()].getBackground().equals(DARK_SQUARE)) {
-            chessButtons[startSquare.getRow()][startSquare.getCol()].setBackground(DARK_SQUARE_PREVIOUS_MOVE);
-        } else if (chessButtons[startSquare.getRow()][startSquare.getCol()].getBackground().equals(LIGHT_SQUARE)) {
-            chessButtons[startSquare.getRow()][startSquare.getCol()].setBackground(LIGHT_SQUARE_PREVIOUS_MOVE);
+        for (Square square : squares) {
+            JButton chessButton = chessButtons[square.getRow()][square.getCol()];
+            Color currentColor = chessButton.getBackground();
+
+            if (currentColor.equals(DARK_SQUARE)) {
+                chessButton.setBackground(DARK_SQUARE_PREVIOUS_MOVE);
+            } else if (currentColor.equals(LIGHT_SQUARE)) {
+                chessButton.setBackground(LIGHT_SQUARE_PREVIOUS_MOVE);
+            }
+
+            previousMoveHighlightedSquares.add(square);
         }
-
-        if (chessButtons[endSquare.getRow()][endSquare.getCol()].getBackground().equals(DARK_SQUARE)) {
-            chessButtons[endSquare.getRow()][endSquare.getCol()].setBackground(DARK_SQUARE_PREVIOUS_MOVE);
-        } else if (chessButtons[endSquare.getRow()][endSquare.getCol()].getBackground().equals(LIGHT_SQUARE)) {
-            chessButtons[endSquare.getRow()][endSquare.getCol()].setBackground(LIGHT_SQUARE_PREVIOUS_MOVE);
-        }
-
-        previousMoveHighlightedSquares.add(startSquare);
-        previousMoveHighlightedSquares.add(endSquare);
     }
 
     public void clearHighlightedSquares() {

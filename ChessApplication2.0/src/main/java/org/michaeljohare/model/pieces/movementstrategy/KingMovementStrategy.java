@@ -21,7 +21,7 @@ public class KingMovementStrategy extends BaseMovementStrategy {
     @Override
     public List<Move> calculateLegalMoves(ChessBoard board, ChessPiece piece, MoveHistory move) {
         List<Move> legalMoves = super.calculateLegalMoves(board, piece, move);
-        addCastlingMoves(board, piece, legalMoves);
+        addCastlingMoves(board, piece, legalMoves, move);
         return legalMoves;
     }
 
@@ -56,8 +56,8 @@ public class KingMovementStrategy extends BaseMovementStrategy {
         return rawLegalMoves;
     }
 
-    private void addCastlingMoves(ChessBoard board, ChessPiece king, List<Move> legalMoves) {
-        if (king instanceof King && !((King) king).hasMoved()) {
+    private void addCastlingMoves(ChessBoard board, ChessPiece king, List<Move> legalMoves, MoveHistory move) {
+        if (king instanceof King && !((King) king).hasMoved() && !board.isKingInCheck(king.getPlayer(), move, board)) {
             addKingSideCastlingMove(board, king, legalMoves);
             addQueenSideCastlingMove(board, king, legalMoves);
         }
