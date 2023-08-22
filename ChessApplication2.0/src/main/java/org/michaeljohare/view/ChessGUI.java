@@ -17,7 +17,7 @@ public class ChessGUI extends JFrame {
 
     private ChessBoardPanel chessBoardPanel;
     private GameLogPanel gameLogPanel;
-    private GUIController controller;
+    private GUIController guiController;
 
 
     public ChessGUI(ChessBoard board) {
@@ -40,8 +40,8 @@ public class ChessGUI extends JFrame {
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                if (controller != null) {
-                    controller.onWindowClosing();
+                if (guiController != null) {
+                    guiController.onWindowClosing();
                 }
             }
         });
@@ -106,7 +106,7 @@ public class ChessGUI extends JFrame {
         return gameLogPanel;
     }
 
-    public void setController(GUIController controller) {
-        this.controller = controller;
+    public void setGuiController(GUIController guiController) {
+        this.guiController = guiController;
     }
 }

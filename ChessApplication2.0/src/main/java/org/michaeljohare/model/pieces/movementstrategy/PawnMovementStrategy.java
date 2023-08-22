@@ -38,7 +38,7 @@ public class PawnMovementStrategy extends BaseMovementStrategy {
     }
 
     private void handleNormalMove(int row, int col, int direction, int backRank, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
-        if ((direction == -1 && row > backRank) || (direction == 1 && row < backRank)) {
+        if ((direction == -1 && row - 1 > backRank) || (direction == 1 && row + 1 < backRank)) {
             int newRow = row + direction;
             if (board.isEmpty(newRow, col)) {
                 legalMoves.add(new Move(piece, new Square(row, col), new Square(newRow, col), null, board));
@@ -55,21 +55,21 @@ public class PawnMovementStrategy extends BaseMovementStrategy {
     private void handleCapture(int row, int col, int direction, int colOffset, ChessPiece piece, ChessBoard board, List<Move> legalMoves) {
         int newRow = row + direction;
         int newCol = col + colOffset;
-        if (newCol >= 0 && newCol <= 7 && board.isOccupiedByOpponent(newRow, newCol, piece.getPlayer())) {
+        if (newCol >= 0 && newCol <= 7 && newRow >= 1 && newRow <= 6 && board.isOccupiedByOpponent(newRow, newCol, piece.getPlayer())) {
             legalMoves.add(new Move(piece, new Square(row, col), new Square(newRow, newCol), board.getPieceAt(newRow, newCol), board));
         }
     }
 
     private void addEnPassantMoves(int row, int col, ChessPiece piece, ChessBoard board, MoveHistory move, List<Move> legalMoves) {
-        int capturedPawnStartingRow = piece.getPlayer().isWhite() ? 1 : 6; // Better variable name?
-        int capturedPawnEndRow = piece.getPlayer().isWhite() ? 3 : 4;
+        int enPassantStartingRow = piece.getPlayer().isWhite() ? 1 : 6;
+        int enPassantEndRow = piece.getPlayer().isWhite() ? 3 : 4;
         int direction = piece.getPlayer().isWhite() ? -1 : 1;
         Move lastMove = move.getLastMove();
 
         if (lastMove != null && lastMove.getPiece().getType().equals(PieceType.PAWN) &&
-                lastMove.getStartSquare().getRow() == capturedPawnStartingRow && // Kind of confusing
-                lastMove.getEndSquare().getRow() == capturedPawnEndRow &&
-                row == capturedPawnEndRow &&
+                lastMove.getStartSquare().getRow() == enPassantStartingRow &&
+                lastMove.getEndSquare().getRow() == enPassantEndRow &&
+                row == enPassantEndRow &&
                 Math.abs(col - lastMove.getEndSquare().getCol()) == 1) {
 
             Square currentSquare = new Square(row, col);

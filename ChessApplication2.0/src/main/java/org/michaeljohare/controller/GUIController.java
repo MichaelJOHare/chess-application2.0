@@ -17,9 +17,9 @@ public class GUIController {
     public GUIController(ChessBoard board, GameController gc) {
         this.gui = new ChessGUI(board);
         this.gc = gc;
-        gui.getChessBoardPanel().setController(this);
-        gui.getGameLogPanel().setController(this);
-        gui.setController(this);
+        gui.getChessBoardPanel().init(this);
+        gui.getGameLogPanel().setGuiController(this);
+        gui.setGuiController(this);
     }
 
     public void showGUI() {
@@ -35,7 +35,15 @@ public class GUIController {
     }
 
     public void onSquareClick(int row, int col) {
-        gc.handleSquareClick(row, col);
+        gc.handleClickToMove(row, col);
+    }
+
+    public boolean onDragStart(int row, int col) {
+        return gc.handleDragStart(row, col);
+    }
+
+    public boolean onDragDrop(int endRow, int endCol){
+        return gc.handleDragDrop(endRow, endCol);
     }
 
     public void onWindowClosing() {

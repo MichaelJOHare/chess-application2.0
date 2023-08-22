@@ -21,7 +21,7 @@ public class GameLogPanel extends JPanel {
     private JScrollPane logScrollPane;
     private JTextArea player1CapturedArea;
     private JTextArea player2CapturedArea;
-    private GUIController controller;
+    private GUIController guiController;
     private final JPanel rightPanel;
     private final String lineBreaks = "\n\n\n\n\n";
 
@@ -46,8 +46,8 @@ public class GameLogPanel extends JPanel {
         add(createRightPanel(), BorderLayout.CENTER);
     }
 
-    public void setController(GUIController controller) {
-        this.controller = controller;
+    public void setGuiController(GUIController guiController) {
+        this.guiController = guiController;
     }
 
     private JPanel createRightPanel() {
@@ -208,16 +208,16 @@ public class GameLogPanel extends JPanel {
     }
 
     private void onPlayAgainButtonClick() {
-        controller.handlePlayAgainButtonClick();
+        guiController.handlePlayAgainButtonClick();
         playAgainButton.setBackground(defaultButtonColor);
         playAgainButton.setForeground(null);
-        controller.clearHighlightedSquares();
+        guiController.clearHighlightedSquares();
         setEmptyCapturedPiecesDisplay();
-        controller.updateGUI();
+        guiController.updateGUI();
     }
 
     private void onUndoButtonClick() {
-        controller.handleUndoButtonClick();
+        guiController.handleUndoButtonClick();
         if (playAgainButton.getForeground() != null) {
             playAgainButton.setForeground(null);
             playAgainButton.setBackground(defaultButtonColor);
@@ -225,10 +225,10 @@ public class GameLogPanel extends JPanel {
     }
 
     private void onAskStockfishButtonClick() {
-        controller.handleAskStockfishButtonClick();
+        guiController.handleAskStockfishButtonClick();
     }
 
     private void onFlipBoardButtonClick() {
-        controller.onUserRequestFlipBoard();
+        guiController.onUserRequestFlipBoard();
     }
 }

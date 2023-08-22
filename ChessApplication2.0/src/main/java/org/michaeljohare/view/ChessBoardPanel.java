@@ -7,6 +7,7 @@ import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
+import org.michaeljohare.utils.ChessMouseListener;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class ChessBoardPanel extends JPanel {
     private JButton[][] chessButtons;
     private JPanel chessBoardPanel;
     private ChessBoard board;
-    private GUIController controller;
+    private GUIController guiController;
     private final List<Square> highlightedSquares = new ArrayList<>();
     private final List<Square> previousMoveHighlightedSquares = new ArrayList<>();
     private boolean boardFlipped = false;
@@ -32,10 +33,10 @@ public class ChessBoardPanel extends JPanel {
     public ChessBoardPanel(ChessBoard board) {
         this.board = board;
         chessBoardPanel = new JPanel();
-        init();
     }
 
-    public void init() {
+    public void init(GUIController guiController) {
+        this.guiController = guiController;
         setLayout(new BorderLayout());
         add(createChessboardPanel(), BorderLayout.CENTER);
     }
@@ -60,9 +61,11 @@ public class ChessBoardPanel extends JPanel {
                 setSquareColor(row, col);
 
                 updateButton(row, col);
-                final int finalRow = row;
-                final int finalCol = col;
-                chessButtons[row][col].addActionListener(e -> onSquareClick(finalRow, finalCol));
+                chessButtons[row][col].setName(row + "," + col);
+
+                ChessMouseListener listener = new ChessMouseListener(guiController, this);
+                chessButtons[row][col].addMouseListener(listener);
+                chessButtons[row][col].addMouseMotionListener(listener);
 
                 createButtonLabels(row, col, chessButtons);
 
@@ -208,16 +211,8 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
-    public void setController(GUIController controller) {
-        this.controller = controller;
-    }
-
     public JButton[][] getChessButtons() {
         return chessButtons;
-    }
-
-    private void onSquareClick(int row, int col) {
-        controller.onSquareClick(row, col);
     }
 
     public void flipBoard() {

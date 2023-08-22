@@ -19,10 +19,9 @@ public class Main {
     /*
      * TODO
      *  Implement 50 move rule
-     *  QOL: Implement check for clicking on piece you own on second click so that it can be selected instead of invalid square notification
      *  Refactor and clean up
-     *      - Maybe separate out some things in GameController to other classes (state pattern maybe?)
      *      - Check unused methods (Player, GameState, etc)
      *      - Clean up ChessBoardPanel
+     *      - Clean up MoveHandler (no need for updateGUI() when finalizing drag and drop move)
      */
 }

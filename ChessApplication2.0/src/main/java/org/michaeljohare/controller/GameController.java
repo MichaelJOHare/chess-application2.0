@@ -41,13 +41,30 @@ public class GameController {
         }
     }
 
-    public void handleSquareClick(int row, int col) {
+    public void handleClickToMove(int row, int col) {
 
-        mh.handleSquareClick(row, col);
+        if (mh.isFirstClick()) {
+            mh.handleSelectPieceClick(row, col);
+        } else {
+            mh.handleMovePieceClick(row, col);
+        }
 
         if (gs.getCurrentPlayer().isStockfish()) {
             makeStockfishMove();
         }
+    }
+
+    public boolean handleDragStart(int row, int col) {
+        return mh.handleDragStart(row, col);
+    }
+
+    public boolean handleDragDrop(int endRow, int endCol) {
+        boolean isValid = mh.handleDragDrop(endRow, endCol);
+
+        if (gs.getCurrentPlayer().isStockfish()) {
+            makeStockfishMove();
+        }
+        return isValid;
     }
 
     public void handleUndoButtonClick() {

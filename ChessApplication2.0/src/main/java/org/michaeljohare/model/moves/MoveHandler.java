@@ -8,10 +8,10 @@ import org.michaeljohare.model.game.GameStateMemento;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.PieceManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class MoveHandler {
     private boolean isFirstClick;
@@ -35,15 +35,7 @@ public class MoveHandler {
         this.pm = pm;
     }
 
-    public void handleSquareClick(int row, int col) {
-        if (isFirstClick) {
-            handleSelectPiece(row, col);
-        } else {
-            handleMovePiece(row, col);
-        }
-    }
-
-    private void handleSelectPiece(int row, int col) {
+    public void handleSelectPieceClick(int row, int col) {
         selectedPiece = board.getPieceAt(row, col);
 
         if (selectedPiece == null || selectedPiece.getPlayer() != gs.getCurrentPlayer()) {
@@ -63,20 +55,63 @@ public class MoveHandler {
         }
     }
 
-    private void handleMovePiece(int row, int col) {
-        Square targetSquare = new Square(row, col);
-        Optional<Move> legalMove = moves.stream().filter(m -> m.getEndSquare().equals(targetSquare)).findFirst();
-
+    public void handleMovePieceClick(int row, int col) {
         guiController.clearHighlightedSquares();
+        Square targetSquare = new Square(row, col);
+
+        // Check if the target square contains a piece owned by the current player to allow selecting a different piece
+        // without getting a tryAgainPrompt
+        ChessPiece pieceAtTargetSquare = board.getPieceAt(row, col);
+        if (pieceAtTargetSquare != null && pieceAtTargetSquare.getPlayer().equals(gs.getCurrentPlayer())) {
+            handleSelectPieceClick(row, col);
+            return;
+        }
+
+        Optional<Move> legalMove = moves.stream().filter(m -> m.getEndSquare().equals(targetSquare)).findFirst();
 
         if (legalMove.isEmpty()) {
             tryAgainPrompt(guiController::moveIsNotLegalLogText);
-            isFirstClick = true;
             return;
         }
 
         finalizeMove(legalMove.get());
         handleCheckAndCheckmate();
+    }
+
+    public boolean handleDragStart(int row, int col){
+        selectedPiece = board.getPieceAt(row, col);
+
+        if(selectedPiece == null || selectedPiece.getPlayer() != gs.getCurrentPlayer()){
+            tryAgainPrompt(guiController::invalidPieceSelectionLogText);
+            return false;
+        }
+
+        if (selectedPiece.getPlayer().equals(gs.getCurrentPlayer())) {
+            moves = selectedPiece.calculateLegalMoves(board, move);
+            if (!moves.isEmpty()) {
+                guiController.setHighlightedSquares(moves);
+                return true;
+            } else {
+                tryAgainPrompt(guiController::noLegalMoveLogText);
+            }
+        }
+        return false;
+    }
+
+    public boolean handleDragDrop(int endRow, int endCol) {
+        guiController.clearHighlightedSquares();
+
+        Square endSquare = new Square(endRow, endCol);
+        Optional<Move> legalMove = moves.stream().filter(m -> m.getEndSquare().equals(endSquare)).findFirst();
+
+        if(legalMove.isPresent()){
+            finalizeMove(legalMove.get());
+            handleCheckAndCheckmate();
+            return true;
+        } else {
+            tryAgainPrompt(guiController::moveIsNotLegalLogText);
+            return false;
+        }
     }
 
     public void finalizeMove(Move legalMove) {
@@ -123,7 +158,7 @@ public class MoveHandler {
 
         guiController.setHighlightedSquaresPreviousMove(move.getLastMove());
         guiController.currentPlayerLogText(gs.getCurrentPlayer());
-        setFirstClick(true);
+        isFirstClick = true;
         guiController.updateGUI();
     }
 
@@ -144,27 +179,28 @@ public class MoveHandler {
     }
 
     public void handleCheckAndCheckmate() {
-        List<ChessPiece> playerPieces = pm.getPlayerPieces(gs.getCurrentPlayer());
-        List<List<Move>> currentPlayerLegalMoves = new ArrayList<>();
+        // Add only non-captured pieces to a list
+        List<ChessPiece> playerPieces = pm.getPlayerPieces(gs.getCurrentPlayer()).stream()
+                .filter(ChessPiece::isAlive)
+                .collect(Collectors.toList());
 
+        boolean hasLegalMoves = false;
+
+        // No need to continue searching after one legal move is found
         for (ChessPiece piece : playerPieces) {
-            if (piece.isAlive()) {
-                currentPlayerLegalMoves.add(piece.calculateLegalMoves(board, move));
+            if (!piece.calculateLegalMoves(board, move).isEmpty()) {
+                hasLegalMoves = true;
+                break;
             }
         }
 
-        if (currentPlayerLegalMoves.stream()
-                .allMatch(List::isEmpty) && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
-
+        if (!hasLegalMoves && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
             gs.setGameOver(true);
             guiController.checkmateLogText();
-        } else if (currentPlayerLegalMoves.stream()
-                .allMatch(List::isEmpty)) {
-
+        } else if (!hasLegalMoves) {
             gs.setGameOver(true);
             guiController.stalemateLogText();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
-
             guiController.checkLogText();
         }
     }
@@ -172,6 +208,10 @@ public class MoveHandler {
     private void tryAgainPrompt(Runnable logTextMethod) {
         logTextMethod.run();
         isFirstClick = true;
+    }
+
+    public boolean isFirstClick() {
+        return isFirstClick;
     }
 
     public void setFirstClick(boolean firstClick) {
