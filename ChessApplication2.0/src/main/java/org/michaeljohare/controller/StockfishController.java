@@ -13,14 +13,14 @@ import java.util.concurrent.CompletableFuture;
 import static org.michaeljohare.model.board.ChessBoard.*;
 
 public class StockfishController {
+    private final ChessBoard board;
+    private final MoveHistory move;
+    private final GameState gs;
+    private final MoveHandler mh;
+    private final GUIController guiController;
     private Process engineProcess;
     private BufferedReader processReader;
     private PrintWriter processWriter;
-    private ChessBoard board;
-    private MoveHistory move;
-    private GameState gs;
-    private MoveHandler mh;
-    private GUIController guiController;
 
     public StockfishController(ChessBoard board, MoveHistory move, GameState gs, GUIController guiController, MoveHandler mh) {
         this. board = board;

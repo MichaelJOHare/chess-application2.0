@@ -28,9 +28,6 @@ public abstract class BaseMovementStrategy implements MovementStrategy {
         ChessBoard copiedBoard = board.copy();
         MoveHistory copiedMoveHistory = move.copy();
 
-        //ChessPiece copiedPiece = copiedBoard.getPieceAt(piece.getCurrentSquare().getRow(), piece.getCurrentSquare().getCol());
-
-        // Testing copy method (NPE BUG)
         ChessPiece copiedPiece = piece.copy();
         Player copiedPlayer = copiedPiece.getPlayer().copy();
 

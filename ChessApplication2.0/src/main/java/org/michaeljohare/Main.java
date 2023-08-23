@@ -23,5 +23,6 @@ public class Main {
      *      - Check unused methods (Player, GameState, etc)
      *      - Clean up ChessBoardPanel
      *      - Clean up MoveHandler (no need for updateGUI() when finalizing drag and drop move)
+     *      - Clean up StockfishController (split setup/util methods into separate StockfishSetup class in utils)
      */
 }

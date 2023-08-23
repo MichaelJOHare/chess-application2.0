@@ -6,9 +6,9 @@ import static org.michaeljohare.model.player.PlayerColor.WHITE;
 import static org.michaeljohare.model.player.PlayerType.AI;
 
 public class Player {
-    private PlayerColor color;
-    private PlayerType type;
-    private String name;
+    private final PlayerColor color;
+    private final PlayerType type;
+    private final String name;
 
     public Player(PlayerColor color, PlayerType type, String name) {
         this.color = color;

@@ -14,15 +14,15 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class MoveHandler {
+    private final Stack<GameStateMemento> mementos;
+    private final ChessBoard board;
+    private final MoveHistory move;
+    private final GameState gs;
+    private final GUIController guiController;
+    private final PieceManager pm;
     private boolean isFirstClick;
-    private List<Move> moves;
-    private Stack<GameStateMemento> mementos;
     private ChessPiece selectedPiece;
-    private ChessBoard board;
-    private MoveHistory move;
-    private GameState gs;
-    private GUIController guiController;
-    private PieceManager pm;
+    private List<Move> moves;
 
     public MoveHandler(ChessBoard board, MoveHistory move, GameState gs, GUIController guiController,
                        Stack<GameStateMemento> mementos, PieceManager pm) {

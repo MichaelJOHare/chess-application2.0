@@ -1,8 +1,8 @@
 package org.michaeljohare.model.board;
 
 public class Square {
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
     private final String[] legendLetter = { "a", "b", "c", "d", "e", "f", "g", "h" };
     private final String[] legendNumber = { "8", "7", "6", "5", "4", "3", "2", "1" };
 

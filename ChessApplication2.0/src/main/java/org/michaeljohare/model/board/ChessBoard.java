@@ -26,7 +26,7 @@ public class ChessBoard {
     public static final int BISHOP_COLUMN_2 = 5;
     public static final int QUEEN_COLUMN = 3;
     public static final int KING_COLUMN = 4;
-    private ChessPiece[][] board;
+    private final ChessPiece[][] board;
     private PieceManager pieceManager;
 
 

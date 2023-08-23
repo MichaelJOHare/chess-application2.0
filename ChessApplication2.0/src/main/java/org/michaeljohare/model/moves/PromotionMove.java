@@ -6,9 +6,8 @@ import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceType;
 
 public class PromotionMove extends Move {
+    private final ChessPiece originalPiece;
     private PieceType promotionType;
-    private ChessPiece originalPiece;
-
     private ChessPiece promotedPiece;
 
     public PromotionMove(ChessPiece pawn, Square startSquare, Square endSquare, ChessPiece capturedPiece,

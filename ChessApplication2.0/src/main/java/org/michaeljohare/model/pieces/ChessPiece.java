@@ -14,11 +14,11 @@ import java.util.Objects;
 public abstract class ChessPiece implements Cloneable {
 
     protected Square currentSquare;
-    private final MovementStrategy movementStrategy;
 
     protected Player player;
     protected PieceType type;
     protected boolean isAlive;
+    private final MovementStrategy movementStrategy;
 
     public ChessPiece(Square currentSquare, Player player, PieceType type, MovementStrategy movementStrategy) {
         this.currentSquare = currentSquare;

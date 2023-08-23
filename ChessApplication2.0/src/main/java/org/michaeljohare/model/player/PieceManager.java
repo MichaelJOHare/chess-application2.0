@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PieceManager {
-    private Map<Player, List<ChessPiece>> piecesByPlayer;
+    private final Map<Player, List<ChessPiece>> piecesByPlayer;
 
     public PieceManager(ChessBoard board) {
         piecesByPlayer = new HashMap<>();

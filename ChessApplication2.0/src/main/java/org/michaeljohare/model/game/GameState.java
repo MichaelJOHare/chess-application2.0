@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
+    private final ChessBoard board;
     private Player currentPlayer;
     private Player opposingPlayer;
     private Player player1;
     private Player player2;
-    private final ChessBoard board;
     private List<ChessPiece> capturedPieces;
     private List<ChessPiece> player1CapturedPieces;
     private List<ChessPiece> player2CapturedPieces;

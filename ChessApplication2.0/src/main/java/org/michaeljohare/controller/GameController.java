@@ -11,14 +11,14 @@ import java.util.Stack;
 
 public class GameController {
 
-    private GUIController guiController;
-    private StockfishController sfController;
-    private ChessBoard board;
-    private GameState gs;
-    private MoveHandler mh;
-    private MoveHistory move;
+    private final GUIController guiController;
+    private final StockfishController sfController;
+    private final ChessBoard board;
+    private final GameState gs;
+    private final MoveHandler mh;
+    private final MoveHistory move;
+    private final Stack<GameStateMemento> mementos = new Stack<>();
     private PieceManager pm;
-    private Stack<GameStateMemento> mementos = new Stack<>();
 
     public GameController() {
         this.board = new ChessBoard();

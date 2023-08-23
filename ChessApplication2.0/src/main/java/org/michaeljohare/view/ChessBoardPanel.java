@@ -7,6 +7,7 @@ import org.michaeljohare.model.board.Square;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
+import org.michaeljohare.utils.ChessButton;
 import org.michaeljohare.utils.ChessMouseListener;
 
 import javax.imageio.ImageIO;
@@ -22,12 +23,12 @@ public class ChessBoardPanel extends JPanel {
     private static final Color LIGHT_SQUARE_PREVIOUS_MOVE = new Color(205,210,106,255);
     private static final Color DARK_SQUARE_PREVIOUS_MOVE = new Color(170,162,58,255);
 
-    private JButton[][] chessButtons;
-    private JPanel chessBoardPanel;
-    private ChessBoard board;
-    private GUIController guiController;
+    private final JPanel chessBoardPanel;
+    private final ChessBoard board;
     private final List<Square> highlightedSquares = new ArrayList<>();
     private final List<Square> previousMoveHighlightedSquares = new ArrayList<>();
+    private ChessButton[][] chessButtons;
+    private GUIController guiController;
     private boolean boardFlipped = false;
 
     public ChessBoardPanel(ChessBoard board) {
@@ -52,10 +53,10 @@ public class ChessBoardPanel extends JPanel {
         int endCol = boardFlipped ? -1 : 8;
         int colIncrement = boardFlipped ? -1 : 1;
 
-        chessButtons = new JButton[8][8];
+        chessButtons = new ChessButton[8][8];
         for (int row = startRow; row != endRow; row += rowIncrement) {
             for (int col = startCol; col != endCol; col += colIncrement) {
-                chessButtons[row][col] = new JButton();
+                chessButtons[row][col] = new ChessButton();
                 chessButtons[row][col].setLayout(new BorderLayout());
 
                 setSquareColor(row, col);
@@ -159,7 +160,11 @@ public class ChessBoardPanel extends JPanel {
 
     public void setHighlightedSquares(List<Move> moves) {
         for (Move move : moves) {
-            chessButtons[move.getEndSquare().getRow()][move.getEndSquare().getCol()].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 4));
+            if (!board.isOccupiedByOpponent(move.getEndSquare().getRow(), move.getEndSquare().getCol(), move.getPiece().getPlayer())) {
+                chessButtons[move.getEndSquare().getRow()][move.getEndSquare().getCol()].setHighlightMode(ChessButton.HighlightMode.DOT);
+            } else {
+                chessButtons[move.getEndSquare().getRow()][move.getEndSquare().getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS);
+            }
             highlightedSquares.add(move.getEndSquare());
         }
     }
@@ -167,8 +172,10 @@ public class ChessBoardPanel extends JPanel {
     public void setHighlightedSquaresStockfish(Move move) {
         Square startSquare = move.getStartSquare();
         Square endSquare = move.getEndSquare();
-        chessButtons[startSquare.getRow()][startSquare.getCol()].setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
-        chessButtons[endSquare.getRow()][endSquare.getCol()].setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
+
+        chessButtons[startSquare.getRow()][startSquare.getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS);
+        chessButtons[endSquare.getRow()][endSquare.getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS);
+
         highlightedSquares.add(startSquare);
         highlightedSquares.add(endSquare);
     }
@@ -196,7 +203,7 @@ public class ChessBoardPanel extends JPanel {
 
     public void clearHighlightedSquares() {
         for (Square square : highlightedSquares) {
-            chessButtons[square.getRow()][square.getCol()].setBorder(null);
+            chessButtons[square.getRow()][square.getCol()].setHighlightMode(ChessButton.HighlightMode.NONE);
         }
         highlightedSquares.clear();
     }

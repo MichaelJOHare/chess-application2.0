@@ -8,13 +8,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class StartupDialog extends JDialog {
-    private JTextField playerName1Field, playerName2Field;
-    private JComboBox<String> colorChoice1, colorChoice2;
-    private JComboBox<String> opponentChoice, stockfishEloChoice;
-    private JLabel stockfishElo;
-    private JButton startButton;
-    private Font defaultFont = new Font("Roboto", Font.PLAIN, 18);
-
+    private final JTextField playerName1Field, playerName2Field;
+    private final JComboBox<String> colorChoice1, colorChoice2;
+    private final JComboBox<String> opponentChoice, stockfishEloChoice;
+    private final JLabel stockfishElo;
+    private final Font defaultFont = new Font("Roboto", Font.PLAIN, 18);
     private String playerName1, playerName2;
     private PlayerColor playerColor1, playerColor2;
     private boolean playWithStockfish;
@@ -165,7 +163,7 @@ public class StartupDialog extends JDialog {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.insets = new Insets(50,10,20,10);
         gbc.anchor = GridBagConstraints.CENTER;
-        startButton = new JButton("Start Game");
+        JButton startButton = new JButton("Start Game");
         startButton.setFont(new Font("Roboto", Font.BOLD, 24));
         add(startButton, gbc);
 

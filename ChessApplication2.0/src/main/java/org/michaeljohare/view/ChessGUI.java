@@ -15,8 +15,8 @@ import java.util.Arrays;
 
 public class ChessGUI extends JFrame {
 
-    private ChessBoardPanel chessBoardPanel;
-    private GameLogPanel gameLogPanel;
+    private final ChessBoardPanel chessBoardPanel;
+    private final GameLogPanel gameLogPanel;
     private GUIController guiController;
 
 
