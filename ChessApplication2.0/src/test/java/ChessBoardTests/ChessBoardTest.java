@@ -8,6 +8,7 @@ import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.Queen;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.model.player.PlayerColor;
+import org.michaeljohare.model.player.PlayerType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +23,7 @@ public class ChessBoardTest {
 
     @Test
     public void testGetPieceAt() {
-        Player whitePlayer = new Player(PlayerColor.WHITE,"mike", true);
+        Player whitePlayer = new Player(PlayerColor.WHITE, PlayerType.HUMAN, "Mike");
         ChessPiece piece = new Queen(new Square(4, 4), whitePlayer);
         board.addPiece(piece);
 
@@ -37,7 +38,7 @@ public class ChessBoardTest {
 
     @Test
     public void testCopy() {
-        Player whitePlayer = new Player(PlayerColor.WHITE, "mike", true);
+        Player whitePlayer = new Player(PlayerColor.WHITE, PlayerType.HUMAN, "Mike");
         ChessPiece piece = new Queen(new Square(4, 4), whitePlayer);
         board.addPiece(piece);
 

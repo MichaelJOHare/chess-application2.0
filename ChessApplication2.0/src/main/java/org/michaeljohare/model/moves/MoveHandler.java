@@ -142,6 +142,7 @@ public class MoveHandler {
             }
             handleSingleUndo();
         }
+        guiController.clearHighlightedSquares();
     }
 
     private void handleSingleUndo() {

@@ -10,15 +10,15 @@ public class ChessButton extends JButton {
     }
 
     private HighlightMode mode = HighlightMode.NONE;
-    private static final Color DARK_SQUARE_HIGHLIGHT_COLOR = new Color(132,120,69);
-    private static final Color LIGHT_SQUARE_HIGHLIGHT_COLOR = new Color(129,150,105);
+    private Color highlightColor;
 
     public ChessButton() {
         super();
     }
 
-    public void setHighlightMode(HighlightMode mode) {
+    public void setHighlightMode(HighlightMode mode, Color color) {
         this.mode = mode;
+        this.highlightColor = color;
         repaint();
     }
 
@@ -42,12 +42,12 @@ public class ChessButton extends JButton {
         int radius = 12;
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
-        g.setColor(LIGHT_SQUARE_HIGHLIGHT_COLOR);
+        g.setColor(highlightColor);
         g.fillOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
     }
 
     private void paintCorners(Graphics g) {
-        g.setColor(LIGHT_SQUARE_HIGHLIGHT_COLOR);
+        g.setColor(highlightColor);
         int diameter = 40;
 
         // Top Left

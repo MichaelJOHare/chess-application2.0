@@ -8,7 +8,7 @@ import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.utils.ChessButton;
-import org.michaeljohare.utils.ChessMouseListener;
+import org.michaeljohare.utils.ChessMouseHandler;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,6 +22,8 @@ public class ChessBoardPanel extends JPanel {
     private static final Color DARK_SQUARE = new Color(156, 98, 69);
     private static final Color LIGHT_SQUARE_PREVIOUS_MOVE = new Color(205,210,106,255);
     private static final Color DARK_SQUARE_PREVIOUS_MOVE = new Color(170,162,58,255);
+    private static final Color LIGHT_SQUARE_HIGHLIGHT_COLOR = new Color(127, 158, 92);
+    private static final Color DARK_SQUARE_HIGHLIGHT_COLOR = new Color(123, 138, 50);
 
     private final JPanel chessBoardPanel;
     private final ChessBoard board;
@@ -40,10 +42,13 @@ public class ChessBoardPanel extends JPanel {
         this.guiController = guiController;
         setLayout(new BorderLayout());
         add(createChessboardPanel(), BorderLayout.CENTER);
+        ChessMouseHandler handler = new ChessMouseHandler(guiController, this);
+        chessBoardPanel.addMouseListener(handler.getBoardMouseListener());
     }
 
     private JPanel createChessboardPanel() {
         chessBoardPanel.setLayout(new GridLayout(8, 8));
+        ChessMouseHandler handler = new ChessMouseHandler(guiController, this);
 
         int startRow = boardFlipped ? 7 : 0;
         int endRow = boardFlipped ? -1 : 8;
@@ -64,9 +69,8 @@ public class ChessBoardPanel extends JPanel {
                 updateButton(row, col);
                 chessButtons[row][col].setName(row + "," + col);
 
-                ChessMouseListener listener = new ChessMouseListener(guiController, this);
-                chessButtons[row][col].addMouseListener(listener);
-                chessButtons[row][col].addMouseMotionListener(listener);
+                chessButtons[row][col].addMouseListener(handler.getButtonMouseListener());
+                chessButtons[row][col].addMouseMotionListener(handler.getButtonMouseListener());
 
                 createButtonLabels(row, col, chessButtons);
 
@@ -160,24 +164,39 @@ public class ChessBoardPanel extends JPanel {
 
     public void setHighlightedSquares(List<Move> moves) {
         for (Move move : moves) {
-            if (!board.isOccupiedByOpponent(move.getEndSquare().getRow(), move.getEndSquare().getCol(), move.getPiece().getPlayer())) {
-                chessButtons[move.getEndSquare().getRow()][move.getEndSquare().getCol()].setHighlightMode(ChessButton.HighlightMode.DOT);
-            } else {
-                chessButtons[move.getEndSquare().getRow()][move.getEndSquare().getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS);
-            }
+            setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.DOT, move.getPiece().getPlayer());
             highlightedSquares.add(move.getEndSquare());
         }
     }
 
     public void setHighlightedSquaresStockfish(Move move) {
-        Square startSquare = move.getStartSquare();
-        Square endSquare = move.getEndSquare();
+        setSquareHighlight(move.getStartSquare(), ChessButton.HighlightMode.CORNERS, null);
+        setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, null);
+        highlightedSquares.add(move.getStartSquare());
+        highlightedSquares.add(move.getEndSquare());
+    }
 
-        chessButtons[startSquare.getRow()][startSquare.getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS);
-        chessButtons[endSquare.getRow()][endSquare.getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS);
+    private void setSquareHighlight(Square square, ChessButton.HighlightMode mode, Player player) {
+        int row = square.getRow();
+        int col = square.getCol();
+        Color squareColor = chessButtons[row][col].getBackground();
+        ChessButton.HighlightMode highlightMode = mode;
+        Color highlightColor;
 
-        highlightedSquares.add(startSquare);
-        highlightedSquares.add(endSquare);
+        if (squareColor.equals(LIGHT_SQUARE) || squareColor.equals(LIGHT_SQUARE_PREVIOUS_MOVE)) {
+            highlightColor = LIGHT_SQUARE_HIGHLIGHT_COLOR;
+        } else if (squareColor.equals(DARK_SQUARE) || squareColor.equals(DARK_SQUARE_PREVIOUS_MOVE)) {
+            highlightColor = DARK_SQUARE_HIGHLIGHT_COLOR;
+        } else {
+            return;
+        }
+
+        // If the square is occupied by the opponent, change mode to CORNERS
+        if (board.isOccupiedByOpponent(row, col, player) && mode == ChessButton.HighlightMode.DOT) {
+            highlightMode = ChessButton.HighlightMode.CORNERS;
+        }
+
+        chessButtons[row][col].setHighlightMode(highlightMode, highlightColor);
     }
 
     public void setHighlightedSquaresPreviousMove(Move move) {
@@ -203,7 +222,7 @@ public class ChessBoardPanel extends JPanel {
 
     public void clearHighlightedSquares() {
         for (Square square : highlightedSquares) {
-            chessButtons[square.getRow()][square.getCol()].setHighlightMode(ChessButton.HighlightMode.NONE);
+            chessButtons[square.getRow()][square.getCol()].setHighlightMode(ChessButton.HighlightMode.NONE, null);
         }
         highlightedSquares.clear();
     }
@@ -222,12 +241,20 @@ public class ChessBoardPanel extends JPanel {
         return chessButtons;
     }
 
+    public JButton getChessButtonAt(int row, int col) {
+        return chessButtons[row][col];
+    }
+
     public void flipBoard() {
         boardFlipped = !boardFlipped;
         chessBoardPanel.removeAll();
         createChessboardPanel();
         chessBoardPanel.revalidate();
         chessBoardPanel.repaint();
+    }
+
+    public boolean isBoardFlipped() {
+        return boardFlipped;
     }
 
 }
