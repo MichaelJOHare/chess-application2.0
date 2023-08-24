@@ -4,10 +4,10 @@ import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.view.ChessBoardPanel;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 public class ChessMouseHandler {
     private static final int DRAG_THRESHOLD = 12;
@@ -19,6 +19,8 @@ public class ChessMouseHandler {
     private Icon pieceIcon;
     private boolean wasDragged = false;
     private boolean dragInitiated = false;
+    private int visualDragStartRow = -1;
+    private int visualDragStartCol = -1;
     private int dragStartRow = -1;
     private int dragStartCol = -1;
 
@@ -31,8 +33,8 @@ public class ChessMouseHandler {
         return new ChessButtonMouseListener();
     }
 
-    public ChessBoardMouseListener getBoardMouseListener() {
-        return new ChessBoardMouseListener();
+    public AppFrameMouseListener getAppFrameMouseListener() {
+        return new AppFrameMouseListener();
     }
 
     private void resetCursor() {
@@ -42,20 +44,18 @@ public class ChessMouseHandler {
         }
     }
 
-    public class ChessButtonMouseListener extends MouseAdapter implements MouseMotionListener {
+    public class ChessButtonMouseListener extends MouseAdapter implements MouseInputListener {
         @Override
         public void mousePressed(MouseEvent e) {
-            if (!(e.getSource() instanceof JButton)) return;
+            if (!(e.getSource() instanceof ChessButton)) return;
 
-            JButton source = (JButton) e.getSource();
-
-            // Visual point is same as logical point when board is not flipped (after user presses flip board)
-            Point visualPoint = getRowColFromButtonName(source);
-            dragStartRow = visualPoint.x;
-            dragStartCol = visualPoint.y;
+            // Visual point is same as logical point when board is not flipped
+            ChessButton source = (ChessButton) e.getSource();
+            visualDragStartRow = source.getRow();
+            visualDragStartCol = source.getCol();
 
             // Logical point is conversion from visual representation to underlying logical representation of board
-            // when board is flipped (since underlying logical remains the same after visual flip)
+            // when board is flipped (since underlying logical board remains the same after visual flip)
             Point logicalPoint = convertVisualPointToLogicalPoint(dragStartRow, dragStartCol);
             dragStartRow = logicalPoint.x;
             dragStartCol = logicalPoint.y;
@@ -71,15 +71,16 @@ public class ChessMouseHandler {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            JButton source = (JButton) e.getComponent();
+            if (!(e.getSource() instanceof ChessButton)) return;
+
+            ChessButton source = (ChessButton) e.getSource();
             // Check if drag was long enough to be considered a mouse drag vs a click with slight movement
             if (pressedPoint != null && e.getPoint().distance(pressedPoint) > DRAG_THRESHOLD) {
                 wasDragged = true;
                 source.setIcon(null);
 
                 if (!dragInitiated) {
-                    Point rowAndCol = getRowColFromButtonName(source);
-                    dragInitiated = guiController.onDragStart(rowAndCol.x, rowAndCol.y);
+                    dragInitiated = guiController.onDragStart(source.getRow(), source.getCol());
                 }
 
                 if (dragCursor == null && pieceIcon != null) {
@@ -94,54 +95,50 @@ public class ChessMouseHandler {
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            // Convert the release point to the chessBoardPanel's coordinate system.
+            Point releasePointRelativeToChessBoard = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), chessBoardPanel);
+            Component releasedComponent = chessBoardPanel.getComponentAt(releasePointRelativeToChessBoard);
+
             resetCursor();
-            if (!(e.getSource() instanceof JButton)) return;
 
-            JButton originalButton = (JButton) e.getSource();
-            Point mouseLocationOnBoard = SwingUtilities.convertPoint(originalButton, e.getPoint(), chessBoardPanel);
+            if (!(releasedComponent instanceof ChessButton)) {
+                return;
+            }
 
-            int squareHeight = chessBoardPanel.getHeight() / 8;
-            int squareWidth = chessBoardPanel.getWidth() / 8;
+            ChessButton targetButton = (ChessButton) releasedComponent;
+            ChessButton originalButton = getButtonFromOriginalPosition();
 
-            int visualEndRow = mouseLocationOnBoard.y / squareHeight;
-            int visualEndCol = mouseLocationOnBoard.x / squareWidth;
-
-            Point logicalEnd = convertVisualPointToLogicalPoint(visualEndRow, visualEndCol);
+            int endRow = targetButton.getRow();
+            int endCol = targetButton.getCol();
 
             if (dragInitiated) {
-                handleDragRelease(logicalEnd.x, logicalEnd.y, originalButton);
+                handleDragRelease(endRow, endCol, originalButton);
             } else if (wasDragged) {
-                originalButton = getButtonFromOriginalPosition();
                 if (originalButton != null) {
                     originalButton.setIcon(pieceIcon);
                 }
             } else {
-                guiController.onSquareClick(logicalEnd.x, logicalEnd.y);
+                guiController.onSquareClick(endRow, endCol);
             }
         }
 
-        private void handleDragRelease(int endRow, int endCol, JButton source) {
+        private void handleDragRelease(int endRow, int endCol, ChessButton originalButton) {
 
             boolean validMove = guiController.onDragDrop(endRow, endCol);
-            if (!validMove) {
-                source.setIcon(pieceIcon);
+            if (validMove) {
+                ChessButton destinationButton = chessBoardPanel.getChessButtonAt(endRow, endCol);
+                destinationButton.setIcon(pieceIcon);
+            } else {
+                originalButton.setIcon(pieceIcon);
             }
 
             wasDragged = false;
             dragInitiated = false;
         }
 
-        private Point getRowColFromButtonName(JButton button) {
-            String[] rowAndCol = button.getName().split(",");
-            int row = Integer.parseInt(rowAndCol[0]);
-            int col = Integer.parseInt(rowAndCol[1]);
-            return new Point(row, col);
-        }
-
-        private JButton getButtonFromOriginalPosition() {
-            if (dragStartRow >= 0 && dragStartCol >= 0 &&
-                    dragStartRow < 8 && dragStartCol < 8) {
-                return chessBoardPanel.getChessButtonAt(dragStartRow, dragStartCol);
+        private ChessButton getButtonFromOriginalPosition() {
+            if (visualDragStartRow >= 0 && visualDragStartCol >= 0 && visualDragStartRow < 8 && visualDragStartCol < 8) {
+                return chessBoardPanel.getChessButtonAt(visualDragStartRow, visualDragStartCol);
             }
             return null;
         }
@@ -154,7 +151,7 @@ public class ChessMouseHandler {
         }
     }
 
-    public class ChessBoardMouseListener extends MouseAdapter {
+    public class AppFrameMouseListener extends MouseAdapter {
 
         @Override
         public void mouseExited(MouseEvent e) {

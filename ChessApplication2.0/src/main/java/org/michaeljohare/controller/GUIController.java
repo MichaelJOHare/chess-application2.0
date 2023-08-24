@@ -19,7 +19,7 @@ public class GUIController {
         this.gc = gc;
         gui.getChessBoardPanel().init(this);
         gui.getGameLogPanel().setGuiController(this);
-        gui.setGuiController(this);
+        gui.initializeGUI(this);
     }
 
     public void showGUI() {

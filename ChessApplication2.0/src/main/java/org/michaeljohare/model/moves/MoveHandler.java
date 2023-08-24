@@ -93,6 +93,7 @@ public class MoveHandler {
                 return true;
             } else {
                 tryAgainPrompt(guiController::noLegalMoveLogText);
+                return false;
             }
         }
         return false;

@@ -11,9 +11,21 @@ public class ChessButton extends JButton {
 
     private HighlightMode mode = HighlightMode.NONE;
     private Color highlightColor;
+    private final int row;
+    private final int col;
 
-    public ChessButton() {
+    public ChessButton(int row, int col) {
         super();
+        this. row = row;
+        this.col = col;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
     }
 
     public void setHighlightMode(HighlightMode mode, Color color) {

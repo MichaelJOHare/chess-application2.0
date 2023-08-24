@@ -25,7 +25,6 @@ public class ChessBoardPanel extends JPanel {
     private static final Color LIGHT_SQUARE_HIGHLIGHT_COLOR = new Color(127, 158, 92);
     private static final Color DARK_SQUARE_HIGHLIGHT_COLOR = new Color(123, 138, 50);
 
-    private final JPanel chessBoardPanel;
     private final ChessBoard board;
     private final List<Square> highlightedSquares = new ArrayList<>();
     private final List<Square> previousMoveHighlightedSquares = new ArrayList<>();
@@ -35,19 +34,15 @@ public class ChessBoardPanel extends JPanel {
 
     public ChessBoardPanel(ChessBoard board) {
         this.board = board;
-        chessBoardPanel = new JPanel();
+        setLayout(new GridLayout(8, 8));
     }
 
     public void init(GUIController guiController) {
         this.guiController = guiController;
-        setLayout(new BorderLayout());
-        add(createChessboardPanel(), BorderLayout.CENTER);
-        ChessMouseHandler handler = new ChessMouseHandler(guiController, this);
-        chessBoardPanel.addMouseListener(handler.getBoardMouseListener());
+        addChessButtons();
     }
 
-    private JPanel createChessboardPanel() {
-        chessBoardPanel.setLayout(new GridLayout(8, 8));
+    private void addChessButtons() {
         ChessMouseHandler handler = new ChessMouseHandler(guiController, this);
 
         int startRow = boardFlipped ? 7 : 0;
@@ -61,23 +56,22 @@ public class ChessBoardPanel extends JPanel {
         chessButtons = new ChessButton[8][8];
         for (int row = startRow; row != endRow; row += rowIncrement) {
             for (int col = startCol; col != endCol; col += colIncrement) {
-                chessButtons[row][col] = new ChessButton();
+                chessButtons[row][col] = new ChessButton(row, col);
                 chessButtons[row][col].setLayout(new BorderLayout());
 
                 setSquareColor(row, col);
 
                 updateButton(row, col);
-                chessButtons[row][col].setName(row + "," + col);
 
-                chessButtons[row][col].addMouseListener(handler.getButtonMouseListener());
-                chessButtons[row][col].addMouseMotionListener(handler.getButtonMouseListener());
+                ChessMouseHandler.ChessButtonMouseListener chessButtonMouseListener = handler.getButtonMouseListener();
+                chessButtons[row][col].addMouseListener(chessButtonMouseListener);
+                chessButtons[row][col].addMouseMotionListener(chessButtonMouseListener);
 
                 createButtonLabels(row, col, chessButtons);
 
-                chessBoardPanel.add(chessButtons[row][col]);
+                this.add(chessButtons[row][col]);
             }
         }
-        return chessBoardPanel;
     }
 
     private void createButtonLabels(int row, int col, JButton[][] chessButtons) {
@@ -241,20 +235,19 @@ public class ChessBoardPanel extends JPanel {
         return chessButtons;
     }
 
-    public JButton getChessButtonAt(int row, int col) {
+    public ChessButton getChessButtonAt(int row, int col) {
         return chessButtons[row][col];
     }
 
     public void flipBoard() {
         boardFlipped = !boardFlipped;
-        chessBoardPanel.removeAll();
-        createChessboardPanel();
-        chessBoardPanel.revalidate();
-        chessBoardPanel.repaint();
+        this.removeAll();
+        this.addChessButtons();
+        this.revalidate();
+        this.repaint();
     }
 
     public boolean isBoardFlipped() {
         return boardFlipped;
     }
-
 }
