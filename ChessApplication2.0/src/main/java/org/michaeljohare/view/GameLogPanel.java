@@ -6,6 +6,9 @@ import org.michaeljohare.model.player.Player;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -17,13 +20,12 @@ public class GameLogPanel extends JPanel {
     private JButton playAgainButton;
     private JButton askStockfishButton;
     private Color defaultButtonColor;
-    private JTextArea logTextArea;
+    private JTextPane logTextPane;
     private JScrollPane logScrollPane;
     private JTextArea player1CapturedArea;
     private JTextArea player2CapturedArea;
     private GUIController guiController;
     private final JPanel rightPanel;
-    private final String lineBreaks = "\n\n\n\n\n";
 
 
     public GameLogPanel() {
@@ -32,11 +34,19 @@ public class GameLogPanel extends JPanel {
     }
 
     public void init() {
-        logTextArea = createLogTextArea();
-        logTextArea.setFont(new Font("Roboto", Font.PLAIN, 20));
-        logTextArea.setText("\n\n\n Welcome to Michael's Chess Game! \n Use the undo button to undo a \n previous move. " +
-                "\n\n It is White's turn to move first.");
-        logScrollPane = new JScrollPane(logTextArea);
+        logTextPane = createLogTextPane();
+        logTextPane.setFont(new Font("Roboto", Font.PLAIN, 20));
+        logTextPane.setOpaque(false);
+        logTextPane.setPreferredSize(new Dimension(394, 150));
+
+        StyledDocument doc = logTextPane.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
+        logTextPane.setText("Welcome to Michael's Chess Game! Use the undo button to undo a previous move. It is White's turn to move first.");
+
+        logScrollPane = new JScrollPane(logTextPane);
 
         player1CapturedArea = createCapturedArea();
         player2CapturedArea = createCapturedArea();
@@ -98,18 +108,18 @@ public class GameLogPanel extends JPanel {
         return panel;
     }
 
-    private JTextArea createLogTextArea() {
-        JTextArea logTextArea = new JTextArea(5, 20);
-        logTextArea.setLineWrap(true);
-        logTextArea.setWrapStyleWord(true);
-        logTextArea.setEditable(false);
-        return logTextArea;
+    private JTextPane createLogTextPane() {
+        JTextPane pane = new JTextPane();
+        pane.setEditable(false);
+        pane.setFocusable(false);
+        return pane;
     }
 
     private JTextArea createCapturedArea() {
         JTextArea capturedArea = new JTextArea(15, 8);
 
         capturedArea.setEditable(false);
+        capturedArea.setFocusable(false);
         capturedArea.setLayout(new FlowLayout());
         capturedArea.setLineWrap(true);
         capturedArea.setWrapStyleWord(true);
@@ -163,7 +173,7 @@ public class GameLogPanel extends JPanel {
         String pieceColor = currentPlayer.getColor().toString();
         String pieceColorFormatted = pieceColor.charAt(0) + pieceColor.substring(1).toLowerCase();
 
-        logTextArea.setText(lineBreaks + "    It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
+        logTextPane.setText("It is " + name + "'s turn! (" + pieceColorFormatted + " pieces).");
     }
 
     public void stockfishWaitingButtonText() {
@@ -179,32 +189,32 @@ public class GameLogPanel extends JPanel {
     }
 
     public void noLegalMoveLogText() {
-        logTextArea.setText(lineBreaks + " The piece you selected does not\n have any legal moves");
+        logTextPane.setText("The piece you selected does not have any legal moves");
     }
 
     public void moveIsNotLegalLogText() {
-        logTextArea.setText(lineBreaks + " The square you chose to move to is\n not a legal move, choose a " +
-                "piece\n and try again.");
+        logTextPane.setText("The square you chose to move to is not a legal move, choose a " +
+                "piece and try again.");
     }
 
     public void invalidPieceSelectionLogText() {
-        logTextArea.setText(lineBreaks + " The piece you selected was invalid\n try again.");
+        logTextPane.setText("The piece you selected was invalid try again.");
     }
 
     public void nothingLeftToUndoLogText() {
-        logTextArea.setText(lineBreaks + " There are no previous moves left\n to undo!");
+        logTextPane.setText("There are no previous moves left to undo!");
     }
 
     public void checkLogText() {
-        logTextArea.setText(lineBreaks + " \t Check!");
+        logTextPane.setText("Check!");
     }
 
     public void checkmateLogText() {
-        logTextArea.setText(lineBreaks + "\tCheckmate!");
+        logTextPane.setText("Checkmate!");
     }
 
     public void stalemateLogText() {
-        logTextArea.setText(lineBreaks + "\tStalemate!");
+        logTextPane.setText("Stalemate!");
     }
 
     private void onPlayAgainButtonClick() {

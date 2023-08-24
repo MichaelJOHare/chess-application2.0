@@ -4,7 +4,6 @@ import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceType;
-import org.michaeljohare.utils.ChessMouseHandler;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -26,17 +25,22 @@ public class ChessGUI extends JFrame {
 
         chessBoardPanel = new ChessBoardPanel(board);
         gameLogPanel = new GameLogPanel();
+        initializeGUI();
     }
 
-    public void initializeGUI(GUIController guiController) {
-        this.guiController = guiController;
+    public void initializeGUI() {
         updateFrame(this);
 
-        setSize(1250, 1000);
         setLayout(new BorderLayout());
 
-        add(chessBoardPanel, BorderLayout.CENTER);
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.add(chessBoardPanel);
+        centerPanel.setPreferredSize(new Dimension(800, 800));
+
+        add(centerPanel, BorderLayout.CENTER);
         add(gameLogPanel, BorderLayout.EAST);
+
+        pack();
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -45,9 +49,6 @@ public class ChessGUI extends JFrame {
                 }
             }
         });
-
-        ChessMouseHandler handler = new ChessMouseHandler(this.guiController, chessBoardPanel);
-        this.addMouseListener(handler.getAppFrameMouseListener());
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
@@ -99,6 +100,10 @@ public class ChessGUI extends JFrame {
                 chessBoardPanel.updateButton(row, col);
             }
         }
+    }
+
+    public void setGuiController(GUIController guiController) {
+        this.guiController = guiController;
     }
 
     public ChessBoardPanel getChessBoardPanel() {

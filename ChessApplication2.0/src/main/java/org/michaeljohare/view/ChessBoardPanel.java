@@ -250,4 +250,15 @@ public class ChessBoardPanel extends JPanel {
     public boolean isBoardFlipped() {
         return boardFlipped;
     }
+
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension d = super.getPreferredSize();
+        Component c = getParent();
+        if (c != null) {
+            int s = Math.min(c.getWidth(), c.getHeight());
+            return new Dimension(s, s);
+        }
+        return d;
+    }
 }

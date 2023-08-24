@@ -155,6 +155,7 @@ public class ChessMouseHandler {
 
         @Override
         public void mouseExited(MouseEvent e) {
+            System.out.println("mouse exit");
             if (dragInitiated) {
                 cancelDrag(e);
             }
