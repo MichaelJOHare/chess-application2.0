@@ -4,6 +4,7 @@ package org.michaeljohare.view;
 import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.board.Square;
+import org.michaeljohare.model.moves.EnPassantMove;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
@@ -159,6 +160,9 @@ public class ChessBoardPanel extends JPanel {
     public void setHighlightedSquares(List<Move> moves) {
         for (Move move : moves) {
             setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.DOT, move.getPiece().getPlayer());
+            if (move instanceof EnPassantMove) {
+                setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, move.getPiece().getPlayer());
+            }
             highlightedSquares.add(move.getEndSquare());
         }
     }

@@ -33,10 +33,6 @@ public class ChessMouseHandler {
         return new ChessButtonMouseListener();
     }
 
-    public AppFrameMouseListener getAppFrameMouseListener() {
-        return new AppFrameMouseListener();
-    }
-
     private void resetCursor() {
         if (dragCursor != null) {
             chessBoardPanel.setCursor(Cursor.getDefaultCursor());
@@ -48,6 +44,7 @@ public class ChessMouseHandler {
         @Override
         public void mousePressed(MouseEvent e) {
             if (!(e.getSource() instanceof ChessButton)) return;
+            guiController.clearHighlightedSquares();
 
             // Visual point is same as logical point when board is not flipped
             ChessButton source = (ChessButton) e.getSource();
@@ -99,24 +96,25 @@ public class ChessMouseHandler {
             Point releasePointRelativeToChessBoard = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), chessBoardPanel);
             Component releasedComponent = chessBoardPanel.getComponentAt(releasePointRelativeToChessBoard);
 
+            ChessButton originalButton = getButtonFromOriginalPosition();
             resetCursor();
 
             if (!(releasedComponent instanceof ChessButton)) {
+                if (originalButton != null) {
+                    originalButton.setIcon(pieceIcon);
+                }
                 return;
             }
 
             ChessButton targetButton = (ChessButton) releasedComponent;
-            ChessButton originalButton = getButtonFromOriginalPosition();
 
             int endRow = targetButton.getRow();
             int endCol = targetButton.getCol();
 
             if (dragInitiated) {
                 handleDragRelease(endRow, endCol, originalButton);
-            } else if (wasDragged) {
-                if (originalButton != null) {
-                    originalButton.setIcon(pieceIcon);
-                }
+            } else if (wasDragged && originalButton != null) {
+                originalButton.setIcon(pieceIcon);
             } else {
                 guiController.onSquareClick(endRow, endCol);
             }
@@ -148,27 +146,6 @@ public class ChessMouseHandler {
                 return new Point(7 - row, 7 - col);
             }
             return new Point(row, col);
-        }
-    }
-
-    public class AppFrameMouseListener extends MouseAdapter {
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            System.out.println("mouse exit");
-            if (dragInitiated) {
-                cancelDrag(e);
-            }
-        }
-
-        private void cancelDrag(MouseEvent e) {
-            if (!(e.getSource() instanceof JButton)) return;
-
-            JButton source = (JButton) e.getSource();
-            source.setIcon(pieceIcon);
-            resetCursor();
-            dragInitiated = false;
-            wasDragged = false;
         }
     }
 }
