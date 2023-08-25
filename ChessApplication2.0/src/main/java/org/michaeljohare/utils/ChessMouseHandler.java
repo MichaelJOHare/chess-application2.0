@@ -21,8 +21,6 @@ public class ChessMouseHandler {
     private boolean dragInitiated = false;
     private int visualDragStartRow = -1;
     private int visualDragStartCol = -1;
-    private int dragStartRow = -1;
-    private int dragStartCol = -1;
 
     public ChessMouseHandler(GUIController guiController, ChessBoardPanel chessBoardPanel) {
         this.guiController = guiController;
@@ -46,16 +44,9 @@ public class ChessMouseHandler {
             if (!(e.getSource() instanceof ChessButton)) return;
             guiController.clearHighlightedSquares();
 
-            // Visual point is same as logical point when board is not flipped
             ChessButton source = (ChessButton) e.getSource();
             visualDragStartRow = source.getRow();
             visualDragStartCol = source.getCol();
-
-            // Logical point is conversion from visual representation to underlying logical representation of board
-            // when board is flipped (since underlying logical board remains the same after visual flip)
-            Point logicalPoint = convertVisualPointToLogicalPoint(dragStartRow, dragStartCol);
-            dragStartRow = logicalPoint.x;
-            dragStartCol = logicalPoint.y;
 
 
             wasDragged = false;
@@ -139,13 +130,6 @@ public class ChessMouseHandler {
                 return chessBoardPanel.getChessButtonAt(visualDragStartRow, visualDragStartCol);
             }
             return null;
-        }
-
-        private Point convertVisualPointToLogicalPoint(int row, int col) {
-            if (chessBoardPanel.isBoardFlipped()) {
-                return new Point(7 - row, 7 - col);
-            }
-            return new Point(row, col);
         }
     }
 }
