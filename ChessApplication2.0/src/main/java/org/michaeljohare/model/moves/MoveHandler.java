@@ -99,19 +99,25 @@ public class MoveHandler {
         return false;
     }
 
-    public boolean handleDragDrop(int endRow, int endCol) {
+    public MoveResult handleDragDrop(int endRow, int endCol) {
         guiController.clearHighlightedSquares();
 
         Square endSquare = new Square(endRow, endCol);
         Optional<Move> legalMove = moves.stream().filter(m -> m.getEndSquare().equals(endSquare)).findFirst();
 
-        if(legalMove.isPresent()){
-            finalizeMove(legalMove.get());
+        if (legalMove.isPresent()) {
+            Move theMove = legalMove.get();
+            finalizeMove(theMove);
             handleCheckAndCheckmate();
-            return true;
+
+            if (isPawnPromotion(theMove)) {
+                ChessPiece promotedPiece = getPromotedPiece(theMove);
+                return new MoveResult(promotedPiece);
+            }
+            return new MoveResult(MoveResult.MoveType.NORMAL);
         } else {
             tryAgainPrompt(guiController::moveIsNotLegalLogText);
-            return false;
+            return new MoveResult(MoveResult.MoveType.INVALID);
         }
     }
 
@@ -205,6 +211,17 @@ public class MoveHandler {
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
             guiController.checkLogText();
         }
+    }
+
+    private boolean isPawnPromotion(Move move) {
+        return move instanceof PromotionMove;
+    }
+
+    private ChessPiece getPromotedPiece(Move move) {
+        if (move instanceof PromotionMove) {
+            return ((PromotionMove) move).getPromotedPiece();
+        }
+        return null;
     }
 
     private void tryAgainPrompt(Runnable logTextMethod) {

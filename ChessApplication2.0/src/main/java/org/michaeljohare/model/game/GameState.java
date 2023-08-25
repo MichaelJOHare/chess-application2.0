@@ -4,7 +4,7 @@ import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.model.player.PlayerColor;
-import org.michaeljohare.utils.PlayerSetup;
+import org.michaeljohare.model.player.PlayerSetup;
 import org.michaeljohare.view.setup.GameSetup;
 
 import java.util.ArrayList;

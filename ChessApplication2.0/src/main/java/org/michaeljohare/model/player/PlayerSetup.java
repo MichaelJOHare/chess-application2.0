@@ -1,6 +1,5 @@
-package org.michaeljohare.utils;
+package org.michaeljohare.model.player;
 
-import org.michaeljohare.model.player.Player;
 
 public class PlayerSetup {
     private final Player player1;

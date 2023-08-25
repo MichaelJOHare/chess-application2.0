@@ -98,7 +98,7 @@ public class StockfishController {
 
         sendCommand("position fen " + fen);
 
-        sendCommand("go movetime 1000");
+        sendCommand("go movetime 2000");
         String bestMove = "";
         try {
             bestMove = getResponse();

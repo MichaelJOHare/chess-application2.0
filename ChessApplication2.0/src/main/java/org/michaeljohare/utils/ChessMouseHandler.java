@@ -1,7 +1,10 @@
 package org.michaeljohare.utils;
 
 import org.michaeljohare.controller.GUIController;
+import org.michaeljohare.model.moves.MoveResult;
+import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.view.ChessBoardPanel;
+import org.michaeljohare.view.ChessButton;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -11,6 +14,7 @@ import java.awt.event.MouseEvent;
 
 public class ChessMouseHandler {
     private static final int DRAG_THRESHOLD = 12;
+    private static final int BOARD_SIZE = 8;
 
     private final GUIController guiController;
     private final ChessBoardPanel chessBoardPanel;
@@ -113,11 +117,17 @@ public class ChessMouseHandler {
 
         private void handleDragRelease(int endRow, int endCol, ChessButton originalButton) {
 
-            boolean validMove = guiController.onDragDrop(endRow, endCol);
-            if (validMove) {
-                ChessButton destinationButton = chessBoardPanel.getChessButtonAt(endRow, endCol);
+            MoveResult result = guiController.onDragDrop(endRow, endCol);
+            ChessButton destinationButton = chessBoardPanel.getChessButtonAt(endRow, endCol);
+
+            if (result.getMoveType() == MoveResult.MoveType.NORMAL) {
                 destinationButton.setIcon(pieceIcon);
-            } else {
+
+                if (result.isPromotion()) {
+                    chessBoardPanel.updateButton(endRow, endCol);
+                }
+
+            } else if (result.getMoveType() == MoveResult.MoveType.INVALID) {
                 originalButton.setIcon(pieceIcon);
             }
 
@@ -126,7 +136,7 @@ public class ChessMouseHandler {
         }
 
         private ChessButton getButtonFromOriginalPosition() {
-            if (visualDragStartRow >= 0 && visualDragStartCol >= 0 && visualDragStartRow < 8 && visualDragStartCol < 8) {
+            if (visualDragStartRow >= 0 && visualDragStartCol >= 0 && visualDragStartRow < BOARD_SIZE && visualDragStartCol < BOARD_SIZE) {
                 return chessBoardPanel.getChessButtonAt(visualDragStartRow, visualDragStartCol);
             }
             return null;

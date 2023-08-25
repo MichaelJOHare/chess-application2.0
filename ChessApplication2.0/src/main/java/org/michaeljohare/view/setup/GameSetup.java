@@ -2,7 +2,7 @@ package org.michaeljohare.view.setup;
 
 import org.michaeljohare.model.player.Player;
 import org.michaeljohare.model.player.PlayerColor;
-import org.michaeljohare.utils.PlayerSetup;
+import org.michaeljohare.model.player.PlayerSetup;
 
 import javax.swing.*;
 

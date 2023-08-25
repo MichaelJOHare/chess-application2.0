@@ -5,6 +5,7 @@ import org.michaeljohare.model.game.GameState;
 import org.michaeljohare.model.game.GameStateMemento;
 import org.michaeljohare.model.moves.MoveHandler;
 import org.michaeljohare.model.moves.MoveHistory;
+import org.michaeljohare.model.moves.MoveResult;
 import org.michaeljohare.model.player.PieceManager;
 
 import java.util.Stack;
@@ -58,13 +59,13 @@ public class GameController {
         return mh.handleDragStart(row, col);
     }
 
-    public boolean handleDragDrop(int endRow, int endCol) {
-        boolean isValid = mh.handleDragDrop(endRow, endCol);
+    public MoveResult handleDragDrop(int endRow, int endCol) {
+        MoveResult result = mh.handleDragDrop(endRow, endCol);
 
         if (gs.getCurrentPlayer().isStockfish()) {
             makeStockfishMove();
         }
-        return isValid;
+        return result;
     }
 
     public void handleUndoButtonClick() {

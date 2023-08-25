@@ -1,4 +1,4 @@
-package org.michaeljohare.utils;
+package org.michaeljohare.view;
 
 import javax.swing.*;
 import java.awt.*;

@@ -20,7 +20,6 @@ public class Main {
      * TODO
      *  Start in debug, random NPE when stockfish tried to castle (extremely rare, can't reproduce)
      *  Still occasionally get drag and drop bug when piece is dragged off frame
-     *          - fix pawn promotion not updating immediately on drop (only updates on next move)
      *  Implement 50 move rule/insufficient material stalemate
      *  Refactor and clean up
      *      - Check unused methods (Player, GameState, etc)

@@ -2,6 +2,7 @@ package org.michaeljohare.controller;
 
 import org.michaeljohare.model.board.ChessBoard;
 import org.michaeljohare.model.moves.Move;
+import org.michaeljohare.model.moves.MoveResult;
 import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
@@ -42,7 +43,7 @@ public class GUIController {
         return gc.handleDragStart(row, col);
     }
 
-    public boolean onDragDrop(int endRow, int endCol){
+    public MoveResult onDragDrop(int endRow, int endCol){
         return gc.handleDragDrop(endRow, endCol);
     }
 

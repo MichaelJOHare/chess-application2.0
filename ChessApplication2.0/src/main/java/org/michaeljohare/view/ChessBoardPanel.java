@@ -8,7 +8,6 @@ import org.michaeljohare.model.moves.EnPassantMove;
 import org.michaeljohare.model.moves.Move;
 import org.michaeljohare.model.pieces.PieceType;
 import org.michaeljohare.model.player.Player;
-import org.michaeljohare.utils.ChessButton;
 import org.michaeljohare.utils.ChessMouseHandler;
 
 import javax.imageio.ImageIO;
@@ -249,10 +248,6 @@ public class ChessBoardPanel extends JPanel {
         this.addChessButtons();
         this.revalidate();
         this.repaint();
-    }
-
-    public boolean isBoardFlipped() {
-        return boardFlipped;
     }
 
     @Override
