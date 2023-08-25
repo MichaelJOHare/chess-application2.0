@@ -9,21 +9,30 @@ The repository containing the GUI implementation can be found here: https://gith
 ## Pictures
 
 ### Start of game
-![Dialog-Pane](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/d30b01a8-3efb-4450-bd4f-d4f646f8189c)  ![Chess-Application](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/56395e1b-905c-45d7-abfe-78ea2cfbc0af)
+![Dialog-Pane](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/d30b01a8-3efb-4450-bd4f-d4f646f8189c) <img width="1200" alt="start-game" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/6aabd0f4-b6ba-461c-9e1a-3aefc82a4ab4">
+
 
 
 ### Mid-game
 Flip the board if you want to play with black pieces.
-![Chess-Application-Flip-Board](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/6cff627f-8e7e-422b-a777-b62f68d6c4f8)
+<img width="1200" alt="flip-board" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/890a349f-42d2-41d9-93e9-f5e199299fc4">
 
-Yellow highlighted squares are legal moves for the piece that is selected.
-![Chess-Application-MidGame](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/dcb3816d-10e7-4597-9cc3-6f297f3d8f6a)
+Green dots are are legal moves for the piece that is selected (knight on c4 in this example) while green corners indicate legal captures.
+<img width="1200" alt="knight-moves" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/23890313-ad18-4d36-b825-aef78f45d9dd">
+
 
 Or give the current board to Stockfish and ask it for the best move (Green highlighted squares)
 ![Chess-Application-Ask-Stockfish](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/ffc49857-7519-4b49-85d9-9ed0e672a904)
 
 Working en passant and castling!
-![Chess-Application-En-Passant](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/d5da1aa4-d082-4c59-8574-57128902d448)
 
-### Checkmate!
-![Chess-Application-Checkmate](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/0041845f-f9bb-46c8-9c8b-6f423edb2083)
+<img width="1200" alt="en-passant" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/8d492b4c-5a26-4093-87c3-940e12672eb6"> 
+<img width="1200" alt="castling" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/4859fbb5-5390-4656-836e-bb26d462ecfe">
+
+
+
+### Checkmate and Stalemate!
+<img width="1200" alt="checkmate" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/96fff70f-001c-4a92-9c90-d2847d0174d5"> 
+<img width="1200" alt="stalemate" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/54188b42-b4b4-4ccd-83af-ed0d11ab4b78">
+
+
