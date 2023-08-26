@@ -38,12 +38,15 @@ public class ChessButton extends JButton {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         switch (mode) {
             case DOT:
-                paintDot(g);
+                paintDot(g2d);
                 break;
             case CORNERS:
-                paintCorners(g);
+                paintCorners(g2d);
                 break;
             case NONE:
                 break;

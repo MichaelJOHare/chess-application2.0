@@ -26,7 +26,7 @@ public class ChessBoardPanel extends JPanel {
     private static final Color LIGHT_SQUARE_HIGHLIGHT_COLOR = new Color(127, 158, 92);
     private static final Color DARK_SQUARE_HIGHLIGHT_COLOR = new Color(123, 138, 50);
     private static final Color LIGHT_SQUARE_STOCKFISH_HIGHLIGHT = new Color(128, 67, 168);
-    private static final Color DARK_SQUARE_STOCKFISH_HIGHLIGHT = new Color(100, 55, 158);
+    private static final Color DARK_SQUARE_STOCKFISH_HIGHLIGHT = new Color(115, 65, 163);
 
     private final ChessBoard board;
     private final List<Square> highlightedSquares = new ArrayList<>();
