@@ -138,7 +138,11 @@ public class GUIController {
         gui.getGameLogPanel().stockfishThinkingButtonText();
     }
 
+    public void stockfishGameOverButtonText(){gui.getGameLogPanel().stockfishGameOverButtonText();}
+
     public void resetStockfishButtonText() {
         gui.getGameLogPanel().resetStockfishButtonText();
     }
+
+    public void imageAccessError() {gui.getGameLogPanel().imageAccessError();}
 }

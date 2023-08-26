@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,11 +142,16 @@ public class ChessBoardPanel extends JPanel {
         chessButtons[row][col].setBorder(null);
         if (board.getPieceAt(row, col) != null) {
             String imagePath = getImagePath(board.getPieceAt(row, col).getType(), board.getPieceAt(row, col).getPlayer());
-            try {
-                Image pieceImage = ImageIO.read(ChessGUI.class.getResource(imagePath));
-                chessButtons[row][col].setIcon(new ImageIcon(pieceImage));
-            } catch (IOException e) {
-                e.printStackTrace();
+            URL imageUrl = ChessBoardPanel.class.getResource(imagePath);
+            if (imageUrl != null) {
+                try {
+                    Image pieceImage = ImageIO.read(imageUrl);
+                    chessButtons[row][col].setIcon(new ImageIcon(pieceImage));
+                } catch (IOException e) {
+                    guiController.imageAccessError();
+                }
+            } else {
+                guiController.imageAccessError();
             }
         } else {
             chessButtons[row][col].setIcon(null);

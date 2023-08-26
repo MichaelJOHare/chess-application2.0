@@ -184,6 +184,8 @@ public class GameLogPanel extends JPanel {
         askStockfishButton.setText("Thinking...");
     }
 
+    public void stockfishGameOverButtonText(){askStockfishButton.setText("Game Over");}
+
     public void resetStockfishButtonText() {
         askStockfishButton.setText("Ask Stockfish");
     }
@@ -217,10 +219,13 @@ public class GameLogPanel extends JPanel {
         logTextPane.setText("Stalemate!");
     }
 
+    public void imageAccessError(){logTextPane.setText("Unable to find images resources.");}
+
     private void onPlayAgainButtonClick() {
         guiController.handlePlayAgainButtonClick();
         playAgainButton.setBackground(defaultButtonColor);
         playAgainButton.setForeground(null);
+        resetStockfishButtonText();
         guiController.clearHighlightedSquares();
         setEmptyCapturedPiecesDisplay();
         guiController.updateGUI();
@@ -231,6 +236,7 @@ public class GameLogPanel extends JPanel {
         if (playAgainButton.getForeground() != null) {
             playAgainButton.setForeground(null);
             playAgainButton.setBackground(defaultButtonColor);
+            resetStockfishButtonText();
         }
     }
 

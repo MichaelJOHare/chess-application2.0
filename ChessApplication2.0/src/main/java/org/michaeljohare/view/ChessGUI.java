@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 
 public class ChessGUI extends JFrame {
@@ -59,11 +60,16 @@ public class ChessGUI extends JFrame {
     }
 
     private void updateFrame(JFrame frame) {
-        try {
-            Image frameIcon = ImageIO.read(ChessGUI.class.getResource("/Frame_Icon.png"));
-            frame.setIconImage(frameIcon);
-        } catch (IOException e) {
-            e.printStackTrace();
+        URL imageUrl = ChessGUI.class.getResource("/Frame_Icon.png");
+        if (imageUrl != null) {
+            try {
+                Image frameIcon = ImageIO.read(imageUrl);
+                frame.setIconImage(frameIcon);
+            } catch (IOException e) {
+                guiController.imageAccessError();
+            }
+        } else {
+            guiController.imageAccessError();
         }
     }
 

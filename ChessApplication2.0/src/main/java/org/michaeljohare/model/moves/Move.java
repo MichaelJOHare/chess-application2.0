@@ -6,14 +6,13 @@ import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.model.pieces.PieceWithMoveStatus;
 
 public class Move implements Movable{
-
-    public ChessPiece piece;
-    public Square startSquare;
-    public Square endSquare;
-    public ChessPiece capturedPiece;
-    public ChessBoard board;
-    public boolean isPromotion;
-    public boolean isCapture;
+    protected final Square startSquare;
+    protected final Square endSquare;
+    protected final ChessPiece capturedPiece;
+    protected final ChessBoard board;
+    protected ChessPiece piece;
+    protected boolean isPromotion;
+    protected boolean isCapture;
 
     public Move(ChessPiece piece, Square from, Square to, ChessPiece capturedPiece, ChessBoard board) {
         this.piece = piece;

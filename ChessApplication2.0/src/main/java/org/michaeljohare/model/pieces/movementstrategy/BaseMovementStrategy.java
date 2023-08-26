@@ -27,7 +27,6 @@ public abstract class BaseMovementStrategy implements MovementStrategy {
     public boolean wouldResultInCheck(ChessBoard board, ChessPiece piece, MoveHistory move, Move m) {
         ChessBoard copiedBoard = board.copy();
         MoveHistory copiedMoveHistory = move.copy();
-
         ChessPiece copiedPiece = piece.copy();
         Player copiedPlayer = copiedPiece.getPlayer().copy();
 

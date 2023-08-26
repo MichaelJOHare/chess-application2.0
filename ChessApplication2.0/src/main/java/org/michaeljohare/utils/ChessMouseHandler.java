@@ -2,7 +2,6 @@ package org.michaeljohare.utils;
 
 import org.michaeljohare.controller.GUIController;
 import org.michaeljohare.model.moves.MoveResult;
-import org.michaeljohare.model.pieces.ChessPiece;
 import org.michaeljohare.view.ChessBoardPanel;
 import org.michaeljohare.view.ChessButton;
 

@@ -106,12 +106,13 @@ public class MoveHandler {
         Optional<Move> legalMove = moves.stream().filter(m -> m.getEndSquare().equals(endSquare)).findFirst();
 
         if (legalMove.isPresent()) {
-            Move theMove = legalMove.get();
-            finalizeMove(theMove);
+            Move confirmedMove = legalMove.get();
+            finalizeMove(confirmedMove);
             handleCheckAndCheckmate();
 
-            if (isPawnPromotion(theMove)) {
-                ChessPiece promotedPiece = getPromotedPiece(theMove);
+            if (confirmedMove.isPromotion) {
+                PromotionMove promotionMove = (PromotionMove) confirmedMove;
+                ChessPiece promotedPiece = promotionMove.getPromotedPiece();
                 return new MoveResult(promotedPiece);
             }
             return new MoveResult(MoveResult.MoveType.NORMAL);
@@ -212,18 +213,6 @@ public class MoveHandler {
             guiController.checkLogText();
         }
     }
-
-    private boolean isPawnPromotion(Move move) {
-        return move instanceof PromotionMove;
-    }
-
-    private ChessPiece getPromotedPiece(Move move) {
-        if (move instanceof PromotionMove) {
-            return ((PromotionMove) move).getPromotedPiece();
-        }
-        return null;
-    }
-
     private void tryAgainPrompt(Runnable logTextMethod) {
         logTextMethod.run();
         isFirstClick = true;

@@ -126,7 +126,7 @@ public class StockfishController {
                             mh.handleCheckAndCheckmate();
                         });
                     } else {
-                        // guiController.stockfishGameOverButtonText();
+                        guiController.stockfishGameOverButtonText();
                     }
                 })
                 .exceptionally(ex -> {
@@ -151,7 +151,7 @@ public class StockfishController {
                             guiController.setHighlightedSquaresStockfish(move);
                         });
                     } else {
-                        // controller.stockfishGameOverButtonText();
+                        guiController.stockfishGameOverButtonText();
                     }
                 })
                 .exceptionally(ex -> {

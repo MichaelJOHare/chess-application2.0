@@ -31,13 +31,6 @@ public class MoveResult {
         return moveType;
     }
 
-    public ChessPiece getPromotedPiece() {
-        if(moveType != MoveType.PROMOTION) {
-            throw new IllegalStateException("This result does not have a promoted piece.");
-        }
-        return promotedPiece;
-    }
-
     public boolean isPromotion() {
         return moveType == MoveType.PROMOTION;
     }
