@@ -25,6 +25,8 @@ public class ChessBoardPanel extends JPanel {
     private static final Color DARK_SQUARE_PREVIOUS_MOVE = new Color(170,162,58,255);
     private static final Color LIGHT_SQUARE_HIGHLIGHT_COLOR = new Color(127, 158, 92);
     private static final Color DARK_SQUARE_HIGHLIGHT_COLOR = new Color(123, 138, 50);
+    private static final Color LIGHT_SQUARE_STOCKFISH_HIGHLIGHT = new Color(128, 67, 168);
+    private static final Color DARK_SQUARE_STOCKFISH_HIGHLIGHT = new Color(100, 55, 158);
 
     private final ChessBoard board;
     private final List<Square> highlightedSquares = new ArrayList<>();
@@ -164,22 +166,22 @@ public class ChessBoardPanel extends JPanel {
 
     public void setHighlightedSquares(List<Move> moves) {
         for (Move move : moves) {
-            setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.DOT, move.getPiece().getPlayer());
+            setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.DOT, move.getPiece().getPlayer(), false);
             if (move instanceof EnPassantMove) {
-                setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, move.getPiece().getPlayer());
+                setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, move.getPiece().getPlayer(), false);
             }
             highlightedSquares.add(move.getEndSquare());
         }
     }
 
     public void setHighlightedSquaresStockfish(Move move) {
-        setSquareHighlight(move.getStartSquare(), ChessButton.HighlightMode.CORNERS, null);
-        setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, null);
+        setSquareHighlight(move.getStartSquare(), ChessButton.HighlightMode.CORNERS, null, true);
+        setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, null, true);
         highlightedSquares.add(move.getStartSquare());
         highlightedSquares.add(move.getEndSquare());
     }
 
-    private void setSquareHighlight(Square square, ChessButton.HighlightMode mode, Player player) {
+    private void setSquareHighlight(Square square, ChessButton.HighlightMode mode, Player player, boolean isStockfishMove) {
         int row = square.getRow();
         int col = square.getCol();
         Color squareColor = chessButtons[row][col].getBackground();
@@ -187,9 +189,17 @@ public class ChessBoardPanel extends JPanel {
         Color highlightColor;
 
         if (squareColor.equals(LIGHT_SQUARE) || squareColor.equals(LIGHT_SQUARE_PREVIOUS_MOVE)) {
-            highlightColor = LIGHT_SQUARE_HIGHLIGHT_COLOR;
+            if (isStockfishMove) {
+                highlightColor = LIGHT_SQUARE_STOCKFISH_HIGHLIGHT;
+            } else {
+                highlightColor = LIGHT_SQUARE_HIGHLIGHT_COLOR;
+            }
         } else if (squareColor.equals(DARK_SQUARE) || squareColor.equals(DARK_SQUARE_PREVIOUS_MOVE)) {
-            highlightColor = DARK_SQUARE_HIGHLIGHT_COLOR;
+            if (isStockfishMove) {
+                highlightColor = DARK_SQUARE_STOCKFISH_HIGHLIGHT;
+            } else {
+                highlightColor = DARK_SQUARE_HIGHLIGHT_COLOR;
+            }
         } else {
             return;
         }
