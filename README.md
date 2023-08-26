@@ -17,7 +17,7 @@ The repository containing the GUI implementation can be found here: https://gith
 Flip the board if you want to play with black pieces.
 <img width="1200" alt="flip-board" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/890a349f-42d2-41d9-93e9-f5e199299fc4">
 
-Green dots are are legal moves for the piece that is selected (knight on c4 in this example) while green corners indicate legal captures.
+Green dots are are legal moves for the piece that is selected (knight on c3 in this example) while green corners indicate legal captures.
 <img width="1200" alt="knight-moves" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/23890313-ad18-4d36-b825-aef78f45d9dd">
 
 
