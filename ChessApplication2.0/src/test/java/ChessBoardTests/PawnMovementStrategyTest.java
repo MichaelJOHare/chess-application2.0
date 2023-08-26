@@ -1,17 +1,17 @@
 package ChessBoardTests;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.michaeljohare.model.player.PlayerType.HUMAN;
+import static com.michaeljohare.model.player.PlayerType.HUMAN;
 
 import org.junit.jupiter.api.Test;
-import org.michaeljohare.model.board.ChessBoard;
-import org.michaeljohare.model.board.Square;
-import org.michaeljohare.model.moves.MoveHistory;
-import org.michaeljohare.model.pieces.ChessPiece;
-import org.michaeljohare.model.pieces.King;
-import org.michaeljohare.model.pieces.Pawn;
-import org.michaeljohare.model.player.Player;
-import org.michaeljohare.model.player.PlayerColor;
+import com.michaeljohare.model.board.ChessBoard;
+import com.michaeljohare.model.board.Square;
+import com.michaeljohare.model.moves.MoveHistory;
+import com.michaeljohare.model.pieces.ChessPiece;
+import com.michaeljohare.model.pieces.King;
+import com.michaeljohare.model.pieces.Pawn;
+import com.michaeljohare.model.player.Player;
+import com.michaeljohare.model.player.PlayerColor;
 
 public class PawnMovementStrategyTest {
 

@@ -2,13 +2,13 @@ package ChessBoardTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.michaeljohare.model.board.ChessBoard;
-import org.michaeljohare.model.board.Square;
-import org.michaeljohare.model.pieces.ChessPiece;
-import org.michaeljohare.model.pieces.Queen;
-import org.michaeljohare.model.player.Player;
-import org.michaeljohare.model.player.PlayerColor;
-import org.michaeljohare.model.player.PlayerType;
+import com.michaeljohare.model.board.ChessBoard;
+import com.michaeljohare.model.board.Square;
+import com.michaeljohare.model.pieces.ChessPiece;
+import com.michaeljohare.model.pieces.Queen;
+import com.michaeljohare.model.player.Player;
+import com.michaeljohare.model.player.PlayerColor;
+import com.michaeljohare.model.player.PlayerType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
