@@ -22,7 +22,8 @@ Green dots are are legal moves for the piece that is selected (knight on c4 in t
 
 
 Or give the current board to Stockfish and ask it for the best move (Green highlighted squares)
-![Chess-Application-Ask-Stockfish](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/ffc49857-7519-4b49-85d9-9ed0e672a904)
+<img width="1200" alt="ask-stockfish" src="https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/29d1164b-0260-44ec-b200-fbc513c04c23">
+
 
 Working en passant and castling!
 
