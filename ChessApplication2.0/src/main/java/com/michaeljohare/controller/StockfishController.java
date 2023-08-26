@@ -118,6 +118,7 @@ public class StockfishController {
         }
 
         guiController.stockfishThinkingButtonText();
+        gs.lockBoard();
         CompletableFuture.supplyAsync(this::getMove)
                 .thenAccept(stockfishMove -> {
                     if (stockfishMove != null) {
@@ -131,10 +132,12 @@ public class StockfishController {
                     } else {
                         guiController.stockfishGameOverButtonText();
                     }
+                    gs.unlockBoard();
                 })
                 .exceptionally(ex -> {
                     System.err.println("Error executing move for Stockfish: " + ex.getMessage());
                     ex.printStackTrace();
+                    gs.unlockBoard();
                     return null;
                 });
     }

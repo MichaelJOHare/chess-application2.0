@@ -43,6 +43,9 @@ public class GameController {
     }
 
     public void handleClickToMove(int row, int col) {
+        if (gs.isBoardLocked()) {
+            return;
+        }
 
         if (mh.isFirstClick()) {
             mh.handleSelectPieceClick(row, col);
@@ -56,6 +59,10 @@ public class GameController {
     }
 
     public boolean handleDragStart(int row, int col) {
+        if (gs.isBoardLocked()) {
+            return false;
+        }
+
         return mh.handleDragStart(row, col);
     }
 

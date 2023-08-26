@@ -20,6 +20,7 @@ public class GameState {
     private List<ChessPiece> player1CapturedPieces;
     private List<ChessPiece> player2CapturedPieces;
     private boolean isGameOver;
+    private boolean isBoardLocked = false;
     private int stockfishElo = -1;
 
     public GameState(ChessBoard board) {
@@ -85,10 +86,6 @@ public class GameState {
         return currentPlayer;
     }
 
-    public Player getOpposingPlayer() {
-        return opposingPlayer;
-    }
-
     public Player getPlayer1() {
         return player1;
     }
@@ -97,16 +94,20 @@ public class GameState {
         return player2;
     }
 
-    public boolean isStockfishInPlay() {
-        return stockfishElo != -1;
-    } // Use to make sure user can't move for stockfish?
+    public boolean isBoardLocked() {
+        return isBoardLocked;
+    }
+
+    public void lockBoard() {
+        isBoardLocked = true;
+    }
+
+    public void unlockBoard() {
+        isBoardLocked = false;
+    }
 
     public int getStockfishElo() {
         return stockfishElo;
-    }
-
-    public List<ChessPiece> getCapturedPieces() {
-        return capturedPieces;
     }
 
     public boolean isGameOver() {
