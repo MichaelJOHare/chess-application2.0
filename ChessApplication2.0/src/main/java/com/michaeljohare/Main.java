@@ -18,6 +18,7 @@ public class Main {
 
     /*
      * TODO
+     *  *****Run profile and change stockfish square highlight****
      *  Start in debug, random NPE when stockfish tried to castle (extremely rare, can't reproduce)
      *  Still occasionally get drag and drop bug when piece is dragged off frame
      *  Implement 50 move rule/insufficient material stalemate

@@ -11,7 +11,7 @@ import com.michaeljohare.model.pieces.movementstrategy.MovementStrategy;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class ChessPiece {
+public abstract class ChessPiece implements Cloneable {
 
     protected final Player player;
     protected final PieceType type;
