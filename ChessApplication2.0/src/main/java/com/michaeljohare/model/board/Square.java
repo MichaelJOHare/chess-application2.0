@@ -19,10 +19,6 @@ public class Square {
         return col;
     }
 
-    public Square copy() {
-        return new Square(this.row, this.col);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o instanceof Square) {

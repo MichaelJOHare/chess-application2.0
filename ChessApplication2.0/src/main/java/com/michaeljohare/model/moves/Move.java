@@ -90,12 +90,10 @@ public class Move implements Movable{
 
     public Move copy() {
         ChessPiece copiedPiece = this.piece.copy();
-        Square copiedStartSquare = new Square(this.startSquare.getRow(), this.startSquare.getCol());
-        Square copiedEndSquare = new Square(this.endSquare.getRow(), this.endSquare.getCol());
         ChessPiece copiedCapturedPiece = this.capturedPiece != null ? this.capturedPiece.copy() : null;
         ChessBoard copiedBoard = this.board.copy();
 
-        Move copiedMove = new Move(copiedPiece, copiedStartSquare, copiedEndSquare, copiedCapturedPiece, copiedBoard);
+        Move copiedMove = new Move(copiedPiece, this.startSquare, this.endSquare, copiedCapturedPiece, copiedBoard);
 
         copiedMove.isPromotion = this.isPromotion;
         copiedMove.isCapture = this.isCapture;

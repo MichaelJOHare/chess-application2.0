@@ -155,11 +155,11 @@ public class ChessBoard {
         return false;
     }
 
-    private boolean isSquareAttackedByPawn(int pawnRow, int pawnCol, int targetRow, int targetCol, Player player) {
+    private boolean isSquareAttackedByPawn(int pawnRow, int pawnCol, int kingRow, int targetCol, Player player) {
         if (player.isWhite()) {
-            return (pawnRow + 1 == targetRow && (pawnCol - 1 == targetCol || pawnCol + 1 == targetCol));
+            return (pawnRow + 1 == kingRow && (pawnCol - 1 == targetCol || pawnCol + 1 == targetCol));
         } else {
-            return (pawnRow - 1 == targetRow && (pawnCol - 1 == targetCol || pawnCol + 1 == targetCol));
+            return (pawnRow - 1 == kingRow && (pawnCol - 1 == targetCol || pawnCol + 1 == targetCol));
         }
     }
 

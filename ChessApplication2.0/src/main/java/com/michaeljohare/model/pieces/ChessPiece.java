@@ -102,7 +102,7 @@ public abstract class ChessPiece implements Cloneable {
     public ChessPiece copy() {
         try {
             ChessPiece copiedPiece = (ChessPiece) super.clone();
-            copiedPiece.currentSquare = this.currentSquare.copy();
+            copiedPiece.currentSquare = this.currentSquare;
             return copiedPiece;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

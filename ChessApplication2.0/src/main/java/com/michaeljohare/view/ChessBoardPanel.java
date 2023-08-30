@@ -6,17 +6,13 @@ import com.michaeljohare.model.board.ChessBoard;
 import com.michaeljohare.model.board.Square;
 import com.michaeljohare.model.moves.EnPassantMove;
 import com.michaeljohare.model.moves.Move;
-import com.michaeljohare.model.pieces.PieceType;
 import com.michaeljohare.model.player.Player;
 import com.michaeljohare.utils.ChessMouseHandler;
-import net.coobird.thumbnailator.Thumbnails;
+import com.michaeljohare.utils.ImageUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,35 +141,17 @@ public class ChessBoardPanel extends JPanel {
     public void updateButton(int row, int col) {
         chessButtons[row][col].setBorder(null);
         if (board.getPieceAt(row, col) != null) {
-            String imagePath = getImagePath(board.getPieceAt(row, col).getType(), board.getPieceAt(row, col).getPlayer());
-            URL imageUrl = ChessBoardPanel.class.getResource(imagePath);
-            if (imageUrl != null) {
-                try {
-                    BufferedImage pieceImage = ImageIO.read(imageUrl);
-                    int width = 75;
-                    int height = 75;
-
-                    BufferedImage resizedImage = resizeImage(pieceImage, width, height);
-                    chessButtons[row][col].setIcon(new ImageIcon(resizedImage));
-                } catch (Exception e) {
-                    guiController.imageAccessError();
-                }
-            } else {
+            try {
+                BufferedImage resizedImage = ImageUtils.getResizedImage(guiController, board.getPieceAt(row, col).getType(),
+                        board.getPieceAt(row, col).getPlayer(),
+                        75, 75);
+                chessButtons[row][col].setIcon(new ImageIcon(resizedImage));
+            } catch (Exception e) {
                 guiController.imageAccessError();
             }
         } else {
             chessButtons[row][col].setIcon(null);
         }
-    }
-
-    private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) throws IOException {
-        return Thumbnails.of(originalImage)
-                .size(width, height)
-                .asBufferedImage();
-    }
-
-    private String getImagePath(PieceType type, Player player) {
-        return "/png_icons/" + (player.isWhite() ? "White_" : "Black_") + type + ".png";
     }
 
     public void setHighlightedSquares(List<Move> moves) {

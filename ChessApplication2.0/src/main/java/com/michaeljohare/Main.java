@@ -18,11 +18,10 @@ public class Main {
 
     /*
      * TODO
-     *  Get higher res pngs to make scaling quality better
+     *  Promoted pawn not giving check correctly? (Can't reproduce? Wondering if profiler/debugger causes or masks race condition?)
      *  Implement clear/change square color on piece selection + "ghost" piece when dragging maybe?
-     *  Start in debug, random NPE when stockfish tried to castle (extremely rare, can't reproduce)
      *  Still occasionally get drag and drop bug when piece is dragged off frame
-     *  Implement 50 move rule/insufficient material stalemate0
+     *  Implement 50 move rule/insufficient material stalemate
      *  Refactor and clean up
      *      - Check unused methods (Player, GameState, etc)
      *      - Clean up ChessBoardPanel
