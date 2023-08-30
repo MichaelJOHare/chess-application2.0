@@ -11,9 +11,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static com.michaeljohare.model.board.ChessBoard.COLUMN_LENGTH;
+import static com.michaeljohare.model.board.ChessBoard.ROW_LENGTH;
+
 public class ChessMouseHandler {
     private static final int DRAG_THRESHOLD = 12;
-    private static final int BOARD_SIZE = 8;
 
     private final GUIController guiController;
     private final ChessBoardPanel chessBoardPanel;
@@ -135,7 +137,7 @@ public class ChessMouseHandler {
         }
 
         private ChessButton getButtonFromOriginalPosition() {
-            if (visualDragStartRow >= 0 && visualDragStartCol >= 0 && visualDragStartRow < BOARD_SIZE && visualDragStartCol < BOARD_SIZE) {
+            if (visualDragStartRow >= 0 && visualDragStartCol >= 0 && visualDragStartRow < ROW_LENGTH && visualDragStartCol < COLUMN_LENGTH) {
                 return chessBoardPanel.getChessButtonAt(visualDragStartRow, visualDragStartCol);
             }
             return null;

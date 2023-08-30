@@ -5,6 +5,7 @@ import com.michaeljohare.model.moves.MoveHistory;
 import com.michaeljohare.model.pieces.*;
 import com.michaeljohare.model.player.PieceManager;
 import com.michaeljohare.model.player.Player;
+import com.michaeljohare.model.player.PlayerColor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -136,14 +137,30 @@ public class ChessBoard {
 
     public boolean isSquareAttackedByOpponent(int row, int col, Player player) {
         for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
-            List<Move> pieceMoves = piece.calculateRawLegalMoves(this, new MoveHistory());
-            for (Move m : pieceMoves) {
-                if (m.getPiece().isAlive() && m.getEndSquare().getRow() == row && m.getEndSquare().getCol() == col) {
+            if (piece instanceof Pawn) {
+                // Need to check for pawns specifically since their captures != their moves
+                if (isSquareAttackedByPawn(piece.getCurrentSquare().getRow(),
+                        piece.getCurrentSquare().getCol(), row, col, player)) {
                     return true;
+                }
+            } else {
+                List<Move> pieceMoves = piece.calculateRawLegalMoves(this, new MoveHistory());
+                for (Move m : pieceMoves) {
+                    if (m.getPiece().isAlive() && m.getEndSquare().getRow() == row && m.getEndSquare().getCol() == col) {
+                        return true;
+                    }
                 }
             }
         }
         return false;
+    }
+
+    private boolean isSquareAttackedByPawn(int pawnRow, int pawnCol, int targetRow, int targetCol, Player player) {
+        if (player.isWhite()) {
+            return (pawnRow + 1 == targetRow && (pawnCol - 1 == targetCol || pawnCol + 1 == targetCol));
+        } else {
+            return (pawnRow - 1 == targetRow && (pawnCol - 1 == targetCol || pawnCol + 1 == targetCol));
+        }
     }
 
     public void initializePieceManager() {

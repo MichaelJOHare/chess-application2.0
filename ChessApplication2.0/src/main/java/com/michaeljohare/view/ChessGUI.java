@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 
+import static com.michaeljohare.model.board.ChessBoard.COLUMN_LENGTH;
+import static com.michaeljohare.model.board.ChessBoard.ROW_LENGTH;
+
 public class ChessGUI extends JFrame {
 
     private final ChessBoardPanel chessBoardPanel;
@@ -60,7 +63,7 @@ public class ChessGUI extends JFrame {
     }
 
     private void updateFrame(JFrame frame) {
-        URL imageUrl = ChessGUI.class.getResource("/Frame_Icon.png");
+        URL imageUrl = ChessGUI.class.getResource("/png_icons/Frame_Icon.png");
         if (imageUrl != null) {
             try {
                 Image frameIcon = ImageIO.read(imageUrl);
@@ -101,8 +104,8 @@ public class ChessGUI extends JFrame {
     }
 
     public void updateGUI() {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = 0; row < ROW_LENGTH; row++) {
+            for (int col = 0; col < COLUMN_LENGTH; col++) {
                 chessBoardPanel.updateButton(row, col);
             }
         }

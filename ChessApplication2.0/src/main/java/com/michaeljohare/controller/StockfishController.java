@@ -245,9 +245,9 @@ public class StockfishController {
         StringBuilder fen = new StringBuilder();
 
         // 1. Piece placement
-        for (int row = 0; row < 8; row++) {
+        for (int row = 0; row < ROW_LENGTH; row++) {
             int emptySquares = 0;
-            for (int col = 0; col < 8; col++) {
+            for (int col = 0; col < COLUMN_LENGTH; col++) {
                 ChessPiece piece = board.getPieceAt(row, col);
                 if (piece == null) {
                     emptySquares++;

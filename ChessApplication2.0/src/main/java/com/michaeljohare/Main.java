@@ -18,10 +18,11 @@ public class Main {
 
     /*
      * TODO
-     *  *****Run profile and change stockfish square highlight****
+     *  Get higher res pngs to make scaling quality better
+     *  Implement clear/change square color on piece selection + "ghost" piece when dragging maybe?
      *  Start in debug, random NPE when stockfish tried to castle (extremely rare, can't reproduce)
      *  Still occasionally get drag and drop bug when piece is dragged off frame
-     *  Implement 50 move rule/insufficient material stalemate
+     *  Implement 50 move rule/insufficient material stalemate0
      *  Refactor and clean up
      *      - Check unused methods (Player, GameState, etc)
      *      - Clean up ChessBoardPanel

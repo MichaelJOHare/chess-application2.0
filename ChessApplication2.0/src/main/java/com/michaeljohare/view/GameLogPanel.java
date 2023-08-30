@@ -147,7 +147,7 @@ public class GameLogPanel extends JPanel {
     private void updatePlayerCapturedArea(JTextArea capturedArea, List<ChessPiece> capturedPieces, Function<ChessPiece, String> pieceSymbolExtractor) {
         capturedArea.removeAll();
         addCapturedPiecesTitle(capturedArea);
-        Font capturedPieceFont = new Font("Roboto", Font.PLAIN, 26);
+        Font capturedPieceFont = new Font("Roboto", Font.PLAIN, 48);
 
         for (ChessPiece piece : capturedPieces) {
             JLabel capturedPieceLabel = new JLabel(pieceSymbolExtractor.apply(piece));
