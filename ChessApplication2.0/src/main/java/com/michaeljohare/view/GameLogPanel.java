@@ -219,6 +219,8 @@ public class GameLogPanel extends JPanel {
         logTextPane.setText("Stalemate!");
     }
 
+    public void drawLogText(){logTextPane.setText("Draw by 50 move rule or insufficient material!");}
+
     public void imageAccessError(){logTextPane.setText("Unable to find images resources.");}
 
     private void onPlayAgainButtonClick() {

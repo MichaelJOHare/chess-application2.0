@@ -130,6 +130,11 @@ public class GUIController {
         updatePlayAgainButton();
     }
 
+    public void drawLogText() {
+        gui.getGameLogPanel().drawLogText();
+        updatePlayAgainButton();
+    }
+
     public void stockfishWaitingButtonText() {
         gui.getGameLogPanel().stockfishWaitingButtonText();
     }
