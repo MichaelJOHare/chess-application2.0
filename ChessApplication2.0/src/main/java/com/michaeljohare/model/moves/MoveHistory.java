@@ -32,6 +32,7 @@ public class MoveHistory {
     public void undoMove() {
         if (!history.isEmpty()) {
             Move lastMove = history.pop();
+            resetMoveClocksForUndo(lastMove);
             if (lastMove instanceof CastlingMove) {
                 resetHasMovedFlagForUndo(lastMove);
             }
@@ -72,6 +73,18 @@ public class MoveHistory {
         return null;
     }
 
+    private void resetMoveClocksForUndo(Move lastMove) {
+        if (lastMove.getPiece().getType().equals(PieceType.PAWN) || lastMove.isCapture()) {
+            halfMoveClock = calculateHalfMoveClockFromHistory();
+        } else {
+            halfMoveClock--;
+        }
+
+        if (lastMove.getPiece().getPlayer().getColor() == PlayerColor.BLACK) {
+            fullMoveNumber--;
+        }
+    }
+
     private void resetHasMovedFlagForUndo(Move move) {
         ChessPiece piece = move.getPiece();
         if (piece instanceof PieceWithMoveStatus) {
@@ -86,10 +99,23 @@ public class MoveHistory {
         }
     }
 
+    private int calculateHalfMoveClockFromHistory() {
+        int counter = 0;
+        for (int i = history.size() - 1; i >= 0; i--) {
+            Move move = history.get(i);
+            if (move.getPiece().getType().equals(PieceType.PAWN) || move.isCapture()) {
+                break;
+            }
+            counter++;
+        }
+        return counter;
+    }
+
     public MoveHistory copy() {
         MoveHistory copiedHistory = new MoveHistory();
 
         for (Move move : this.history) {
+            // Other memory hotspot, need different idea for fix here I think - may only need previous few moves?
             copiedHistory.history.push(move.copy());
         }
 

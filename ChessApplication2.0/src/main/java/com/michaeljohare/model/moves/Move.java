@@ -91,6 +91,7 @@ public class Move implements Movable{
     public Move copy() {
         ChessPiece copiedPiece = this.piece.copy();
         ChessPiece copiedCapturedPiece = this.capturedPiece != null ? this.capturedPiece.copy() : null;
+        // Memory hotspot, maybe have instance variable hold a board copy that gets updated on moves instead of copying for every one?
         ChessBoard copiedBoard = this.board.copy();
 
         Move copiedMove = new Move(copiedPiece, this.startSquare, this.endSquare, copiedCapturedPiece, copiedBoard);

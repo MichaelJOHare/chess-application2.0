@@ -23,8 +23,6 @@ public class Main {
      *  Still occasionally get drag and drop bug when piece is dragged off frame
      *  Implement 50 move rule/insufficient material stalemate
      *  Refactor and clean up
-     *      - Check unused methods (Player, GameState, etc)
-     *      - Clean up ChessBoardPanel
      *      - Clean up StockfishController (split setup/util methods into separate StockfishSetup class in utils)
      */
 }

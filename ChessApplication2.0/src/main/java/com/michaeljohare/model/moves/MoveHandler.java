@@ -203,6 +203,7 @@ public class MoveHandler {
             }
         }
 
+        // if mh.getHalfMoveClock == 100 gs.setGameOver(true); guiController.drawLogText();
         if (!hasLegalMoves && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
             gs.setGameOver(true);
             guiController.checkmateLogText();
