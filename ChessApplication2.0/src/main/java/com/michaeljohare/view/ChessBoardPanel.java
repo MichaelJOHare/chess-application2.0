@@ -19,6 +19,8 @@ import java.util.List;
 public class ChessBoardPanel extends JPanel {
     private static final Color LIGHT_SQUARE = new Color(248, 240, 198);
     private static final Color DARK_SQUARE = new Color(156, 98, 69);
+    private static final Color LIGHT_SQUARE_SELECTED_PIECE = new Color(222, 117, 71);
+    private static final Color DARK_SQUARE_SELECTED_PIECE = new Color(145, 56, 17);
     private static final Color LIGHT_SQUARE_PREVIOUS_MOVE = new Color(205,210,106,255);
     private static final Color DARK_SQUARE_PREVIOUS_MOVE = new Color(170,162,58,255);
     private static final Color LIGHT_SQUARE_HIGHLIGHT_COLOR = new Color(127, 158, 92);
@@ -60,7 +62,7 @@ public class ChessBoardPanel extends JPanel {
                 chessButtons[row][col] = new ChessButton(row, col);
                 chessButtons[row][col].setLayout(new BorderLayout());
 
-                setSquareColor(row, col);
+                setSquareColor(row, col, LIGHT_SQUARE, DARK_SQUARE);
 
                 updateButton(row, col);
 
@@ -122,18 +124,18 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
-    private void setSquareColor(int row, int col) {
+    private void setSquareColor(int row, int col, Color lightColor, Color darkColor) {
         if (row % 2 == 0) {
             if (col % 2 == 0) {
-                chessButtons[row][col].setBackground(LIGHT_SQUARE);
+                chessButtons[row][col].setBackground(lightColor);
             } else {
-                chessButtons[row][col].setBackground(DARK_SQUARE);
+                chessButtons[row][col].setBackground(darkColor);
             }
         } else {
             if (col % 2 == 1) {
-                chessButtons[row][col].setBackground(LIGHT_SQUARE);
+                chessButtons[row][col].setBackground(lightColor);
             } else {
-                chessButtons[row][col].setBackground(DARK_SQUARE);
+                chessButtons[row][col].setBackground(darkColor);
             }
         }
     }
@@ -221,6 +223,20 @@ public class ChessBoardPanel extends JPanel {
 
             previousMoveHighlightedSquares.add(square);
         }
+    }
+
+    public void setPieceSelectionSquareColor(Square square) {
+        int row = square.getRow();
+        int col = square.getCol();
+
+        setSquareColor(row, col, LIGHT_SQUARE_SELECTED_PIECE, DARK_SQUARE_SELECTED_PIECE);
+    }
+
+    public void clearPieceSelectionSquareColor(Square square) {
+        int row = square.getRow();
+        int col = square.getCol();
+
+        setSquareColor(row, col, LIGHT_SQUARE, DARK_SQUARE);
     }
 
     public void clearHighlightedSquares() {

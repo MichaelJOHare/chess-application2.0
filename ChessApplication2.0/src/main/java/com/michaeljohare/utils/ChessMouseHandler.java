@@ -70,7 +70,12 @@ public class ChessMouseHandler {
             // Check if drag was long enough to be considered a mouse drag vs a click with slight movement
             if (pressedPoint != null && e.getPoint().distance(pressedPoint) > DRAG_THRESHOLD) {
                 wasDragged = true;
-                source.setIcon(null);
+
+                Icon currentIcon = source.getIcon();
+                if (currentIcon instanceof ImageIcon) {
+                    ChessButtonIcon ghostIcon = new ChessButtonIcon(((ImageIcon) currentIcon).getImage(), 0.5f);
+                    source.setIcon(ghostIcon);
+                }
 
                 if (!dragInitiated) {
                     dragInitiated = guiController.onDragStart(source.getRow(), source.getCol());
