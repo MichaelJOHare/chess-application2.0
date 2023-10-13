@@ -8,24 +8,13 @@ The repository containing the GUI implementation can be found here: https://gith
 
 ## Pictures
 
-### Start of game
-![Dialog-Pane](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/d30b01a8-3efb-4450-bd4f-d4f646f8189c) ![start-game](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/15d5e103-a7f7-4a90-9339-16cbd33a80f1)
+
+https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/297b835b-7d8c-43bc-bf94-1f2677d4c72f
 
 
 
-
-### Mid-game
-Flip the board if you want to play with black pieces.
-![flip-board](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/870f4231-0937-4bef-bc71-dd2454e4ee7c)
-
-
-Green dots are are legal moves for the piece that is selected (knight on c3 in this example) while green corners indicate legal captures.
-![knight-moves](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/83e2bd49-3d14-444d-92f7-e0f25d4e0e63)
-
-
-
-Or give the current board to Stockfish and ask it for the best move (Purple highlighted squares)
-![ask-stockfish](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/7009e936-f261-4050-a894-3572939a5284)
+### Choose player names/opponents
+![Dialog-Pane](https://github.com/MichaelJOHare/chess-application2.0/assets/46801493/d30b01a8-3efb-4450-bd4f-d4f646f8189c)
 
 
 # Working en passant, castling, and pawn promotion!
