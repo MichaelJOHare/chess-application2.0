@@ -168,6 +168,13 @@ public class MoveHandler {
         guiController.setHighlightedSquaresPreviousMove(move.getLastMove());
         guiController.currentPlayerLogText(gs.getCurrentPlayer());
         isFirstClick = true;
+
+        if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
+            guiController.checkLogText(pm.findKingSquare(gs.getCurrentPlayer()));
+        } else {
+            guiController.clearKingCheckHighlightedSquare(pm.findKingSquare(gs.getOpposingPlayer()));
+        }
+
         guiController.updateGUI();
     }
 
@@ -207,6 +214,7 @@ public class MoveHandler {
             gs.setGameOver(true);
             guiController.drawLogText();
         }
+
         if (!hasLegalMoves && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
             gs.setGameOver(true);
             guiController.checkmateLogText();
@@ -214,7 +222,9 @@ public class MoveHandler {
             gs.setGameOver(true);
             guiController.stalemateLogText();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
-            guiController.checkLogText();
+            guiController.checkLogText(pm.findKingSquare(gs.getCurrentPlayer()));
+        } else {
+            guiController.clearKingCheckHighlightedSquare(pm.findKingSquare(gs.getOpposingPlayer()));
         }
     }
     private void tryAgainPrompt(Runnable logTextMethod) {

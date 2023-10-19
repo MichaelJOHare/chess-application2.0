@@ -86,6 +86,8 @@ public class GameState {
         return currentPlayer;
     }
 
+    public Player getOpposingPlayer(){return opposingPlayer;}
+
     public Player getPlayer1() {
         return player1;
     }

@@ -162,6 +162,8 @@ public class ChessBoardPanel extends JPanel {
             if (move instanceof EnPassantMove) {
                 setSquareHighlight(move.getEndSquare(), ChessButton.HighlightMode.CORNERS, move.getPiece().getPlayer(), false);
             }
+            setPieceSelectionSquareColor(move.getStartSquare());
+            highlightedSquares.add(move.getStartSquare());
             highlightedSquares.add(move.getEndSquare());
         }
     }
@@ -225,23 +227,30 @@ public class ChessBoardPanel extends JPanel {
         }
     }
 
-    public void setPieceSelectionSquareColor(Square square) {
-        int row = square.getRow();
-        int col = square.getCol();
+    public void setKingCheckHighlightedSquare(Square square) {
+        chessButtons[square.getRow()][square.getCol()].setHighlightMode(ChessButton.HighlightMode.CORNERS, Color.RED);
+    }
 
-        setSquareColor(row, col, LIGHT_SQUARE_SELECTED_PIECE, DARK_SQUARE_SELECTED_PIECE);
+    public void setPieceSelectionSquareColor(Square square) {
+        setSquareColor(square.getRow(), square.getCol(), LIGHT_SQUARE_SELECTED_PIECE, DARK_SQUARE_SELECTED_PIECE);
     }
 
     public void clearPieceSelectionSquareColor(Square square) {
-        int row = square.getRow();
-        int col = square.getCol();
+        setSquareColor(square.getRow(), square.getCol(), LIGHT_SQUARE, DARK_SQUARE);
+    }
 
-        setSquareColor(row, col, LIGHT_SQUARE, DARK_SQUARE);
+    public void clearKingCheckHighlightedSquare(Square square) {
+        chessButtons[square.getRow()][square.getCol()].setHighlightMode(ChessButton.HighlightMode.NONE, null);
     }
 
     public void clearHighlightedSquares() {
         for (Square square : highlightedSquares) {
             chessButtons[square.getRow()][square.getCol()].setHighlightMode(ChessButton.HighlightMode.NONE, null);
+
+            if ((!chessButtons[square.getRow()][square.getCol()].getBackground().equals(LIGHT_SQUARE)) ||
+            (!chessButtons[square.getRow()][square.getCol()].getBackground().equals(DARK_SQUARE))) {
+                clearPieceSelectionSquareColor(square);
+            }
         }
         highlightedSquares.clear();
     }

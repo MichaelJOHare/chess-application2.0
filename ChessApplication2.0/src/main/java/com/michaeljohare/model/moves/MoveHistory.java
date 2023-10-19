@@ -33,9 +33,9 @@ public class MoveHistory {
         if (!history.isEmpty()) {
             Move lastMove = history.pop();
             resetMoveClocksForUndo(lastMove);
-            if (lastMove instanceof CastlingMove) {
-                resetHasMovedFlagForUndo(lastMove);
-            }
+            // ***REMOVED*** if (lastMove instanceof CastlingMove)
+            //   unsure if was necessary and caused bug involving king move -> undo -> no longer able to castle
+            resetHasMovedFlagForUndo(lastMove);
             lastMove.undo();
             undone.push(lastMove);
         }

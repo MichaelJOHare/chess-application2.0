@@ -1,5 +1,6 @@
 package com.michaeljohare.controller;
 
+import com.michaeljohare.model.board.Square;
 import com.michaeljohare.model.moves.Move;
 import com.michaeljohare.model.pieces.ChessPiece;
 import com.michaeljohare.model.pieces.PieceType;
@@ -88,6 +89,10 @@ public class GUIController {
         gui.getChessBoardPanel().clearPreviousMoveHighlightedSquares();
     }
 
+    public void clearKingCheckHighlightedSquare(Square square){
+        gui.getChessBoardPanel().clearKingCheckHighlightedSquare(square);
+    }
+
     public void updatePlayAgainButton() {
         gui.getGameLogPanel().updatePlayAgainButton(Color.GREEN, Color.BLACK);
     }
@@ -116,8 +121,9 @@ public class GUIController {
         gui.getGameLogPanel().nothingLeftToUndoLogText();
     }
 
-    public void checkLogText() {
+    public void checkLogText(Square square) {
         gui.getGameLogPanel().checkLogText();
+        gui.getChessBoardPanel().setKingCheckHighlightedSquare(square);
     }
 
     public void checkmateLogText() {
