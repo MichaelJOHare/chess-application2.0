@@ -200,6 +200,10 @@ public class MoveHandler {
                 .filter(ChessPiece::isAlive)
                 .collect(Collectors.toList());
 
+        List<ChessPiece> opponentPieces = pm.getPlayerPieces(gs.getOpposingPlayer()).stream()
+                .filter(ChessPiece::isAlive)
+                .collect(Collectors.toList());
+
         boolean hasLegalMoves = false;
 
         // No need to continue searching after one legal move is found
@@ -217,8 +221,8 @@ public class MoveHandler {
 
         if (!hasLegalMoves && board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {
             gs.setGameOver(true);
-            guiController.checkmateLogText();
-        } else if (!hasLegalMoves) {
+            guiController.checkmateLogText(); // v If both player piece lists have size 1 -> must be kings = stalemate
+        } else if (!hasLegalMoves || (playerPieces.size() == 1 && opponentPieces.size() == 1)) {
             gs.setGameOver(true);
             guiController.stalemateLogText();
         } else if (board.isKingInCheck(gs.getCurrentPlayer(), move, board)) {

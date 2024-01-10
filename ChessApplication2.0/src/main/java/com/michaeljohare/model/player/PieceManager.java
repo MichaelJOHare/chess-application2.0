@@ -75,7 +75,7 @@ public class PieceManager {
         }
     }
 
-    public List<ChessPiece> getAllOpposingPieces(Player player) {
+    public List<ChessPiece> getOpposingPieces(Player player) {
         return piecesByPlayer.entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(player))
                 .flatMap(entry -> entry.getValue().stream())

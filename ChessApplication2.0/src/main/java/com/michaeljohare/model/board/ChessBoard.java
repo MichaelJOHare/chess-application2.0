@@ -124,7 +124,7 @@ public class ChessBoard {
 
     public boolean isKingInCheck(Player player, MoveHistory move, ChessBoard board) {
         Square kingSquare = pieceManager.findKingSquare(player);
-        for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
+        for (ChessPiece piece : pieceManager.getOpposingPieces(player)) {
             List<Move> pieceMoves = piece.calculateRawLegalMoves(board, move);
             for (Move m : pieceMoves) {
                 if (m.getPiece().isAlive() && m.getEndSquare().equals(kingSquare)) {
@@ -136,7 +136,7 @@ public class ChessBoard {
     }
 
     public boolean isSquareAttackedByOpponent(int row, int col, Player player) {
-        for (ChessPiece piece : pieceManager.getAllOpposingPieces(player)) {
+        for (ChessPiece piece : pieceManager.getOpposingPieces(player)) {
             if (piece instanceof Pawn) {
                 // Need to check for pawns specifically since their captures != their moves
                 if (isSquareAttackedByPawn(piece.getCurrentSquare().getRow(),
